@@ -1,6 +1,6 @@
-# The Experiment Planner
+# atonLab
 
-This repository contains the material of the Experiment Planner, an ATON-base web app to costumise experiments on 3D cultural heritage environment
+This repository contains the material of atonLab, CNR ISPC _experiment planner_ i.e. an ATON-base web app to costumise experiments on 3D cultural heritage environment
 
 Clone this repository in `[your main aton instance]/webapps/`
 
