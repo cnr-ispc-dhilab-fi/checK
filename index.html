@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="icon" href="appicon.png" sizes="512x512" type="image/png">
+    <link rel="icon" href="img/logo.ico" sizes="512x512">
 
     <!-- Add iOS meta tags and icons -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -35,9 +35,16 @@
     <!-- Add meta theme-color -->
     <meta name="theme-color" content="#000000" />
 
-    <title>__APPTITLE__</title>
-    <link rel="stylesheet" type="text/css" href="/vendors/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/res/css/main.css">
+    <title>checK - Experiment Planner</title>
+
+    <!-- 2. Bootstrap Build -->
+    <link rel="stylesheet" href="css/bootstrap.css">
+
+    <!-- 3. Aton stylesheet -->
+    <link rel="stylesheet" href="res/css/main.css">
+    
+    <!-- 4. Customised CSS -->
+    <link rel="stylesheet" href="css/custom.css">
 
     <!-- Vendors -->
     <script type="text/javascript" src="/vendors/vendors.min.js"></script>
@@ -51,9 +58,57 @@
 </head>
 
 <body>
-    <div id="toolbar" class="aton-toolbar-top"></div>
 
-    <div class="aton-poweredby" >
-        <a href="https://aton.ispc.cnr.it/site/" target="_blank"><img src="/res/aton-logo.png"></a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <!-- LEFT SIDE -->
+            <div class="d-flex align-items-center me-auto">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="img/logo-white.png" alt="checK" height="40" class="me-2">
+            </a>
+            <a class="nav-link text-white fw-semibold" href="#">My Dashboard</a>
+            </div>
+
+            <!-- TOGGLER (for small screens) -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- RIGHT SIDE -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link text-white" href="#">Documentation</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#">Credits</a></li>
+            </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-sm">
+            <div>
+                <h1>Example</h1>
+                <p>Example</p>
+                <button type="button" class="btn btn-primary">Primary</button>
+            </div>
+            </div>
+            <div class="col-sm">
+            One of three columns
+            </div>
+            <div class="col-sm">
+            One of three columns
+            </div>
+        </div>
     </div>
+
+    <!-- Bootstrap bundle (JS + Popper) -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-4nfR6pAk8Xst4R5PVOsIPuJ9tV8yca1GBb9NDq1n/UEOQfyZk+R1Ufi/E6IG4Nes"
+        crossorigin="anonymous">
+    </script>
 </body>
