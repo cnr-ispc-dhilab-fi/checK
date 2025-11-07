@@ -29,3 +29,18 @@ html {
 .navbar {
     font-weight: bold;
 }
+
+.dashboard-card {
+  margin-top: 1rem;
+}
+
+.dashboard-card img {
+    height: 9rem;
+    object-fit: cover;
+}
+
+.dashboard-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
