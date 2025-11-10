@@ -93,14 +93,15 @@
     <div class="container my-5">
         <div class="row">
             <div class="col-md-12 col-sm-12">
-                <h1 id="sect-title">Start your new project</h1>
-                <p id="sect-label">Choose the template that best meets your needs</p>
+                <h1 id="sect-title">Project Setup</h1>
+                <p id="sect-label">Fill the form detailing your new project</p>
             </div>
         </div>
 
+        <!-- TEMPLATE SELECTION SECTION -->
         <div class="row new-project-form-section gx-10 mt-5">
             <div class="col-md-6 col-sm-12 d-flex justify-content-center">
-                <div class="card template-card check-card-class text-start">
+                <div class="card template-card check-card-class text-start" onclick="goToFormSections(true, 'free')">
                     <div class="card-body">
                         <h3 class="card-title">Free Wander</h5>
                         <p class="card-text">Let subjects explore immersive scenes and track their behaviour</p>
@@ -135,7 +136,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-sm-12 d-flex justify-content-center">
-                <div class="card template-card check-card-class text-start">
+                <div class="card template-card check-card-class text-start" onclick="goToFormSections(true, 'task')">
                     <div class="card-body">
                         <h3 class="card-title">Task 'n Test</h5>
                         <p class="card-text">Ask subjects to perform tasks and handle complex protocols</p>
@@ -171,12 +172,17 @@
             </div>
 
         </div>
+
+        <div class="row new-project-form-section gx-10 mt-5">
+
+
+        </div>
     </div>
 
 
-    <div class="sticky-bottom-bar d-flex justify-content-around">
-      <button type="button" class="btn btn-outline-secondary" onclick="manageFormSections('none')">Back</button>
-      <button type="button" class="btn btn-primary" onclick="manageFormSections('flex')">Next</button>
+    <div class="sticky-bottom-bar d-flex justify-content-around" id="form-buttons">
+      <button type="button" class="btn btn-outline-secondary" id="form-button-0" onclick="goToFormSections(false)">Back</button>
+      <button type="button" class="btn btn-primary" id="form-button-1" onclick="goToFormSections(true)">Next</button>
     </div>
 
     <!-- Bootstrap bundle (JS + Popper) -->

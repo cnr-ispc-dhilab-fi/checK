@@ -67,3 +67,7 @@ html {
   margin-bottom: 2rem;
   z-index: 1030;
 }
+
+.hidden-important {
+  display: none !important;
+}
