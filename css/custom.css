@@ -71,3 +71,7 @@ html {
 .hidden-important {
   display: none !important;
 }
+
+.p-input-form{
+  resize: none;
+}

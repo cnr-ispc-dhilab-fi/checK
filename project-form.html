@@ -174,11 +174,68 @@
         </div>
 
         <div class="row new-project-form-section gx-10 mt-5">
+            <div class="col-md-3 col-sm-12 d-flex justify-content-start">
+                <h4>Project Title<span class="text-secondary">*</span></h4>
+            </div>
+            <div class="col-md-9 col-sm-12 d-flex justify-content-start mb-4">
+                <input type="text" class="form-control" id="nome" placeholder="Give a title to your project">
+            </div>
+            <div class="col-md-3 col-sm-12 d-flex justify-content-start">
+                <h4>Objectives</h4>
+            </div>
+            <div class="col-md-9 col-sm-12 d-flex justify-content-start mb-4">
+                <textarea type="text" class="form-control p-input-form" style="height: 8em;" placeholder="Which is the goal of your study?"></textarea>
+            </div>
+            <div class="col-md-3 col-sm-12 d-flex justify-content-start">
+                <h4>Audience</h4>
+            </div>
+            <div class="col-md-9 col-sm-12 d-flex justify-content-start mb-4">
+                <textarea type="text" class="form-control p-input-form" style="height: 8em;" placeholder="Who are the subjects you want to involve in the study?"></textarea>
+            </div>
+        </div>
+
+        <div class="row new-project-form-section gx-10 mt-5">
+            <div class="col-md-4 col-sm-12 d-flex justify-content-start">
+                <h4>In how many groups do you want to divide the subject?<span class="text-secondary">*</span></h4>
+            </div>
+            <div class="col-md-2 col-sm-12 d-flex justify-content-end">
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Open this select menu</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 col-sm-12 d-flex justify-content-start">
+                <h4>How many times do you need to test the same subject?<span class="text-secondary">*</span></h4>
+            </div>
+            <div class="col-md-2 col-sm-12 d-flex justify-content-end mb-4">
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Open this select menu</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div>
 
 
+            <div class="col-md-3 col-sm-12 d-flex justify-content-start mt-4">
+                <h4>Actions</h4>
+            </div>
+            <div class="col-md-9 col-sm-12 d-flex justify-content-start mb-4">
+                <textarea type="text" class="form-control p-input-form" style="height: 6em;" placeholder="Which actions will the subjects perform during your study?"></textarea>
+            </div>
+            <div class="col-md-3 col-sm-12 d-flex justify-content-start">
+                <h4>Measure<span class="text-secondary"></span></h4>
+            </div>
+            <div class="col-md-9 col-sm-12 d-flex justify-content-start">
+                <textarea type="text" class="form-control p-input-form" style="height: 6em;" placeholder="What do you want to measure during your study?"></textarea>
+            </div>
         </div>
     </div>
 
+    
 
     <div class="sticky-bottom-bar d-flex justify-content-around" id="form-buttons">
       <button type="button" class="btn btn-outline-secondary" id="form-button-0" onclick="goToFormSections(false)">Back</button>
