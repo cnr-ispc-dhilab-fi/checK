@@ -57,7 +57,9 @@
     <script type="text/javascript" src="/dist/ATON.min.js"></script>
 
 	<!-- Main js entry -->
-	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" src="js/new-project.js"></script>
+
+    <script type="text/javascript" src="js/3D-thumb.js"></script>
 </head>
 
 <body>
@@ -195,47 +197,88 @@
         </div>
 
         <div class="row new-project-form-section gx-10 mt-5">
-            <div class="col-md-4 col-sm-12 d-flex justify-content-start">
-                <h4>In how many groups do you want to divide the subject?<span class="text-secondary">*</span></h4>
-            </div>
-            <div class="col-md-2 col-sm-12 d-flex justify-content-end">
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-            </div>
 
-            <div class="col-md-4 col-sm-12 d-flex justify-content-start">
-                <h4>How many times do you need to test the same subject?<span class="text-secondary">*</span></h4>
-            </div>
-            <div class="col-md-2 col-sm-12 d-flex justify-content-end mb-4">
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-            </div>
-
-
-            <div class="col-md-3 col-sm-12 d-flex justify-content-start mt-4">
+            <div class="col-md-3 col-sm-12 d-flex justify-content-start">
                 <h4>Actions</h4>
             </div>
-            <div class="col-md-9 col-sm-12 d-flex justify-content-start mb-4">
+            <div class="col-md-9 col-sm-12 d-flex justify-content-start">
                 <textarea type="text" class="form-control p-input-form" style="height: 6em;" placeholder="Which actions will the subjects perform during your study?"></textarea>
             </div>
-            <div class="col-md-3 col-sm-12 d-flex justify-content-start">
+            <div class="col-md-3 col-sm-12 d-flex justify-content-start mt-3">
                 <h4>Measure<span class="text-secondary"></span></h4>
             </div>
-            <div class="col-md-9 col-sm-12 d-flex justify-content-start">
+            <div class="col-md-9 col-sm-12 d-flex justify-content-start mt-3">
                 <textarea type="text" class="form-control p-input-form" style="height: 6em;" placeholder="What do you want to measure during your study?"></textarea>
             </div>
-        </div>
-    </div>
 
-    
+            <div class="col-md-6 col-sm-11 d-flex justify-content-start mt-3">
+                <h4>Do you subdivide subjects in groups?</h4>
+            </div>
+            <div class="col-md-1 col-sm-1 d-flex justify-content-start mt-3 justify-content-center">
+                <h4><i class="bi bi-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="You can subdivide subjects in groups to test different variables (e.g. control groups)"></i></h4>
+            </div>
+            <div class="col-md-5 col-sm-12 d-flex justify-content-start mt-3 justify-content-end">
+                <select class="form-select" aria-label="Default select example" style="height: 2em;  width: 15em; margin-left: 1em;">
+                    <option selected value="1">Only in one group</option>
+                    <option value="2">2 groups</option>
+                    <option value="3">3 groups</option>
+                    <option value="4">4 groups</option>
+                    <option value="5">5 groups</option>
+                    <option value="6">6 groups</option>
+                    <option value="7">7 groups</option>
+                    <option value="8">8 groups</option>
+                    <option value="9">9 groups</option>
+                    <option value="10">10 groups</option>
+                    <option value="11">11 groups</option>
+                    <option value="12">12 groups</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 col-sm-11 d-flex justify-content-start mt-3">
+                <h4>Do you test the same subject more than once?</h4>
+            </div>
+            <div class="col-md-1 col-sm-1 d-flex justify-content-start mt-3 justify-content-center">
+                <h4><i class="bi bi-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="You can test the same person multiple times to study the effect in time"></i></h4>
+            </div>
+            <div class="col-md-5 col-sm-12 d-flex justify-content-start mt-3 justify-content-end">
+                <select class="form-select" aria-label="Default select example" style="height: 2em; width: 15em; margin-left: 1em;">
+                    <option selected value="1">Only once</option>
+                    <option value="2">2 repeated measures</option>
+                    <option value="3">3 repeated measures</option>
+                    <option value="4">4 repeated measures</option>
+                    <option value="5">5 repeated measures</option>
+                    <option value="6">6 repeated measures</option>
+                    <option value="7">7 repeated measures</option>
+                    <option value="8">8 repeated measures</option>
+                    <option value="9">9 repeated measures</option>
+                    <option value="10">10 repeated measures</option>
+                    <option value="11">11 repeated measures</option>
+                    <option value="12">12 repeated measures</option>
+                </select>
+            </div> 
+        </div>
+
+        <div class="row new-project-form-section gx-10 mt-5" id="new-project-upload">
+            <div class="col-md-3 col-sm-12 d-flex justify-content-center div-thumb-cards">
+                <input
+                    type="file"
+                    id="gltfUpload"
+                    accept=".gltf,.glb"
+                    style="display: none"
+                />
+                <button id="uploadBtn" type="button" class="btn btn-outline-secondary icon-upload-btn"><i class="bi bi-upload"></i></button>
+            </div>
+            <div class="col-md-3 col-sm-12 d-flex justify-content-center div-thumb-cards">
+                <div class="card thumb-card">
+                    <button class="thumb-close-btn" type="button" aria-label="Rimuovi">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                    <img src="img\thumb-dashboard\tomb.png" class="card-img-top glb-img" alt="thumbnail ambiente">
+                </div>
+            </div>
+        </div>
+                
+    </div>    
 
     <div class="sticky-bottom-bar d-flex justify-content-around" id="form-buttons">
       <button type="button" class="btn btn-outline-secondary" id="form-button-0" onclick="goToFormSections(false)">Back</button>
@@ -244,4 +287,10 @@
 
     <!-- Bootstrap bundle (JS + Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
 </body>

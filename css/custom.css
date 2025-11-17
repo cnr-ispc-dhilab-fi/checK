@@ -18,8 +18,15 @@ p, li, a, span, button, input, textarea {
 /* Global fallback for the body */
 body {
   font-family: "DM Sans", sans-serif;
+  max-height: 100vh;
+  overscroll-behavior: none;
 }
 
+@media (max-width: 768px) {
+  body {
+    max-height: none;
+  }
+}
 /* -------- */
 
 html {
@@ -64,8 +71,9 @@ html {
   left: 0;
   width: 100%;
   padding: 0.75rem;
-  margin-bottom: 2rem;
+  padding-bottom: 2rem;
   z-index: 1030;
+  background-color: var(--white);
 }
 
 .hidden-important {
@@ -74,4 +82,65 @@ html {
 
 .p-input-form{
   resize: none;
+}
+
+.new-project-form-section {
+  overflow-y: scroll;
+  padding-bottom: 20%;
+}
+
+.icon-upload-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 28px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.div-thumb-cards {
+  height: 10em;
+}
+
+.glb-img{
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* La card deve essere il contenitore relativo */
+.thumb-card {
+  position: relative;
+  overflow: hidden; /* opzionale, se vuoi che il bottone non esca dai bordi */
+}
+
+/* Bottone X in alto a destra */
+.thumb-close-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Effetto hover/focus */
+.thumb-close-btn:hover,
+.thumb-close-btn:focus {
+  background-color: rgba(0, 0, 0, 0.9);
+  outline: none;
 }
