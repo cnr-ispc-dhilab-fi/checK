@@ -60,6 +60,8 @@
 	<script type="text/javascript" src="js/new-project.js"></script>
 
     <script type="text/javascript" src="js/3D-thumb.js"></script>
+
+    <script type="text/javascript" src="js/check-client.js"></script>
 </head>
 
 <body>
@@ -259,14 +261,25 @@
         </div>
 
         <div class="row new-project-form-section gx-10 mt-5" id="new-project-upload">
-            <div class="col-md-3 col-sm-12 d-flex justify-content-center div-thumb-cards" id="upload-card">
+            <div class="col-md-3 col-sm-12 mb-3 d-flex justify-content-center div-thumb-cards" id="upload-card">
+                <!-- input file nascosto -->
                 <input
-                    type="file"
-                    id="gltfUpload"
-                    accept=".gltf,.glb"
-                    style="display: none"
+                type="file"
+                id="3DFileUpload"
+                accept=".gltf,.glb"
+                style="display:none"
+                onchange="upload3DAssetForCurrentProject()"
                 />
-                <button id="uploadBtn" type="button" class="btn btn-outline-secondary icon-upload-btn"><i class="bi bi-upload"></i></button>
+
+                <!-- bottone che apre il file picker -->
+                <button
+                id="uploadBtn"
+                type="button"
+                class="btn btn-outline-secondary icon-upload-btn"
+                onclick="document.getElementById('3DFileUpload').click()"
+                >
+                <i class="bi bi-upload"></i>
+                </button>
             </div>
         </div>
                 
@@ -284,5 +297,12 @@
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
         })
+
+        window.addEventListener("load", () => {
+            const projectId = getIdFromURL();
+            if (projectId) {
+                refresh3DAssetsList(projectId);
+            }
+        });
     </script>
 </body>

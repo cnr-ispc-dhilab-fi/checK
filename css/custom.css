@@ -155,4 +155,5 @@ html {
 #upload-card {
   border: 1px dashed var(--secondary);
   border-radius: 0.25rem;
+  max-width: 512px;
 }

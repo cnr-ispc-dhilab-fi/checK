@@ -8,6 +8,12 @@ function getSectionIndexFromURL() {
   return Number.isFinite(n) && n >= 0 ? n : 0;
 }
 
+function getIdFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const n = Number(params.get("id"));
+  return n;
+}
+
 function setIsTaskTest(value) {
   // value: true/false
   localStorage.setItem(STORAGE_KEY, value ? "1" : "0");
@@ -72,8 +78,10 @@ function goToFormSections(isForward, chosenTemplate = null) {
   const currentIdx = getSectionIndexFromURL();
   const nextIdx = isForward ? currentIdx + 1 : currentIdx - 1;
 
+  const projectId = getIdFromURL()
+
   if ((currentIdx === 3) & (isForward)) {
-    window.location.href = "project-summary.html";
+    window.location.href = `project-summary.html?id=${projectId}`;
   } else {
       // store template choice (so we still know it after redirect)
       if (chosenTemplate === "task") {
@@ -84,6 +92,6 @@ function goToFormSections(isForward, chosenTemplate = null) {
 
       // clamp to 0 at least
       const safeNextIdx = Math.max(0, nextIdx);
-      window.location.href = "project-form.html?n=" + safeNextIdx;
+      window.location.href = `project-form.html?id=${projectId}&n=${safeNextIdx}`;
   }
 }

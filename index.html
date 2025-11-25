@@ -53,7 +53,7 @@
     <script type="text/javascript" src="/dist/THREE.bundle.js"></script>
     <script type="text/javascript" src="/dist/ATON.min.js"></script>
 
-    <script type="text/javascript" src="js/temp-client.js"></script>
+    <script type="text/javascript" src="js/check-client.js"></script>
 </head>
 
 <body>
@@ -92,13 +92,14 @@
                 <h1>Have a look at your projects</h1>
             </div>
             <div class="col-md-2 col-sm-12">
-                <a href="project-form.html?q=0" class="btn btn-secondary" role="button">New Project</a>
+                <button  class="btn btn-secondary" role="button" onclick="createProjectFromUI()">New Project</button>
             </div>
         </div>
 
-        <div class="row dash-container mt-3">
-            <div class="col-md-4 col-sm-12">
-                <div class="card dashboard-card check-card-class"> <!-- onclick="alert('...')" -->
+        <div class="row dash-container mt-3" id="user-project-list">
+
+            <!-- div class="col-md-4 col-sm-12">
+                <div class="card dashboard-card check-card-class">
                 <img src="img/thumb-dashboard/3dt-termae1-1024x502.jpg" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h4 class="card-title">Corsi-Camminato</h5>
@@ -114,11 +115,81 @@
                         <p class="card-text">0 tested subjects<br>0 set variables</p>
                     </div>
                 </div>
-            </div>
+            </div -->
             
         </div>
     </div>
 
     <!-- Bootstrap bundle (JS + Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener("load", () => {
+            renderProjects();
+        });
+
+        async function renderProjects() {
+
+            try {
+
+                const res = await fetch(`${SERVER_BASE}/projects`);
+
+                if (!res.ok) {
+                throw new Error("Server responded with " + res.status);
+                }
+
+                const userProjects = await res.json();
+
+                Object.values(userProjects).forEach((projectMetaData) => renderProjectCard(projectMetaData["id"]));
+
+            } catch (err) {
+                console.error(err);
+                alert("Error loading 3D assets: " + err.message);
+            }
+        }
+
+        async function renderProjectCard(projectId) {
+
+            const container = document.getElementById("user-project-list");
+
+            try {
+
+                const res = await fetch(`${SERVER_BASE}/projects/${projectId}/assets`);
+
+                if (!res.ok) {
+                throw new Error("Server responded with " + res.status);
+                }
+
+                const projectAsset = await res.json();
+
+                // Display the thumb of the first uploaded element
+                let asset = projectAsset[Object.keys(projectAsset)[0]];
+
+                // Costruisco la thumb URL
+                let thumbUrl = "";
+                if (asset.thumb && asset.thumb.filename) {
+                    thumbUrl = `${SERVER_BASE}/user-projects/${projectId}/upload/thumb/${asset.thumb.filename}`;
+                }
+
+                const card_html = `
+                    <div class="col-md-4 col-sm-12">
+                        <div class="card dashboard-card check-card-class">
+                        <img src="${thumbUrl}" class="card-img-top" alt="Preview of ${projectId}">
+                            <div class="card-body">
+                                <h4 class="card-title">Progetto #${projectId}</h5>
+                                <p class="card-text">0 tested subjects<br>0 set variables</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                container.insertAdjacentHTML("beforeend", card_html);
+
+            } catch (err) {
+                console.error(err);
+                alert("Error loading 3D assets: " + err.message);
+            }
+        }
+
+
+    </script>
 </body>
