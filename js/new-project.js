@@ -72,8 +72,7 @@ function goToFormSections(isForward, chosenTemplate = null) {
   const currentIdx = getSectionIndexFromURL();
   const nextIdx = isForward ? currentIdx + 1 : currentIdx - 1;
 
-  if (currentIdx === 3) {
-
+  if ((currentIdx === 3) & (isForward)) {
     window.location.href = "project-summary.html";
   } else {
       // store template choice (so we still know it after redirect)

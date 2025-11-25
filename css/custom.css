@@ -87,6 +87,13 @@ html {
 .new-project-form-section {
   overflow-y: scroll;
   padding-bottom: 20%;
+  display: none;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.new-project-form-section::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .icon-upload-btn {
@@ -113,10 +120,10 @@ html {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* La card deve essere il contenitore relativo */
 .thumb-card {
   position: relative;
-  overflow: hidden; /* opzionale, se vuoi che il bottone non esca dai bordi */
+  overflow: hidden;
+  width: 100%;
 }
 
 /* Bottone X in alto a destra */
@@ -144,7 +151,6 @@ html {
   background-color: rgba(0, 0, 0, 0.9);
   outline: none;
 }
-
 
 #upload-card {
   border: 1px dashed var(--secondary);
