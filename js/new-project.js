@@ -22,6 +22,7 @@ function getIsTaskTest() {
 
 // --- UI ---
 function uploadCurrentSection(currentSection, currentIndex) {
+
   // show current section
   currentSection.style.display = "flex";
 
@@ -41,6 +42,12 @@ function uploadCurrentSection(currentSection, currentIndex) {
     } else {
       // fallback if user jumped straight to later steps
       $("#sect-title").text("Project Setup");
+    }
+
+    console.log("CURRENT INDEX:", currentIndex);
+
+    if (currentIndex === 3) {
+      $("#form-button-1").text("Done");
     }
   }
 }
@@ -65,16 +72,19 @@ function goToFormSections(isForward, chosenTemplate = null) {
   const currentIdx = getSectionIndexFromURL();
   const nextIdx = isForward ? currentIdx + 1 : currentIdx - 1;
 
-  // store template choice (so we still know it after redirect)
-  if (chosenTemplate === "task") {
-    setIsTaskTest(true);
-  } else if (chosenTemplate === "free") {
-    setIsTaskTest(false);
+  if (currentIdx === 3) {
+
+    window.location.href = "project-summary.html";
+  } else {
+      // store template choice (so we still know it after redirect)
+      if (chosenTemplate === "task") {
+        setIsTaskTest(true);
+      } else if (chosenTemplate === "free") {
+        setIsTaskTest(false);
+      }
+
+      // clamp to 0 at least
+      const safeNextIdx = Math.max(0, nextIdx);
+      window.location.href = "project-form.html?n=" + safeNextIdx;
   }
-
-  console.log("current:", currentIdx, "next:", nextIdx);
-
-  // clamp to 0 at least
-  const safeNextIdx = Math.max(0, nextIdx);
-  window.location.href = "project-form.html?n=" + safeNextIdx;
 }

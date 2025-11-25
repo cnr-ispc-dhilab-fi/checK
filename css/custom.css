@@ -144,3 +144,9 @@ html {
   background-color: rgba(0, 0, 0, 0.9);
   outline: none;
 }
+
+
+#upload-card {
+  border: 1px dashed var(--secondary);
+  border-radius: 0.25rem;
+}
