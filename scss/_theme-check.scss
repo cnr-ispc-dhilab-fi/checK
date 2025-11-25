@@ -1,0 +1,65 @@
+// Override delle variabili Bootstrap
+$enable-dark-mode: false;
+$color-mode-type: "media"; // di default, ma lo fissiamo
+$body-bg: #F5F5F4 !default;
+$body-color: #212529 !default;
+
+// Colori base
+$blue:    #007bff;
+$indigo:  #6610f2;
+$purple:  #6f42c1;
+$pink:    #e83e8c;
+$red:     #dc3545;
+$orange:  #fd7e14;
+$yellow:  #ffc107;
+$green:   #28a745;
+$teal:    #20c997;
+$cyan:    #17a2b8;
+
+$white:      #F5F5F4;
+$gray:       #7D7976;
+$gray-dark:  #403E3D;
+
+$primary:   #464673;
+$secondary: #D19C6B;
+$success:   #7BAF7B;
+$info:      #4CA8A1;
+$warning:   #E2B857;
+$danger:    #C94C4C;
+$light:     #EBEAE9;
+$dark:      #403E3D;
+
+// Mappa colori tema
+$theme-colors: (
+  "primary":   $primary,
+  "secondary": $secondary,
+  "success":   $success,
+  "info":      $info,
+  "warning":   $warning,
+  "danger":    $danger,
+  "light":     $light,
+  "dark":      $dark
+);
+
+// Breakpoints come quelli di default
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+);
+
+// Tipografia
+$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif,
+  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+$font-family-base: $font-family-sans-serif;
+
+// Body
+$body-bg:    #F5F5F4;
+$body-color: #212120;
+
+// (opzionale) 1rem ≈ 18px
+// $font-size-root: 1.125rem;
