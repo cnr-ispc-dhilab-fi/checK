@@ -117,7 +117,7 @@ function saveFormLocally(id) {
       break;
     case 2:
       localStorage.setItem(STORAGE_ACT_KEY, $("#project-actions").val());
-      localStorage.setItem(STORAGE_MESURE_DESC_KEY, $("#project-measures").val());
+      localStorage.setItem(STORAGE_MESURE_DESC_KEY, $("#project-measure").val());
       localStorage.setItem(STORAGE_GROUPS_KEY, $("#project-groups").val());
       localStorage.setItem(STORAGE_REP_MESURE_KEY, $("#project-repeated-measures").val());
       break;

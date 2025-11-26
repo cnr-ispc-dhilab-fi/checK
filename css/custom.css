@@ -157,3 +157,15 @@ html {
   border-radius: 0.25rem;
   max-width: 512px;
 }
+
+
+.project-summary-accordion-body {
+  max-height: 20vh; 
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.project-summary-accordion-body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

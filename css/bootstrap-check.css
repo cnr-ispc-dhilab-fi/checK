@@ -2881,7 +2881,7 @@ textarea.form-control-lg {
 }
 
 .btn-outline-secondary {
-  --bs-btn-color: #D19C6B;
+  --bs-btn-color: #000 /*#D19C6B*/;
   --bs-btn-border-color: #D19C6B;
   --bs-btn-hover-color: #000;
   --bs-btn-hover-bg: #D19C6B;

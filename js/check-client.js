@@ -239,9 +239,9 @@ async function loadProjectConfigIntoForm() {
     $("#project-objectives").val(cfg.objectives || "");
     $("#project-audience").val(cfg.audience || "");
     $("#project-actions").val(cfg.actions || "");
-    $("#project-measures").val(cfg.measureDescription || "");
+    $("#project-measure").val(cfg.measureDescription || "");
     $("#project-groups").val(cfg.groups || "");
-    $("#project-rep-measures").val(cfg.repeatedMeasures || "");
+    $("#project-repeated-measures").val(cfg.repeatedMeasures || "");
   } catch (err) {
     console.error(err);
   }
@@ -276,6 +276,8 @@ async function renderProjectSummaryFromStorage() {
   // Upload thumbs to carousel
   const assets3DStorage = await ATON.App.getStorage(getProject3DAssetsStorageId(projectId));
   let assets3SArray = Object.values(assets3DStorage);
+
+    $("#summary-project-no-3Dassets").html(assets3SArray.length);
 
   let carouselContainer = document.getElementById("summary-carousel-inner");
   
