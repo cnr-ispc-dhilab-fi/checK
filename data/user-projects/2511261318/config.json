@@ -1,5 +1,14 @@
 {
-  "id": "2511261318",
-  "label": "",
-  "createdAt": "2025-11-26T12:18:10.671Z"
+    "id": "2511261318",
+    "label": "",
+    "createdAt": "2025-11-26T12:18:10.671Z",
+    "template": "Task 'n Test",
+    "title": "Sample free wander",
+    "objectives": "ssss",
+    "audience": "undefined",
+    "actions": "Other test",
+    "measureDescription": "undefined",
+    "groups": "3",
+    "repeatedMeasures": "3",
+    "updatedAt": "2025-11-26T15:15:04.315Z"
 }

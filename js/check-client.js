@@ -131,9 +131,27 @@ async function renderProjectsFromStorage() {
 // Example Bootstrap card for a project on index.html
 async function renderProjectCard(projectMeta, container) {
   const id = projectMeta.id;
-  const createdAt = projectMeta.createdAt || "";
+  const d = new Date(projectMeta.createdAt) || "";
 
-  let projectsUpload = await ATON.App.getStorage("user-projects/2511261318/upload/upload");
+  const formattedDate = 
+    d.getFullYear() + "-" +
+    String(d.getMonth() + 1).padStart(2, "0") + "-" +
+    String(d.getDate()).padStart(2, "0") + " " +
+    String(d.getHours()).padStart(2, "0") + ":" +
+    String(d.getMinutes()).padStart(2, "0");
+
+  let titleLabel = "";
+
+  let configStorage = await ATON.App.getStorage(`user-projects/${id}/config`);
+
+  if (configStorage.title) {
+    titleLabel = configStorage.title;
+  } else {
+    titleLabel = `Project #${id}`;
+  }
+
+
+  let projectsUpload = await ATON.App.getStorage(`user-projects/${id}/upload/upload`);
 
   let first3DAsset = projectsUpload[Object.keys(projectsUpload)[0]];
 
@@ -141,11 +159,12 @@ async function renderProjectCard(projectMeta, container) {
 
   const cardHtml = `
     <div class="col-md-4 col-sm-12">
-      <div class="card dashboard-card check-card-class">
+      <div class="card dashboard-card check-card-class" onclick="window.location.href='project-summary.html?id=${id}'">
         <img src="${SERVER_BASE}${first3DAsset.thumb.url}" class="card-img-top" alt="Thumb for project #${id}">
         <div class="card-body">
-          <h4 class="card-title">Project #${id}</h5>
-          <p class="card-text">Created: ${createdAt}</p>
+          <h4 class="card-title">${titleLabel}</h5>
+          <p class="card-text">Template: ${configStorage.template}</p>
+          <p class="card-text">Created: ${formattedDate}</p>
         </div>
       </div>
     </div>
@@ -155,59 +174,63 @@ async function renderProjectCard(projectMeta, container) {
 }
 
 // ===============================
-// PROJECT METADATA (config.json -> ATON storage)
+// SAVE & SHOW PROJECT METADATA (config.json -> ATON storage)
 // ===============================
 
 // Read form fields and store metadata of the current project
-async function saveProjectConfigFromForm() {
+async function saveProjectConfigFromForm(id) {
   const projectId = getIdFromURL();
   if (!projectId) {
     alert("Missing project id in URL.");
     return;
   }
 
-  // Collect data from form (using jQuery or plain DOM)
-  const projectTitle = $("#project-name").val();
-  const projectObjectives = $("#project-objectives").val();
-  const projectAudience = $("#project-audience").val();
-  const projectActions = $("#project-actions").val();
-  const projectMeasureDesc = $("#project-measures").val();
-  const projectGroups = $("#project-groups").val();
-  const projectRepMeasures = $("#project-rep-measures").val();
+  let projectTemplate = "";
+  if (getIsTaskTest()) {projectTemplate = "Task 'n Test"} else {projectTemplate = "Free Wander"}
 
-  const patch = {
-    [projectId]: {
-      title: projectTitle,
-      objectives: projectObjectives,
-      audience: projectAudience,
-      actions: projectActions,
-      measureDescription: projectMeasureDesc,
-      groups: projectGroups,
-      repeatedMeasures: projectRepMeasures,
-      updatedAt: new Date().toISOString()
-    }
+  let patch = "";
+
+  if (id == 1) {
+    patch = {
+      template: projectTemplate,
+      title:  localStorage.getItem(STORAGE_TITLE_KEY),
+      objectives: localStorage.getItem(STORAGE_OBJS_KEY),
+      audience: localStorage.getItem(STORAGE_AUD_KEY),
   };
+  } else if (id == 2) {
+    patch = {
+      actions: localStorage.getItem(STORAGE_ACT_KEY),
+      measureDescription: localStorage.getItem(STORAGE_MESURE_DESC_KEY),
+      groups: localStorage.getItem(STORAGE_GROUPS_KEY),
+      repeatedMeasures: localStorage.getItem(STORAGE_REP_MESURE_KEY),
+      updatedAt: new Date().toISOString()
+  };
+  } else {
+    patch = "";
+  }
+
+  console.log(patch);
 
   try {
     console.log(getProjectConfigStorageId(projectId));
     await ATON.App.addToStorage(getProjectConfigStorageId(projectId), patch);
-    alert("Project configuration saved (ATON storage).");
+    console.log("Project configuration saved (ATON storage).");
   } catch (err) {
     console.error(err);
-    alert("Error saving configuration: " + err.message);
+    console.log("Error saving configuration: " + err.message);
   }
 }
 
-// Load config for current project and populate the form
+// IN THE FORM: Load config for current project and populate the form
 async function loadProjectConfigIntoForm() {
   const projectId = getIdFromURL();
   if (!projectId) return;
 
   try {
-    const allConfigs =
+    const cfg =
       (await ATON.App.getStorage(getProjectConfigStorageId(projectId))) || {};
-    const cfg = allConfigs[projectId];
-    if (!cfg) {
+
+    if (!cfg || Object.keys(cfg).length === 0) {
       console.log("No config yet for project", projectId);
       return;
     }
@@ -222,6 +245,59 @@ async function loadProjectConfigIntoForm() {
   } catch (err) {
     console.error(err);
   }
+}
+
+// IN THE SUMMARY: Load config for current project and populate the summary
+async function renderProjectSummaryFromStorage() {
+
+  // Get current ID
+  const projectId = getIdFromURL();
+  if (!projectId) {
+    alert("Missing project id in URL.");
+    return;
+  }
+
+  // Load textual metadata
+  const configStorage = await ATON.App.getStorage(getProjectConfigStorageId(projectId));
+  
+  $("#summary-project-template").html(configStorage["template"]);
+
+  $("#summary-project-title-bread").html(configStorage["title"]);
+  $("#summary-project-title").html(configStorage["title"]);
+
+  $("#summary-project-group").html(configStorage["groups"]);
+  $("#summary-project-rep-measures").html(configStorage["repeatedMeasures"]);
+
+  $("#summary-accordion-0").html(configStorage["objectives"] || "No description provided");
+  $("#summary-accordion-1").html(configStorage["audience"] || "No description provided");
+  $("#summary-accordion-2").html(configStorage["actions"] || "No description provided");
+  $("#summary-accordion-3").html(configStorage["measureDescription"] || "No description provided");
+
+  // Upload thumbs to carousel
+  const assets3DStorage = await ATON.App.getStorage(getProject3DAssetsStorageId(projectId));
+  let assets3SArray = Object.values(assets3DStorage);
+
+  let carouselContainer = document.getElementById("summary-carousel-inner");
+  
+  for (let i = 0; i < assets3SArray.length; i++) {
+    let carouselChild = "";
+    if (i == 0) {
+      carouselChild = `<div class="carousel-item active">
+                          <img src="${SERVER_BASE}${assets3SArray[i].thumb.url}" class="d-block w-100" style="width: 512px; object-fit: contain" alt="Thumb 3D asset no. ${i}">
+                        </div>`;
+
+    } else {
+      carouselChild = `<div class="carousel-item">
+                          <img src="${SERVER_BASE}${assets3SArray[i].thumb.url}" class="d-block w-100" style="width: 512px; object-fit: contain" alt="Thumb 3D asset no. ${i}">
+                        </div>`;
+    }
+
+    console.log(assets3SArray[i].thumb.url);
+    carouselContainer.insertAdjacentHTML("beforeend", carouselChild);
+  }
+  /*Object.values(assets3DStorage).forEach( (uploadedItem) => {
+    console.log(uploadedItem.thumb.url);
+  })*/
 }
 
 // ===============================
@@ -410,6 +486,7 @@ window.createProjectFromUI = createProjectFromUI;
 window.renderProjectsFromStorage = renderProjectsFromStorage;
 
 window.saveProjectConfigFromForm = saveProjectConfigFromForm;
+window.renderProjectSummaryFromStorage = renderProjectSummaryFromStorage;
 window.loadProjectConfigIntoForm = loadProjectConfigIntoForm;
 
 window.upload3DAssetForCurrentProject = upload3DAssetForCurrentProject;

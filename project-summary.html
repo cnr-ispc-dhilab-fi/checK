@@ -27,7 +27,7 @@
 	<link rel="manifest" href="app.webmanifest">
 
 	<!-- Web-app ID -->
-	<meta name="aton:appid" content="app_template">
+	<meta name="aton:appid" content="checK">
 
 	<meta name="title" content="Experiment Planner">
 	<meta name="description" content="__APPDESC__">
@@ -97,31 +97,23 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><span id="summary-project-template">Taks 'n Test Template</span></li>
-                        <li class="breadcrumb-item active" aria-current="page">New Project Summary</li>
+                        <li class="breadcrumb-item active" id="summary-project-title-bread" aria-current="page">New Project Summary</li>
                     </ol>
                 </nav>
-                <h1>Project Title</h1>
+                <h1 id="summary-project-title">Project Title</h1>
             </div>
         </div>
 
         <div class="row gx-12">
 
             <div class="col-12  justify-content-start">
-                <p>Subjects are divided in <span style="font-weight: bold;" >6 groups</span> and tested in <span style="font-weight: bold;">6 repeated measures</span></p>
+                <p>Subjects are divided in <span style="font-weight: bold;" id="summary-project-group">6</span> groups and tested in <span style="font-weight: bold;" id="summary-project-rep-measures">6</span>  repeated measures</p>
             </div>
 
             <div class="col-md-4 col-sm-12 justify-content-center">     
                 <div id="summary-carousel" class="carousel slide">
                     <div class="carousel-inner" id="summary-carousel-inner" data-bs-ride="carousel" style="max-height: 50vh">
-                        <div class="carousel-item active">
-                        <img src="https://www.museoarcheologiconapoli.it/mann/uploads/2025/08/Statua-di-Iside.jpg" class="d-block w-100" style="width: 512px; object-fit: contain" alt="...">
-                        </div>
-                        <div class="carousel-item">
-                        <img src=https://www.museoarcheologiconapoli.it/mann/uploads/2025/08/Stele-geroglifica.jpg" class="d-block w-100" alt="...">
-                        </div>
-                        <div class="carousel-item">
-                        <img src="https://www.museoarcheologiconapoli.it/mann/uploads/2025/08/Vignetta-con-sacerdote.jpg" class="d-block w-100" alt="...">
-                        </div>
+                        <!-- Will be dynamically populated with thumbs-->
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#summary-carousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -135,7 +127,7 @@
             </div>
 
             <div class="col-md-8 col-sm-12 d-flex justify-content-start">
-                <div class="accordion" id="accordionExample">
+                <div class="accordion" id="accordionExample"  style="width: 100%">
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -144,7 +136,7 @@
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <strong>This is the first item’s accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            <p id="summary-accordion-0"></p>
                         </div>
                         </div>
                     </div>
@@ -156,7 +148,7 @@
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <strong>This is the second item’s accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            <p id="summary-accordion-1"></p>
                         </div>
                         </div>
                     </div>
@@ -168,7 +160,7 @@
                         </h2>
                         <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <strong>This is the third item’s accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            <p id="summary-accordion-2"></p>
                         </div>
                         </div>
                     </div>
@@ -180,7 +172,7 @@
                         </h2>
                         <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <strong>This is the third item’s accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            <p id="summary-accordion-3"></p>
                         </div>
                         </div>
                     </div>
@@ -191,7 +183,7 @@
     </div>    
 
     <div class="sticky-bottom-bar d-flex justify-content-around" id="form-buttons">
-      <button type="button" class="btn btn-outline-secondary" id="form-button-0" onclick="window.location.href='project-form.html?n=3'">Edit</button>
+      <button type="button" class="btn btn-outline-secondary" id="form-button-0" onclick="window.location.href=`project-form.html?id=${getIdFromURL()}&n=3`">Edit</button>
       <button type="button" class="btn btn-primary" id="form-button-1" onclick="alert('You can set the protocol')">Set Protocol</button>
     </div>
 
@@ -205,6 +197,13 @@
     </script>
 
     <script>
+    window.addEventListener("load", () => {
+        const projectId = getIdFromURL();
+        if (projectId) {
+            renderProjectSummaryFromStorage();
+        }
+    });
+
     const carouselContainer = document.getElementById("summary-carousel-inner");
 
     async function createCarousel(id, counter) {

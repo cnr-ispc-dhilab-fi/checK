@@ -1,5 +1,14 @@
 {
-  "id": "2511261413",
-  "label": "",
-  "createdAt": "2025-11-26T13:13:40.668Z"
+    "id": "2511261413",
+    "label": "",
+    "createdAt": "2025-11-26T13:13:40.668Z",
+    "template": "Task 'n Test",
+    "title": "My project",
+    "objectives": "My objectives",
+    "audience": "undefined",
+    "actions": "My actions",
+    "measureDescription": "undefined",
+    "groups": "6",
+    "repeatedMeasures": "10",
+    "updatedAt": "2025-11-26T15:29:30.616Z"
 }
