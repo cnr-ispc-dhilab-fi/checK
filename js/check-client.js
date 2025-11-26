@@ -113,7 +113,7 @@ async function renderProjectsFromStorage() {
 
     container.innerHTML = "";
 
-    const ids = Object.keys(projects);
+    const ids = Object.keys(projects).reverse();
     if (ids.length === 0) {
       container.innerHTML = `<p class="text-muted">No projects yet.</p>`;
       return;
