@@ -1,98 +1,235 @@
+// ATON/wapps/check/js/check-client.js
+
 const SERVER_BASE = "http://localhost:3001";
 
+// ATON App setup
 let app = ATON.App.realize(false);
-
-// Richedi il flare "check" - The name of the flare folder!
 app.requireFlares(["check-flare"]);
 
 let checkFlare = null;
 
+// Storage IDs used in ATON.App storage  getIdFromURL
+const PROJECTS_STORAGE_ID = "user-projects/projects";                     // list of projects
+
+// Helper to build a storage id for the asset library of a given project
+function getProject3DAssetsStorageId(projectId) {
+  return `user-projects/${projectId}/upload/upload`;
+}
+
+// Helper to build a storage id for the metadata (main config) of a given project
+function getProjectConfigStorageId(projectId) {
+  return `user-projects/${projectId}/config`;
+}
+
+// Helper to build a storage id for the protocol of a given project
+function getProjectProtocolConfigStorageId(projectId) {
+  return `user-projects/${projectId}/protocol/protocol-config`;
+}
+
 app.setup = () => {
-  
-  // Realizza l'app, rimuovendo la view 3D non necessaria 
-    ATON.realize();
-  
-  // aspetto che TUTTI i flares siano pronti
-    ATON.on("AllFlaresReady", () => {
-        console.log("Flares ready!");
+  ATON.realize();
 
-        // ora posso recuperare il flare
-        checkFlare = ATON.getFlare("check");
-        console.log("Check flare:", checkFlare);
+  ATON.on("AllFlaresReady", () => {
+    console.log("All flares ready");
 
-        document.getElementById("idView3D").remove();
+    checkFlare = ATON.getFlare("check");
+    console.log("Check flare:", checkFlare);
 
-
-    });
+    // Remove 3D view if not needed
+    const view3D = document.getElementById("idView3D");
+    if (view3D) view3D.remove();
+  });
 };
 
+// ===============================
+// URL helper
+// ===============================
 function getIdFromURL() {
   const params = new URLSearchParams(window.location.search);
-  const n = Number(params.get("id"));
-  return n;
+  return params.get("id");
 }
 
 // ===============================
-// FUNZIONE CLIENT: CREA PROGETTO
+// PROJECT CREATION & LIST (ATON storage + server)
 // ===============================
 
-// Ancillary function to create project ID (YYMMDDhhmm)
-
-function generateProjectId() {
-    const now = new Date();
-    const yy = String(now.getFullYear()).slice(-2);
-    const MM = String(now.getMonth() + 1).padStart(2, "0");
-    const dd = String(now.getDate()).padStart(2, "0");
-    const HH = String(now.getHours()).padStart(2, "0");
-    const mm = String(now.getMinutes()).padStart(2, "0");
-    return yy + MM + dd + HH + mm;
-}
-
-// Body of the main function
-
+// Called e.g. from a button on index.html
 async function createProjectFromUI() {
-    const id = generateProjectId();
+  console.log("GO");
+  // Generate an ID YYMMDDHHMM
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const MM = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  const HH = String(now.getHours()).padStart(2, "0");
+  const mm = String(now.getMinutes()).padStart(2, "0");
+  const projectId = yy + MM + dd + HH + mm;
 
-    try {
-        const res = await fetch("http://localhost:3001/projects", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                id,
-                label: ""   // nome vuoto; l’utente lo definirà più tardi
-            })
-        });
+  try {
+    const res = await fetch(`${SERVER_BASE}/projects`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: projectId, label: "" })
+    });
 
-        if (!res.ok) {
-            throw new Error("Server responded with " + res.status);
-        }
-
-        const project = await res.json();
-
-        console.log("Project:", project);
-        window.location.href = `project-form.html?id=${id}&n=0`;
-
-    // qui puoi:
-    // - salvare l'ID in una variabile globale
-    // - aggiornare la UI
-    // - fare redirect a una pagina del progetto
-    // es:
-    // currentProjectId = project.id;
-    // refreshProjectList();
-    } catch (err) {
-        console.error(err);
-        alert("Error creating project: " + err.message);
+    if (!res.ok) {
+      throw new Error("Server responded with " + res.status);
     }
+
+    const projectInfo = await res.json(); // {id, label, path, createdAt}
+    console.log("Project created:", projectInfo);
+
+    // (se qui vuoi anche fare addToStorage, fallo PRIMA del redirect)
+    // await ATON.App.addToStorage(PROJECTS_STORAGE_ID, { [projectInfo.id]: projectInfo });
+
+    alert(`New project created: ${projectInfo.id}`);
+
+    const url = `project-form.html?id=${encodeURIComponent(projectId)}&n=0`;
+    console.log("Redirecting to:", url);
+
+    // Usa assign per essere super esplicito
+    window.location.assign(url);
+
+  } catch (err) {
+    console.error("createProjectFromUI error:", err);
+    alert("Error creating project: " + err.message);
+  }
 }
 
-window.createProjectFromUI = createProjectFromUI; // Render functions as GLOBAL (to call from HTML)
+
+// Load projects from ATON storage and render them.
+// You can call this from an inline script in index.html on window load.
+async function renderProjectsFromStorage() {
+  try {
+    const projects =
+      (await ATON.App.getStorage(PROJECTS_STORAGE_ID)) || {};
+
+    const container = document.getElementById("user-projects-list");
+    console.log(container);
+    if (!container) {
+      console.warn("renderProjectsFromStorage: #user-projects-list not found");
+      return;
+    }
+
+    container.innerHTML = "";
+
+    const ids = Object.keys(projects);
+    if (ids.length === 0) {
+      container.innerHTML = `<p class="text-muted">No projects yet.</p>`;
+      return;
+    }
+
+    ids.forEach((projectId) => {
+      const meta = projects[projectId];
+      renderProjectCard(meta, container);
+    });
+  } catch (err) {
+    console.error("Error reading projects from ATON storage:", err);
+  }
+}
+
+// Example Bootstrap card for a project on index.html
+async function renderProjectCard(projectMeta, container) {
+  const id = projectMeta.id;
+  const createdAt = projectMeta.createdAt || "";
+
+  let projectsUpload = await ATON.App.getStorage("user-projects/2511261318/upload/upload");
+
+  let first3DAsset = projectsUpload[Object.keys(projectsUpload)[0]];
+
+  console.log("DEBUG HERE", first3DAsset);
+
+  const cardHtml = `
+    <div class="col-md-4 col-sm-12">
+      <div class="card dashboard-card check-card-class">
+        <img src="${SERVER_BASE}${first3DAsset.thumb.url}" class="card-img-top" alt="Thumb for project #${id}">
+        <div class="card-body">
+          <h4 class="card-title">Project #${id}</h5>
+          <p class="card-text">Created: ${createdAt}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  container.insertAdjacentHTML("beforeend", cardHtml);
+}
 
 // ===============================
-// UPLOAD ASSET PER IL PROGETTO CORRENTE
-// - legge GLB dall'input
-// - genera thumb con generateGlbThumbnail()
-// - invia tutto al server (/projects/:projectId/upload)
+// PROJECT METADATA (config.json -> ATON storage)
 // ===============================
+
+// Read form fields and store metadata of the current project
+async function saveProjectConfigFromForm() {
+  const projectId = getIdFromURL();
+  if (!projectId) {
+    alert("Missing project id in URL.");
+    return;
+  }
+
+  // Collect data from form (using jQuery or plain DOM)
+  const projectTitle = $("#project-name").val();
+  const projectObjectives = $("#project-objectives").val();
+  const projectAudience = $("#project-audience").val();
+  const projectActions = $("#project-actions").val();
+  const projectMeasureDesc = $("#project-measures").val();
+  const projectGroups = $("#project-groups").val();
+  const projectRepMeasures = $("#project-rep-measures").val();
+
+  const patch = {
+    [projectId]: {
+      title: projectTitle,
+      objectives: projectObjectives,
+      audience: projectAudience,
+      actions: projectActions,
+      measureDescription: projectMeasureDesc,
+      groups: projectGroups,
+      repeatedMeasures: projectRepMeasures,
+      updatedAt: new Date().toISOString()
+    }
+  };
+
+  try {
+    console.log(getProjectConfigStorageId(projectId));
+    await ATON.App.addToStorage(getProjectConfigStorageId(projectId), patch);
+    alert("Project configuration saved (ATON storage).");
+  } catch (err) {
+    console.error(err);
+    alert("Error saving configuration: " + err.message);
+  }
+}
+
+// Load config for current project and populate the form
+async function loadProjectConfigIntoForm() {
+  const projectId = getIdFromURL();
+  if (!projectId) return;
+
+  try {
+    const allConfigs =
+      (await ATON.App.getStorage(getProjectConfigStorageId(projectId))) || {};
+    const cfg = allConfigs[projectId];
+    if (!cfg) {
+      console.log("No config yet for project", projectId);
+      return;
+    }
+
+    $("#project-name").val(cfg.title || "");
+    $("#project-objectives").val(cfg.objectives || "");
+    $("#project-audience").val(cfg.audience || "");
+    $("#project-actions").val(cfg.actions || "");
+    $("#project-measures").val(cfg.measureDescription || "");
+    $("#project-groups").val(cfg.groups || "");
+    $("#project-rep-measures").val(cfg.repeatedMeasures || "");
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// ===============================
+// 3D ASSETS (upload + asset-library storage)
+// ===============================
+
+// This is called when the user selects a file in the hidden input
+// e.g. <input type="file" id="3DFileUpload" onchange="upload3DAssetForCurrentProject()">
 async function upload3DAssetForCurrentProject() {
   const projectId = getIdFromURL();
   if (!projectId) {
@@ -109,141 +246,22 @@ async function upload3DAssetForCurrentProject() {
   const glbFile = fileInput.files[0];
 
   try {
-    // 1) genera thumb 3D
+    // 1) Generate thumbnail using 3D-thumb.js
     const { blob: thumbBlob } = await generateGlbThumbnail(glbFile);
 
-    // 2) prepara FormData
+    // 2) Prepare FormData for the server
     const assetId = "A" + Date.now();
     const formData = new FormData();
     formData.append("assetId", assetId);
     formData.append("glb", glbFile, glbFile.name);
     formData.append("thumb", thumbBlob, assetId + "_thumb.png");
 
-    // 3) invia al server
-    const res = await fetch(`${SERVER_BASE}/projects/${projectId}/upload`, {
-      method: "POST",
-      body: formData
-    });
-
-    if (!res.ok) {
-      throw new Error("Server responded with " + res.status);
-    }
-
-    const data = await res.json(); // { message, projectId, asset }
-
-    console.log("3D Asset uploaded:", data);
-
-    // 4) aggiungo SOLO la nuova card
-    add3DAssetCard(projectId, assetId, data.asset);
-
-    // reset input
-    fileInput.value = "";
-  } catch (err) {
-    console.error(err);
-    alert("Error uploading asset: " + err.message);
-  }
-}
-
-window.upload3DAssetForCurrentProject = upload3DAssetForCurrentProject; // Render functions as GLOBAL (to call from HTML)
-
-// ===============================
-// LEGGI & RENDER ASSET LIST
-// ===============================
-async function refresh3DAssetsList(projectId) {
-  if (!projectId) {
-    projectId = getIdFromURL();
-  }
-  if (!projectId) return;
-
-  try {
-    const res = await fetch(`${SERVER_BASE}/projects/${projectId}/assets`);
-    if (!res.ok) {
-      throw new Error("Server responded with " + res.status);
-    }
-    const assets = await res.json(); // { assetId: {...}, ... }
-    render3DAssetsList(projectId, assets);
-  } catch (err) {
-    console.error(err);
-    alert("Error loading 3D assets: " + err.message);
-  }
-}
-
-function add3DAssetCard(projectId, assetId, asset) {
-  const container = document.getElementById("new-project-upload");
-  if (!container) return;
-
-  // Costruisco la thumb URL
-  let thumbUrl = "";
-  if (asset.thumb && asset.thumb.filename) {
-    thumbUrl = `${SERVER_BASE}/user-projects/${projectId}/upload/thumb/${asset.thumb.filename}`;
-  }
-
-  const card_html = `
-    <div class="col-md-3 col-sm-12 mb-3 d-flex justify-content-center div-thumb-cards" id="div-thumb-card-${assetId}">
-      <div class="card thumb-card">
-        <button class="thumb-close-btn" type="button" aria-label="Rimuovi"
-                onclick="deleteAsset('${projectId}', '${assetId}')">
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <img src="${thumbUrl}" class="card-img-top glb-img" alt="thumbnail ambiente ${assetId}">
-      </div>
-    </div>
-  `;
-
-  container.insertAdjacentHTML("beforeend", card_html);
-}
-
-
-function render3DAssetsList(projectId, assets) {
-  const container = document.getElementById("new-project-upload");
-  if (!container) return;
-
-
-  const assetIds = Object.keys(assets);
- 
-
-
-  assetIds.forEach(assetId => {
-    const asset = assets[assetId];
-
-    // Costruisco la thumb URL
-    let thumbUrl = "";
-    if (asset.thumb && asset.thumb.filename) {
-      thumbUrl = `${SERVER_BASE}/user-projects/${projectId}/upload/thumb/${asset.thumb.filename}`;
-    }
-
-    // Template HTML della card, in stile Bootstrap
-    const card_html = `
-      <div class="col-md-3 col-sm-12 mb-3 d-flex justify-content-center div-thumb-cards" id="div-thumb-card-${assetId}">
-        <div class="card thumb-card">
-
-          <button class="thumb-close-btn" type="button" aria-label="Rimuovi" onclick="deleteAsset('${projectId}', '${assetId}')">
-            <i class="bi bi-x-lg"></i>
-          </button>
-
-          <img src="${thumbUrl}" class="card-img-top glb-img" alt="thumbnail ambiente ${assetId}">
-        
-        </div>
-      </div>
-    `;
-
-    // Appendo al container
-    container.insertAdjacentHTML("beforeend", card_html);
-  });
-}
-
-
-// ===============================
-// DELETE ASSET
-// ===============================
-async function deleteAsset(projectId, assetId) {
-  if (!confirm(`Delete asset ${assetId}?`)) return;
-
-  try {
+    // 3) Upload to server (physical files only)
     const res = await fetch(
-      `${SERVER_BASE}/projects/${projectId}/assets/${assetId}`,
+      `${SERVER_BASE}/projects/${projectId}/upload`,
       {
-        method: "DELETE"
+        method: "POST",
+        body: formData
       }
     );
 
@@ -251,14 +269,133 @@ async function deleteAsset(projectId, assetId) {
       throw new Error("Server responded with " + res.status);
     }
 
-    const data = await res.json();
-    console.log("Asset deleted:", data);
+    const data = await res.json(); // { message, projectId, asset }
+    const assetEntry = data.asset;
+    console.log("3D asset uploaded:", assetEntry);
 
+    // 4) Store asset entry into ATON storage (asset-library)
+    const storageId = getProject3DAssetsStorageId(projectId);
+    console.log(storageId);
+    const patch = {
+      [assetEntry.id]: assetEntry
+    };
+    await ATON.App.addToStorage(storageId, patch);
+
+    // 5) Add a single card to the UI
+    add3DAssetCard(projectId, assetEntry.id, assetEntry);
+
+    // Reset input
+    fileInput.value = "";
+  } catch (err) {
+    console.error(err);
+    alert("Error uploading asset: " + err.message);
+  }
+}
+
+// Load all 3D assets for the current project from ATON storage
+// and render them using Bootstrap layout.
+// You can call this from project-form.html on page load.
+async function refresh3DAssetsForCurrentProject() {
+  const projectId = getIdFromURL();
+  if (!projectId) return;
+
+  try {
+    const storageId = getProject3DAssetsStorageId(projectId);
+    const assets = (await ATON.App.getStorage(storageId)) || {};
+
+    render3DAssetsList(projectId, assets);
+  } catch (err) {
+    console.error("Error loading 3D assets from ATON storage:", err);
+  }
+}
+
+function render3DAssetsList(projectId, assets) {
+  const container = document.getElementById("new-project-upload");
+  if (!container) return;
+
+  // We do NOT clear the upload button column.
+  const assetIds = Object.keys(assets);
+
+  assetIds.forEach((assetId) => {
+    const asset = assets[assetId];
+    add3DAssetCard(projectId, assetId, asset);
+  });
+}
+
+// Append a single Bootstrap card for a 3D asset
+function add3DAssetCard(projectId, assetId, asset) {
+  const container = document.getElementById("new-project-upload");
+  if (!container) return;
+
+  let thumbUrl = "";
+  if (asset.thumb && asset.thumb.url) {
+    thumbUrl = `${SERVER_BASE}${asset.thumb.url}`;
+  } else if (asset.thumb && asset.thumb.filename) {
+    thumbUrl = `${SERVER_BASE}/user-projects/${projectId}/upload/thumb/${asset.thumb.filename}`;
+  }
+
+  const cardHtml = `
+    <div class="col-md-3 col-sm-12 mt-3 d-flex justify-content-center div-thumb-cards" id="div-thumb-card-${assetId}">
+      <div class="card thumb-card">
+        <button class="thumb-close-btn" type="button" aria-label="Remove"
+                onclick="delete3DAsset('${projectId}', '${assetId}')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <img src="${thumbUrl}" class="card-img-top glb-img" alt="thumbnail 3D asset ${assetId}">
+      </div>
+    </div>
+  `;
+
+  container.insertAdjacentHTML("beforeend", cardHtml);
+}
+
+// Delete a 3D asset: server (physical files) + ATON storage + DOM card
+async function delete3DAsset(projectId, assetId) {
+  if (!confirm(`Delete asset ${assetId}?`)) return;
+
+  try {
+    const storageId = getProject3DAssetsStorageId(projectId);
+    const allAssets =
+      (await ATON.App.getStorage(storageId)) || {};
+    const asset = allAssets[assetId];
+
+    if (!asset) {
+      console.warn("Asset not found in storage:", assetId);
+    }
+
+    const glbFilename = asset?.glb?.filename || null;
+    const thumbFilename = asset?.thumb?.filename || null;
+
+    // 1) Ask server to delete physical files
+    const res = await fetch(
+      `${SERVER_BASE}/projects/${projectId}/files`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          glbFilename,
+          thumbFilename
+        })
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Server responded with " + res.status);
+    }
+
+    console.log("Server deleted files for asset", assetId);
+
+    // 2) Remove asset entry from ATON storage
+    const deletePatch = {
+      [assetId]: {}
+    };
+    await ATON.App.deleteFromStorage(storageId, deletePatch);
+
+    // 3) Remove card from DOM
     const cardDiv = document.getElementById(`div-thumb-card-${assetId}`);
     if (cardDiv) {
       cardDiv.remove();
     }
-
   } catch (err) {
     console.error(err);
     alert("Error deleting asset: " + err.message);
@@ -266,47 +403,15 @@ async function deleteAsset(projectId, assetId) {
 }
 
 // ===============================
-// SAVE PROJECT METADATA
+// EXPOSE FUNCTIONS TO HTML
 // ===============================
 
-async function submitData() {
+window.createProjectFromUI = createProjectFromUI;
+window.renderProjectsFromStorage = renderProjectsFromStorage;
 
-  // Get the source JSON file "config.json"
-  const projectId = getIdFromURL();;
-  const res = await fetch(`http://localhost:3001/user-projects/${projectId}/config.json`);
-  const config = await res.json(); 
+window.saveProjectConfigFromForm = saveProjectConfigFromForm;
+window.loadProjectConfigIntoForm = loadProjectConfigIntoForm;
 
-  // Store all the variables
-  let projectTemplate = "";
-  if (getIsTaskTest()) {
-    projectTemplate = "Task 'n Test";
-  } else {
-    projectTemplate = "Free Wander";
-  }
-
-  let projectTitle =  $("#project-name").val();
-  let projectObjectives =  $("#project-objectives").val();
-  let projectAudience =  $("#project-audience").val();
-  let projectActions =  $("#project-actions").val();
-  let projectMeasureDesc =  $("#project-measures").val();
-  let projectGroups =  $("#project-groups").val();
-  let projectRepMeasures =  $("#project-rep-measures").val();
-
-  console.log(projectTemplate, projectTitle, projectObjectives, projectAudience, projectActions, projectMeasureDesc, projectGroups, projectRepMeasures);
-
-  await fetch(`${SERVER_BASE}/projects/${projectId}/metadata`, {
-    method: "PATCH",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      template: projectTemplate,
-      title: projectTitle,
-      objectives_description: projectObjectives,
-      audience_description: projectAudience,
-      actions_description: projectActions,
-      measure_description: projectMeasureDesc,
-      groups_number: projectGroups,
-      repeated_measures: projectRepMeasures,
-      updatedAt: new Date().toISOString()
-    })
-  });
-}
+window.upload3DAssetForCurrentProject = upload3DAssetForCurrentProject;
+window.refresh3DAssetsForCurrentProject = refresh3DAssetsForCurrentProject;
+window.delete3DAsset = delete3DAsset;

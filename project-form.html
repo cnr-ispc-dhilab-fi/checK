@@ -27,7 +27,7 @@
 	<link rel="manifest" href="app.webmanifest">
 
 	<!-- Web-app ID -->
-	<meta name="aton:appid" content="app_template">
+	<meta name="aton:appid" content="checK">
 
 	<meta name="title" content="Experiment Planner">
 	<meta name="description" content="__APPDESC__">
@@ -301,7 +301,7 @@
         window.addEventListener("load", () => {
             const projectId = getIdFromURL();
             if (projectId) {
-                refresh3DAssetsList(projectId);
+                refresh3DAssetsForCurrentProject();
             }
         });
     </script>

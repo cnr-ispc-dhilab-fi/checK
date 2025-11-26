@@ -27,7 +27,7 @@
 	<link rel="manifest" href="app.webmanifest">
 
 	<!-- Web-app ID -->
-	<meta name="aton:appid" content="app_template">
+	<meta name="aton:appid" content="checK">
 
 	<meta name="title" content="checK">
 	<meta name="description" content="__APPDESC__">
@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <div class="row dash-container mt-3" id="user-project-list">
+        <div class="row dash-container mt-3" id="user-projects-list">
 
             <!-- div class="col-md-4 col-sm-12">
                 <div class="card dashboard-card check-card-class">
@@ -124,10 +124,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         window.addEventListener("load", () => {
-            renderProjects();
+            renderProjectsFromStorage();
         });
 
-        async function renderProjects() {
+        /* async function renderProjectsFromStorage() {
 
             try {
 
@@ -188,7 +188,7 @@
                 console.error(err);
                 alert("Error loading 3D assets: " + err.message);
             }
-        }
+        } */
 
 
     </script>
