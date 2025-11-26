@@ -182,19 +182,19 @@
                 <h4>Project Title<span class="text-secondary">*</span></h4>
             </div>
             <div class="col-md-9 col-sm-12 d-flex justify-content-start mb-4">
-                <input type="text" class="form-control" id="nome" placeholder="Give a title to your project">
+                <input type="text" class="form-control" id="project-name" placeholder="Give a title to your project">
             </div>
             <div class="col-md-3 col-sm-12 d-flex justify-content-start">
                 <h4>Objectives</h4>
             </div>
             <div class="col-md-9 col-sm-12 d-flex justify-content-start mb-4">
-                <textarea type="text" class="form-control p-input-form" style="height: 8em;" placeholder="Which is the goal of your study?"></textarea>
+                <textarea type="text" class="form-control p-input-form" id="project-objectives" style="height: 8em;" placeholder="Which is the goal of your study?"></textarea>
             </div>
             <div class="col-md-3 col-sm-12 d-flex justify-content-start">
                 <h4>Audience</h4>
             </div>
             <div class="col-md-9 col-sm-12 d-flex justify-content-start mb-4">
-                <textarea type="text" class="form-control p-input-form" style="height: 8em;" placeholder="Who are the subjects you want to involve in the study?"></textarea>
+                <textarea type="text" class="form-control p-input-form" id="project-audience" style="height: 8em;" placeholder="Who are the subjects you want to involve in the study?"></textarea>
             </div>
         </div>
 
@@ -204,13 +204,13 @@
                 <h4>Actions</h4>
             </div>
             <div class="col-md-9 col-sm-12 d-flex justify-content-start">
-                <textarea type="text" class="form-control p-input-form" style="height: 6em;" placeholder="Which actions will the subjects perform during your study?"></textarea>
+                <textarea type="text" class="form-control p-input-form" id="project-actions" style="height: 6em;" placeholder="Which actions will the subjects perform during your study?"></textarea>
             </div>
             <div class="col-md-3 col-sm-12 d-flex justify-content-start mt-3">
                 <h4>Measure<span class="text-secondary"></span></h4>
             </div>
             <div class="col-md-9 col-sm-12 d-flex justify-content-start mt-3">
-                <textarea type="text" class="form-control p-input-form" style="height: 6em;" placeholder="What do you want to measure during your study?"></textarea>
+                <textarea type="text" class="form-control p-input-form" id="project-measure" style="height: 6em;" placeholder="What do you want to measure during your study?"></textarea>
             </div>
 
             <div class="col-md-6 col-sm-11 d-flex justify-content-start mt-3">
@@ -220,7 +220,7 @@
                 <h4><i class="bi bi-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="You can subdivide subjects in groups to test different variables (e.g. control groups)"></i></h4>
             </div>
             <div class="col-md-5 col-sm-12 d-flex justify-content-start mt-3 justify-content-end">
-                <select class="form-select" aria-label="Default select example" style="height: 2em;  width: 15em; margin-left: 1em;">
+                <select class="form-select" aria-label="Default select example" id="project-groups" style="height: 2em;  width: 15em; margin-left: 1em;">
                     <option selected value="1">Only in one group</option>
                     <option value="2">2 groups</option>
                     <option value="3">3 groups</option>
@@ -243,7 +243,7 @@
                 <h4><i class="bi bi-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="You can test the same person multiple times to study the effect in time"></i></h4>
             </div>
             <div class="col-md-5 col-sm-12 d-flex justify-content-start mt-3 justify-content-end">
-                <select class="form-select" aria-label="Default select example" style="height: 2em; width: 15em; margin-left: 1em;">
+                <select class="form-select" aria-label="Default select example" id="project-repeated-measures" style="height: 2em; width: 15em; margin-left: 1em;">
                     <option selected value="1">Only once</option>
                     <option value="2">2 repeated measures</option>
                     <option value="3">3 repeated measures</option>

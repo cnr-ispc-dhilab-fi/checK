@@ -8,12 +8,6 @@ function getSectionIndexFromURL() {
   return Number.isFinite(n) && n >= 0 ? n : 0;
 }
 
-function getIdFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  const n = Number(params.get("id"));
-  return n;
-}
-
 function setIsTaskTest(value) {
   // value: true/false
   localStorage.setItem(STORAGE_KEY, value ? "1" : "0");

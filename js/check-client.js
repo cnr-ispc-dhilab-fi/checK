@@ -26,6 +26,12 @@ app.setup = () => {
     });
 };
 
+function getIdFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const n = Number(params.get("id"));
+  return n;
+}
+
 // ===============================
 // FUNZIONE CLIENT: CREA PROGETTO
 // ===============================
@@ -78,6 +84,8 @@ async function createProjectFromUI() {
         alert("Error creating project: " + err.message);
     }
 }
+
+window.createProjectFromUI = createProjectFromUI; // Render functions as GLOBAL (to call from HTML)
 
 // ===============================
 // UPLOAD ASSET PER IL PROGETTO CORRENTE
@@ -136,6 +144,8 @@ async function upload3DAssetForCurrentProject() {
   }
 }
 
+window.upload3DAssetForCurrentProject = upload3DAssetForCurrentProject; // Render functions as GLOBAL (to call from HTML)
+
 // ===============================
 // LEGGI & RENDER ASSET LIST
 // ===============================
@@ -169,7 +179,7 @@ function add3DAssetCard(projectId, assetId, asset) {
   }
 
   const card_html = `
-    <div class="col-md-3 col-sm-12 mt-3 d-flex justify-content-center div-thumb-cards" id="div-thumb-card-${assetId}">
+    <div class="col-md-3 col-sm-12 mb-3 d-flex justify-content-center div-thumb-cards" id="div-thumb-card-${assetId}">
       <div class="card thumb-card">
         <button class="thumb-close-btn" type="button" aria-label="Rimuovi"
                 onclick="deleteAsset('${projectId}', '${assetId}')">
@@ -255,6 +265,48 @@ async function deleteAsset(projectId, assetId) {
   }
 }
 
-// Render functions as GLOBAL (to call from HTML)
-window.createProjectFromUI = createProjectFromUI;
-window.upload3DAssetForCurrentProject = upload3DAssetForCurrentProject;
+// ===============================
+// SAVE PROJECT METADATA
+// ===============================
+
+async function submitData() {
+
+  // Get the source JSON file "config.json"
+  const projectId = getIdFromURL();;
+  const res = await fetch(`http://localhost:3001/user-projects/${projectId}/config.json`);
+  const config = await res.json(); 
+
+  // Store all the variables
+  let projectTemplate = "";
+  if (getIsTaskTest()) {
+    projectTemplate = "Task 'n Test";
+  } else {
+    projectTemplate = "Free Wander";
+  }
+
+  let projectTitle =  $("#project-name").val();
+  let projectObjectives =  $("#project-objectives").val();
+  let projectAudience =  $("#project-audience").val();
+  let projectActions =  $("#project-actions").val();
+  let projectMeasureDesc =  $("#project-measures").val();
+  let projectGroups =  $("#project-groups").val();
+  let projectRepMeasures =  $("#project-rep-measures").val();
+
+  console.log(projectTemplate, projectTitle, projectObjectives, projectAudience, projectActions, projectMeasureDesc, projectGroups, projectRepMeasures);
+
+  await fetch(`${SERVER_BASE}/projects/${projectId}/metadata`, {
+    method: "PATCH",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      template: projectTemplate,
+      title: projectTitle,
+      objectives_description: projectObjectives,
+      audience_description: projectAudience,
+      actions_description: projectActions,
+      measure_description: projectMeasureDesc,
+      groups_number: projectGroups,
+      repeated_measures: projectRepMeasures,
+      updatedAt: new Date().toISOString()
+    })
+  });
+}
