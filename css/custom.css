@@ -12,14 +12,14 @@ h1, h2, h3, h4, h5, h6 {
 p, li, a, span, button, input, textarea {
   font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
                Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-               "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+               "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important; 
 }
 
 /* Global fallback for the body */
 body {
-  font-family: "DM Sans", sans-serif;
-  max-height: 100vh;
-  overscroll-behavior: none;
+  font-family: "DM Sans", sans-serif !important;
+  /*height: 100vh;
+  overscroll-behavior: none;*/
 }
 
 @media (max-width: 768px) {
@@ -40,6 +40,7 @@ html {
 .check-card-class {
   margin-top: 1rem;
   cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .check-card-class:hover {
@@ -55,7 +56,7 @@ html {
 
 .template-card{
   background-color: #ffffff;
-  border: 1px solid var(--secondary);
+  border: 1px solid var(--bs-secondary);
   border-radius: 1rem;
   width: 75%
 }
@@ -73,7 +74,7 @@ html {
   padding: 0.75rem;
   padding-bottom: 2rem;
   z-index: 1030;
-  background-color: var(--white);
+  background-color: var(--bs-white);
 }
 
 .hidden-important {
@@ -85,7 +86,7 @@ html {
 }
 
 .new-project-form-section {
-  overflow-y: scroll;
+  overflow-y: auto;
   padding-bottom: 20%;
   display: none;
   -ms-overflow-style: none;  /* IE and Edge */
@@ -153,19 +154,102 @@ html {
 }
 
 #upload-card {
-  border: 1px dashed var(--secondary);
+  border: 1px dashed var(--bs-secondary);
   border-radius: 0.25rem;
   max-width: 512px;
 }
 
-
 .project-summary-accordion-body {
   max-height: 20vh; 
-  overflow-y: scroll;
+  overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
 .project-summary-accordion-body::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
+}
+
+.protocol-container {
+  background-color: var(--bs-secondary-disabled);
+  height: 70vh;
+  border-radius: 0.25rem;
+}
+
+.phase-button {
+  width: 100%;
+}
+
+.phase-detail-container {
+  background-color: var(--bs-white);
+  height: 60vh;
+  border-radius: 0.25rem;
+  border: 1px solid var(--bs-gray-dark);
+}
+
+.thumb-image-3denv-protocol {
+  height: 30vh;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.thumb-3Denv-manag-btn {
+  position: absolute;
+  top: 6px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.thumb-3Denv-manag-btn:hover,
+.thumb-3Denv-manag-btn:focus {
+  background-color: rgba(0, 0, 0, 0.9);
+  outline: none;
+}
+
+/* General overwrite form background color */
+.form-check-input, .form-control, .form-control:focus, .form-select, .form-select:focus {
+  --bs-form-check-bg: white;
+  background-color: white;
+}
+/* ==================================== */
+
+.no-resize {
+  resize: none;
+}
+
+#media-table-wrapper {
+  max-height: 36vh;
+  overflow-y: auto;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  padding-bottom: 1em;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#media-table-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.custom-table-header {
+  background-color: #836242;
+}
+
+.custom-table-header th {
+  color: var(--bs-white) !important;
+}
+
+.btn-phase-active {
+  box-shadow: 0 4px 8px var(--bs-btn-disabled-bg);
 }

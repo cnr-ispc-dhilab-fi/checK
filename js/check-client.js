@@ -413,7 +413,7 @@ function add3DAssetCard(projectId, assetId, asset) {
   }
 
   const cardHtml = `
-    <div class="col-md-3 col-sm-12 mt-3 d-flex justify-content-center div-thumb-cards" id="div-thumb-card-${assetId}">
+    <div class="col-md-3 col-sm-12 mb-3 d-flex justify-content-center div-thumb-cards" id="div-thumb-card-${assetId}">
       <div class="card thumb-card">
         <button class="thumb-close-btn" type="button" aria-label="Remove"
                 onclick="delete3DAsset('${projectId}', '${assetId}')">
