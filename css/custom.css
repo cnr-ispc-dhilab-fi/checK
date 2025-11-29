@@ -110,7 +110,7 @@ html {
   margin-bottom: auto;
 }
 
-.div-thumb-cards {
+.div-thumb-cards, .div-environment-thumb-cards {
   height: 10em;
 }
 
@@ -121,7 +121,7 @@ html {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.thumb-card {
+.thumb-card, .environment-thumb-cards {
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -230,7 +230,7 @@ html {
 }
 
 #media-table-wrapper {
-  max-height: 36vh;
+  max-height: 34vh;
   overflow-y: auto;
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
@@ -252,4 +252,19 @@ html {
 
 .btn-phase-active {
   box-shadow: 0 4px 8px var(--bs-btn-disabled-bg);
+}
+
+.environment-thumb-wrapper {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.environment-thumb-cards:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.environment-card-active {
+  border: 1px solid var(--bs-primary);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
