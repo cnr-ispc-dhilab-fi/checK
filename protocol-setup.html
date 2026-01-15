@@ -123,8 +123,8 @@
 
                     <div class="col-sm-4 my-1 d-flex flex-row justify-content-around">
                         <select class="form-select mr-sm-2 w-100" id="selectMeasure" disabled>
-                            <option selected>Choose a measure</option>
-                            <option value="1">One</option>
+                            <option>Choose a measure</option>
+                            <option selected value="1">One</option>
                             <option value="2">Two</option>
                             <option value="3">Three</option>
                         </select>
@@ -144,7 +144,7 @@
         <!-- COL 1 / List of PHASES -->
         <div class="col-md-2 mt-2 text-center">
             <button type="button" class="btn btn-outline-primary w-100">
-                Training <i class="bi bi-check-circle ml-2"></i>
+                Training <i class="bi bi-check-circle ml-2"></i></i>
             </button>
             <h4 class="text-center my-2">
                 <i class="bi bi-chevron-compact-down"></i>
@@ -208,7 +208,7 @@
         <!-- ***************************** -->
         
         <!-- 2. Upload  environment and set metrics / Free Wander -->
-         <!--
+        <!--
         <div class="col-md-10 mt-2 phase-detail-container py-2 d-flex flex-column"> 
 
             <div class="flex-grow-1 d-flex">
@@ -235,7 +235,7 @@
                     <div class="row align-items-start mt-4">
                         <div class="col-md-6 text-start">
                             <div style="position: relative; display: inline-block; width: 100%">
-                                <img src="data\user-projects\2511261413\upload\thumb\1764175131998_A1764175131746_thumb.png" class="img-fluid thumb-image-3denv-protocol" alt="Responsive image">
+                                <img src="img/sample-spotti.jpg" class="img-fluid thumb-image-3denv-protocol" alt="Responsive image">
                                 
                                 <button class="thumb-3Denv-manag-btn" type="button" aria-label="Edit"
                                     onclick="delete3DAsset('${projectId}', '${assetId}')" style="right: 36px;">
@@ -365,6 +365,7 @@
         <!-- ***************************** -->
 
         <!-- 4. Asset library -->
+        
         <div class="col-md-10 mt-2 phase-detail-container py-2 d-flex flex-column"> 
 
             <div class="flex-grow-1 d-flex">
@@ -381,7 +382,7 @@
                     
                     <div class="row align-items-center mt-4">
                         <div class="col-md-12">
-                            <div id="media-table-wrapper">
+                            <div id="media-table-wrapper" style="display: none !important;">
                                 <table class="table table-secondary table-striped">
                                     <colgroup>
                                         <col style="width: 10%">
@@ -520,6 +521,8 @@
             </div>   
         
         </div>
+        
+        
         
 
     </section>
