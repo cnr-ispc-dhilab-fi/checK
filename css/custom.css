@@ -254,7 +254,7 @@ html {
   box-shadow: 0 4px 8px var(--bs-btn-disabled-bg);
 }
 
-.environment-thumb-wrapper {
+#environment-thumb-wrapper {
   max-height: 60vh;
   overflow-y: auto;
 }

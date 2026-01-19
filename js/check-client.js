@@ -11,6 +11,10 @@ let checkFlare = null;
 // Storage IDs used in ATON.App storage  getIdFromURL
 const PROJECTS_STORAGE_ID = "user-projects/projects";                     // list of projects
 
+// =================================
+// SERVER FUNCTIONS FOR PROJECT FORM
+// =================================
+
 // Helper to build a storage id for the asset library of a given project
 function getProject3DAssetsStorageId(projectId) {
   return `user-projects/${projectId}/upload/upload`;
@@ -55,7 +59,6 @@ function getIdFromURL() {
 
 // Called e.g. from a button on index.html
 async function createProjectFromUI() {
-  console.log("GO");
   // Generate an ID YYMMDDHHMM
   const now = new Date();
   const yy = String(now.getFullYear()).slice(-2);
@@ -77,7 +80,6 @@ async function createProjectFromUI() {
     }
 
     const projectInfo = await res.json(); // {id, label, path, createdAt}
-    console.log("Project created:", projectInfo);
 
     // (se qui vuoi anche fare addToStorage, fallo PRIMA del redirect)
     // await ATON.App.addToStorage(PROJECTS_STORAGE_ID, { [projectInfo.id]: projectInfo });
@@ -85,7 +87,6 @@ async function createProjectFromUI() {
     alert(`New project created: ${projectInfo.id}`);
 
     const url = `project-form.html?id=${encodeURIComponent(projectId)}&n=0`;
-    console.log("Redirecting to:", url);
 
     // Usa assign per essere super esplicito
     window.location.assign(url);
@@ -105,7 +106,6 @@ async function renderProjectsFromStorage() {
       (await ATON.App.getStorage(PROJECTS_STORAGE_ID)) || {};
 
     const container = document.getElementById("user-projects-list");
-    console.log(container);
     if (!container) {
       console.warn("renderProjectsFromStorage: #user-projects-list not found");
       return;
@@ -154,8 +154,6 @@ async function renderProjectCard(projectMeta, container) {
   let projectsUpload = await ATON.App.getStorage(`user-projects/${id}/upload/upload`);
 
   let first3DAsset = projectsUpload[Object.keys(projectsUpload)[0]];
-
-  console.log("DEBUG HERE", first3DAsset);
 
   const cardHtml = `
     <div class="col-md-4 col-sm-12">
@@ -209,10 +207,7 @@ async function saveProjectConfigFromForm(id) {
     patch = "";
   }
 
-  console.log(patch);
-
   try {
-    console.log(getProjectConfigStorageId(projectId));
     await ATON.App.addToStorage(getProjectConfigStorageId(projectId), patch);
     console.log("Project configuration saved (ATON storage).");
   } catch (err) {
@@ -294,12 +289,9 @@ async function renderProjectSummaryFromStorage() {
                         </div>`;
     }
 
-    console.log(assets3SArray[i].thumb.url);
     carouselContainer.insertAdjacentHTML("beforeend", carouselChild);
   }
-  /*Object.values(assets3DStorage).forEach( (uploadedItem) => {
-    console.log(uploadedItem.thumb.url);
-  })*/
+
 }
 
 // ===============================
@@ -480,6 +472,94 @@ async function delete3DAsset(projectId, assetId) {
   }
 }
 
+// ==================================
+// SERVER FUNCTIONS FOR PROTOCOL FORM
+// ==================================
+
+// Add information in the breadcrumb
+
+async function importProjectInfo() {
+
+  projectId = getIdFromURL()
+
+  const configStorage = await ATON.App.getStorage(getProjectConfigStorageId(projectId));
+  
+  $("#breadcrumb-template").html(configStorage["template"]);
+  $("#breadcrumb-title").html(configStorage["title"]);
+
+  let selectGroupEl = document.getElementById("selectGroup");
+  for (let i = 1; i <= parseInt(configStorage["groups"]); i++) {
+    selectGroupEl.insertAdjacentHTML("beforeend", `<option value="${i}">Group ${i}</option>`);
+  }
+
+  let selectMeasureEl = document.getElementById("selectMeasure");
+  for (let i = 1; i <= parseInt(configStorage["repeatedMeasures"]); i++) {
+    selectMeasureEl.insertAdjacentHTML("beforeend", `<option value="${i}">Repeated Measure ${i}</option>`);
+  }
+
+}
+
+// Add environments thumbnails in the modal
+async function renderEnvThumbForModal() {
+
+  let projectId = getIdFromURL();
+
+  let envContainer = document.getElementById("environment-thumb-wrapper");
+
+  try {
+    const uploadedImg =
+      (await ATON.App.getStorage(`user-projects/${projectId}/upload/upload`)) || {};
+    
+    for (const key in uploadedImg) {
+
+      let thumbHtml = `
+        <div class="col-md-3 mb-3 d-flex justify-content-center div-environment-thumb-cards">
+            <div class="card environment-thumb-cards" onclick="highlightEnvironmentCard(event)">       
+                <img src="${SERVER_BASE}${uploadedImg[key]["thumb"]["url"]}" src="${key["id"]}" class="card-img-top glb-img" alt="thumbnail 3D asset">
+            </div>
+        </div>
+      `;
+
+      envContainer.insertAdjacentHTML("beforeend", thumbHtml);
+    }
+
+  } catch (err) {
+    console.error("Error reading projects from ATON storage:", err);
+  }
+}
+
+// Save info 
+
+function getIdFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id");
+}
+
+function getPhaseFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("p");
+}
+
+// LEFT HERE. SAVE IN JSON THAT THERE IS NO TRAINING PHASE //
+async function saveProtocolStep() {
+  projectId = getIdFromURL();
+  phaseNo = getPhaseFromURL();
+  
+  patch = {
+      phase: {
+          [phaseNo]: true
+      }
+  };
+  
+  try {
+      const result = await ATON.App.addToStorage(getProjectProtocolConfigStorageId(projectId), patch);
+      console.log("Write result:", result);
+      console.log("Write successful!");
+  } catch (error) {
+      console.error("Write failed:", error);
+  }
+}
+
 // ===============================
 // EXPOSE FUNCTIONS TO HTML
 // ===============================
@@ -494,3 +574,8 @@ window.loadProjectConfigIntoForm = loadProjectConfigIntoForm;
 window.upload3DAssetForCurrentProject = upload3DAssetForCurrentProject;
 window.refresh3DAssetsForCurrentProject = refresh3DAssetsForCurrentProject;
 window.delete3DAsset = delete3DAsset;
+
+
+window.importProjectInfo = importProjectInfo;
+window.renderEnvThumbForModal = renderEnvThumbForModal;
+window.saveProtocolStep = saveProtocolStep;

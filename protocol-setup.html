@@ -96,8 +96,8 @@
          <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">My projects</li>
-                <li class="breadcrumb-item">Project Template</li>
-                <li class="breadcrumb-item">Project Title</li>
+                <li class="breadcrumb-item" id="breadcrumb-template">Project Template</li>
+                <li class="breadcrumb-item" id="breadcrumb-title">Project Title</li>
                 <li class="breadcrumb-item active" aria-current="page">Protocol set-up</li>
             </ol>
         </nav>
@@ -113,20 +113,14 @@
                     
                     <div class="col-sm-3 my-1 d-flex flex-row justify-content-around">
                         <select class="form-select mr-sm-2 w-100" id="selectGroup">
-                            <option selected>Choose a group</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <!-- Populated via JS in check-client-->
                         </select>
                         
                     </div>
 
                     <div class="col-sm-4 my-1 d-flex flex-row justify-content-around">
                         <select class="form-select mr-sm-2 w-100" id="selectMeasure" disabled>
-                            <option>Choose a measure</option>
-                            <option selected value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <!-- Populated via JS in check-client-->
                         </select>
                         <button type="button" class="btn btn-primary btn-sm mx-2" disabled>Go</button>
                         <div class="align-self-center">
@@ -143,13 +137,13 @@
 
         <!-- COL 1 / List of PHASES -->
         <div class="col-md-2 mt-2 text-center" id="phase-btn-container">
-            <button type="button" class="btn btn-outline-primary w-100">
-                Training <i class="bi bi-check-circle ml-2"></i></i>
+            <button type="button" class="btn btn-outline-primary w-100" onclick="updatePage({'p': 0, 's': 0})">
+                Training <i id="iconTraining" class="bi bi-check-circle ml-2"></i></i>
             </button>
             <h4 class="text-center my-2">
                 <i class="bi bi-chevron-compact-down"></i>
             </h4>
-            <button type="button" class="btn btn-outline-primary w-100">
+            <button type="button" class="btn btn-outline-primary w-100" onclick="updatePage({'p': 1, 's': 1})">
                 Phase 1
             </button>
             <h4 class="text-center my-2">
@@ -188,10 +182,10 @@
 
                             
                             <div class="d-flex justify-content-around mt-3">
-                                <button type="button" class="btn btn-outline-primary mx-1">
+                                <button type="button" class="btn btn-outline-primary mx-1" onclick="setHasTraining(false); updatePage({'p': 1, 's': 1})">
                                     No
                                 </button>
-                                <button type="button" class="btn btn-primary mx-2">
+                                <button type="button" class="btn btn-primary mx-2" onclick="setHasTraining(true); saveProtocolStep();">
                                     Yes
                                 </button>
                             </div>
@@ -217,7 +211,7 @@
                         </div>  
                             
                         <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="Give a name to this phase" aria-label="Phase Name" aria-describedby="basic-addon1">
+                            <input type="text" class="form-control" id="phase-name" placeholder="Give a name to this phase" aria-label="Phase Name" aria-describedby="basic-addon1">
                         </div>
                     </div>
 
@@ -230,18 +224,14 @@
                         </div>
                     </div>
                     
-                    <div class="row align-items-start mt-4">
+                    <div class="row align-items-start mt-4" id="thumb-and-analytics-div">
                         <div class="col-md-6 text-start">
-                            <div style="position: relative; display: inline-block; width: 100%">
+                            <div style="position: relative; display: inline-block; width: 100%" id="thumb-step-env">
                                 <img src="img/sample-spotti.jpg" class="img-fluid thumb-image-3denv-protocol" alt="Responsive image">
                                 
                                 <button class="thumb-3Denv-manag-btn" type="button" aria-label="Edit"
-                                    onclick="delete3DAsset('${projectId}', '${assetId}')" style="right: 36px;">
+                                    onclick="" style="right: 16px;" data-bs-toggle="modal" data-bs-target="#modalEnvChoice">
                                     <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="thumb-3Denv-manag-btn" type="button" aria-label="Remove"
-                                    onclick="delete3DAsset('${projectId}', '${assetId}')" style="right: 6px;">
-                                    <i class="bi bi-x-lg"></i>
                                 </button>
                             </div>
                         </div>
@@ -279,10 +269,10 @@
             </div>
                 
             <div class="d-flex justify-content-around mt-3">
-                <button type="button" class="btn btn-outline-primary mx-1">
+                <button type="button" class="btn btn-outline-primary mx-1" onclick="updatePage({'p': 0, 's': '0'})">
                     Back
                 </button>
-                <button type="button" class="btn btn-primary mx-2">
+                <button type="button" class="btn btn-primary mx-2" onclick="updatePage({'p': 1, 's': '2'})">
                     Next
                 </button>
             </div>    
@@ -341,10 +331,10 @@
             </div>
                 
             <div class="d-flex justify-content-around mt-3">
-                <button type="button" class="btn btn-outline-primary mx-1">
+                <button type="button" class="btn btn-outline-primary mx-1" onclick="updatePage({'p': 1, 's': '1'})">
                     Back
                 </button>
-                <button type="button" class="btn btn-primary mx-2">
+                <button type="button" class="btn btn-primary mx-2" onclick="updatePage({'p': 1, 's': '3'})">
                     Next
                 </button>
             </div>   
@@ -498,10 +488,9 @@
                     </div>
                 </div>
             </div>
-            
                 
             <div class="d-flex justify-content-around mt-3">
-                <button type="button" class="btn btn-outline-primary mx-1">
+                <button type="button" class="btn btn-outline-primary mx-1" onclick="updatePage({'p': 1, 's': (globalCurrentStepIndex -1)})">
                     Back
                 </button>
                 <button type="button" class="btn btn-primary mx-2">
@@ -536,7 +525,8 @@
                 </div>
                 <div class="modal-body container">
 
-                    <div class="row align-items-start environment-thumb-wrapper">
+                    <div class="row align-items-start" id="environment-thumb-wrapper">
+                        <!--
                         <div class="col-md-3 mb-3 d-flex justify-content-center div-environment-thumb-cards">
                             <div class="card environment-thumb-cards" onclick="highlightEnvironmentCard(event)">       
                                 <img src="data\user-projects\2511261413\upload\thumb\1764175208247_A1764175207930_thumb.png" class="card-img-top glb-img" alt="thumbnail 3D asset">
@@ -592,11 +582,12 @@
                                 <img src="data\user-projects\2511261413\upload\thumb\1764175208247_A1764175207930_thumb.png" class="card-img-top glb-img" alt="thumbnail 3D asset">
                             </div>
                         </div>
+                        -->
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="setPhaseEnvironment()">Save</button>
                 </div>
             </div>
         </div>

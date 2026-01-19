@@ -1,6 +1,10 @@
 {
-  "projectId": "2511261318",
-  "createdAt": "2025-11-26T12:18:10.671Z",
-  "description": "",
-  "notes": ""
+    "projectId": "2511261318",
+    "createdAt": "2025-11-26T12:18:10.671Z",
+    "phase": {
+        "0": true,
+        "1": {
+            "name": ""
+        }
+    }
 }
