@@ -180,7 +180,7 @@ html {
   width: 100%;
 }
 
-.phase-detail-container {
+.step-detail-container {
   background-color: var(--bs-white);
   height: 60vh;
   border-radius: 0.25rem;
@@ -267,4 +267,8 @@ html {
 .environment-card-active {
   border: 1px solid var(--bs-primary);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.step-container-hidden {
+  display: none !important;
 }
