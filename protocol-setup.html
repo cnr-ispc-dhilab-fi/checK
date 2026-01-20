@@ -182,10 +182,10 @@
 
                             
                             <div class="d-flex justify-content-around mt-3">
-                                <button type="button" class="btn btn-outline-primary mx-1" onclick="setHasTraining(false); updatePage({'p': 1, 's': 1})">
+                                <button type="button" class="btn btn-outline-primary mx-1" onclick="setHasTraining(false); saveProtocolStep(false); updatePage({'p': 1, 's': 1})">
                                     No
                                 </button>
-                                <button type="button" class="btn btn-primary mx-2" onclick="setHasTraining(true); saveProtocolStep(); updatePage({'p': 1, 's': 1})">
+                                <button type="button" class="btn btn-primary mx-2" onclick="setHasTraining(true); saveProtocolStep(true); updatePage({'p': 1, 's': 1})">
                                     Yes
                                 </button>
                             </div>
@@ -239,25 +239,25 @@
                         <div class="col-md-6">
                             <p>Which analytics should be registered?</p>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                <input class="form-check-input" type="checkbox" value="" id="trackTime">
                                 <label class="form-check-label" for="defaultCheck1">
                                     Time
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                <input class="form-check-input" type="checkbox" value="" id="trackPos">
                                 <label class="form-check-label" for="defaultCheck1">
                                     Position
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                <input class="form-check-input" type="checkbox" value="" id="trackDir">
                                 <label class="form-check-label" for="defaultCheck1">
                                     Direction
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                <input class="form-check-input" type="checkbox" value="" id="trackFov">
                                 <label class="form-check-label" for="defaultCheck1">
                                     Field of view
                                 </label>
@@ -269,14 +269,13 @@
             </div>
                 
             <div class="d-flex justify-content-around mt-3">
-                <button type="button" class="btn btn-outline-primary mx-1" onclick="updatePage({'p': 0, 's': '0'})">
+                <button type="button" class="btn btn-outline-primary mx-1" onclick="saveProtocolStep(); updatePage({'p': 0, 's': '0'})">
                     Back
                 </button>
-                <button type="button" class="btn btn-primary mx-2" onclick="updatePage({'p': 1, 's': '2'})">
+                <button type="button" class="btn btn-primary mx-2" onclick="saveProtocolStep(); updatePage({'p': 1, 's': '2'})">
                     Next
                 </button>
             </div>    
-
         </div>
 
         <!-- ***************************** -->
@@ -293,7 +292,7 @@
                         </div>  
 
                         <div class="col-md-12">
-                            <textarea class="form-control no-resize" id="exampleFormControlTextarea1" placeholder="A brief description of the task for documentation purposes" rows="3"></textarea>                        
+                            <textarea class="form-control no-resize" id="taskDesc" placeholder="A brief description of the task for documentation purposes" rows="3"></textarea>                        
                         </div>
                     </div>
                     
@@ -303,7 +302,7 @@
                         </div>  
                         
                         <div class="col-md-12">
-                            <textarea class="form-control no-resize" id="exampleFormControlTextarea1" placeholder="An instruction that the subject can read during the experiment" rows="3"></textarea>                        
+                            <textarea class="form-control no-resize" id="taskInst" placeholder="An instruction that the subject can read during the experiment" rows="3"></textarea>                        
                         </div>
                     </div>
 
@@ -314,15 +313,15 @@
                         </div>
                         <div class="col-md-8">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
-                                <label class="form-check-label" for="exampleRadios1">
-                                    I will directly observe the subject during the experiment and take note independently
+                                <input class="form-check-input" type="radio" name="checkCommand" id="hasCheckRadio" value="true" checked>
+                                <label class="form-check-label" for="hasCheckRadio">
+                                    Ask my check every time the subject click on the select button and track in record (recommended)
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option2" checked>
-                                <label class="form-check-label" for="exampleRadios1">
-                                    Ask my check every time the subject click on the select button and track in record
+                                <input class="form-check-input" type="radio" name="checkCommand" id="hasCheckRadio" value="false">
+                                <label class="form-check-label" for="hasCheckRadio">
+                                    I will directly observe the subject during the experiment and take note independently
                                 </label>
                             </div>
                         </div>
@@ -331,10 +330,10 @@
             </div>
                 
             <div class="d-flex justify-content-around mt-3">
-                <button type="button" class="btn btn-outline-primary mx-1" onclick="updatePage({'p': 1, 's': '1'})">
+                <button type="button" class="btn btn-outline-primary mx-1" onclick="saveProtocolStep(); updatePage({'p': 1, 's': '1'})">
                     Back
                 </button>
-                <button type="button" class="btn btn-primary mx-2" onclick="updatePage({'p': 1, 's': '3'})">
+                <button type="button" class="btn btn-primary mx-2" onclick="saveProtocolStep(); updatePage({'p': 1, 's': '3'})">
                     Next
                 </button>
             </div>   

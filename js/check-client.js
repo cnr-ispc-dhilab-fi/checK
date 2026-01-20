@@ -515,7 +515,7 @@ async function renderEnvThumbForModal() {
       let thumbHtml = `
         <div class="col-md-3 mb-3 d-flex justify-content-center div-environment-thumb-cards">
             <div class="card environment-thumb-cards" onclick="highlightEnvironmentCard(event)">       
-                <img src="${SERVER_BASE}${uploadedImg[key]["thumb"]["url"]}" src="${key["id"]}" class="card-img-top glb-img" alt="thumbnail 3D asset">
+                <img src="${SERVER_BASE}${uploadedImg[key]["thumb"]["url"]}" data-envid="${key}" class="card-img-top glb-img" id="chosen-env" alt="thumbnail 3D asset">
             </div>
         </div>
       `;
@@ -540,17 +540,86 @@ function getPhaseFromURL() {
   return params.get("p");
 }
 
+function getStepFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("s");
+}
+
+function getTemplateFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("t");
+}
+
 // LEFT HERE. SAVE IN JSON THAT THERE IS NO TRAINING PHASE //
-async function saveProtocolStep() {
+async function saveProtocolStep(bolVal = null) {
   projectId = getIdFromURL();
   phaseNo = getPhaseFromURL();
+  stepNo = getStepFromURL();
+
+  if (getTemplateFromURL() == "0" && stepNo == "2") {
+    stepNo = parseInt(stepNo) + 1;
+  }
+
+  console.log(stepNo);
+
+  let patch = {};
+
+  if (phaseNo == 0) {
+    patch = {
+        phase: {
+            [phaseNo]: bolVal
+        }
+      };
+  } else {
   
-  patch = {
-      phase: {
-          [phaseNo]: true
-      }
-  };
+  switch (parseInt(stepNo)) {
+    case 1:
+      patch = {
+        phase: {
+          [phaseNo]: {
+            name: document.getElementById("phase-name").value,
+            environmentID: document.getElementById("chosen-env").dataset.envid,
+            analytics: {
+              time: document.getElementById("trackTime").checked,
+              pos: document.getElementById("trackPos").checked,
+              dir: document.getElementById("trackDir").checked,
+              fov: document.getElementById("trackFov").checked
+            }
+          }
+        }
+      };
+      break;
+
+      case 2:
+        patch = {
+          phase: {
+            [phaseNo]: {
+              taskDes: document.getElementById("taskDesc").value,
+              taskInst: document.getElementById("taskInst").value,
+              hasCheck: document.querySelector('input[name="checkCommand"]:checked').value === "true" 
+            }
+          }
+        };
+        break;
+      
+      case 3:
+        patch = {
+          phase: {
+            [phaseNo]: {
+              assets: {
+                asset1: {
+                  id: "",
+                  role: "",
+                  content: "" // For text only
+                }
+              }
+            }
+          }
+        }
+  }
   
+  }
+
   try {
       const result = await ATON.App.addToStorage(getProjectProtocolConfigStorageId(projectId), patch);
       console.log("Write result:", result);
