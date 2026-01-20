@@ -1,20 +1,22 @@
 {
     "projectId": "2511261318",
     "createdAt": "2025-11-26T12:18:10.671Z",
-    "phase": {
-        "0": false,
-        "1": {
-            "name": "First phase",
-            "environmentID": "A1764174148525",
-            "analytics": {
-                "time": true,
-                "pos": true,
-                "dir": true,
-                "fov": true
-            },
-            "taskDes": "Description 1",
-            "taskInst": "Instruction 1",
-            "hasCheck": false
+    "1,0": {
+        "phase": {
+            "0": true,
+            "1": {
+                "name": "First phase",
+                "environmentID": "A1764174148525",
+                "analytics": {
+                    "time": false,
+                    "pos": true,
+                    "dir": true,
+                    "fov": false
+                },
+                "taskDes": "Description",
+                "taskInst": "Instruction",
+                "hasCheck": true
+            }
         }
     }
 }

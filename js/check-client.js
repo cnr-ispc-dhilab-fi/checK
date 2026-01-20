@@ -30,6 +30,11 @@ function getProjectProtocolConfigStorageId(projectId) {
   return `user-projects/${projectId}/protocol/protocol-config`;
 }
 
+// Helper to build a storage id for the protocol of a given project
+function getProjectProtocolAssetLibraryStorageId(projectId) {
+  return `user-projects/${projectId}/protocol/asset/asset-library`;
+}
+
 app.setup = () => {
   ATON.realize();
 
@@ -550,12 +555,25 @@ function getTemplateFromURL() {
   return params.get("t");
 }
 
+function getGroupFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("g");
+}
+
+function getMeasureFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("m");
+}
+
 // LEFT HERE. SAVE IN JSON THAT THERE IS NO TRAINING PHASE //
 async function saveProtocolStep(bolVal = null) {
   projectId = getIdFromURL();
   phaseNo = getPhaseFromURL();
   stepNo = getStepFromURL();
+  groupNo = getGroupFromURL();
+  measureNo = getMeasureFromURL();
 
+  let referenceGM = [measureNo, groupNo]
   if (getTemplateFromURL() == "0" && stepNo == "2") {
     stepNo = parseInt(stepNo) + 1;
   }
@@ -566,37 +584,43 @@ async function saveProtocolStep(bolVal = null) {
 
   if (phaseNo == 0) {
     patch = {
-        phase: {
-            [phaseNo]: bolVal
-        }
-      };
+         [referenceGM]: {
+            phase: {
+                [phaseNo]: bolVal
+            }
+          }
+        };
   } else {
   
   switch (parseInt(stepNo)) {
     case 1:
       patch = {
-        phase: {
-          [phaseNo]: {
-            name: document.getElementById("phase-name").value,
-            environmentID: document.getElementById("chosen-env").dataset.envid,
-            analytics: {
-              time: document.getElementById("trackTime").checked,
-              pos: document.getElementById("trackPos").checked,
-              dir: document.getElementById("trackDir").checked,
-              fov: document.getElementById("trackFov").checked
+        [referenceGM]: {
+            phase: {
+              [phaseNo]: {
+                name: document.getElementById("phase-name").value,
+                environmentID: document.getElementById("chosen-env").dataset.envid,
+                analytics: {
+                  time: document.getElementById("trackTime").checked,
+                  pos: document.getElementById("trackPos").checked,
+                  dir: document.getElementById("trackDir").checked,
+                  fov: document.getElementById("trackFov").checked
+                }
+              }
             }
-          }
         }
       };
       break;
 
       case 2:
         patch = {
-          phase: {
-            [phaseNo]: {
-              taskDes: document.getElementById("taskDesc").value,
-              taskInst: document.getElementById("taskInst").value,
-              hasCheck: document.querySelector('input[name="checkCommand"]:checked').value === "true" 
+          [referenceGM]: {
+              phase: {
+              [phaseNo]: {
+                taskDes: document.getElementById("taskDesc").value,
+                taskInst: document.getElementById("taskInst").value,
+                hasCheck: document.querySelector('input[name="checkCommand"]:checked').value === "true" 
+              }
             }
           }
         };
@@ -629,6 +653,319 @@ async function saveProtocolStep(bolVal = null) {
   }
 }
 
+// Functions to upload assets for the protocol step
+
+let currentUploadedAsset = null; // Store current uploaded asset temporarily
+
+async function uploadAudioAssetForCurrentProject() {
+    const fileInput = document.getElementById('AssetUpload');
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const projectId = getIdFromURL();
+    
+    try {
+        const uploadedAsset = await uploadAudioAsset(projectId, file);
+        await addAssetToLibrary(projectId, uploadedAsset, "audio");
+        
+        // Store for potential removal
+        currentUploadedAsset = uploadedAsset;
+        
+        // Show file preview
+        showFilePreview(file.name, 'bi-music-note-beamed');
+        
+        console.log("Audio uploaded:", uploadedAsset);
+    } catch (err) {
+        console.error("Error:", err);
+        alert("Error uploading audio");
+    }
+}
+
+async function uploadImageAssetForCurrentProject() {
+    const fileInput = document.getElementById('AssetUpload');
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const projectId = getIdFromURL();
+    
+    try {
+        const uploadedAsset = await uploadImageAsset(projectId, file);
+        await addAssetToLibrary(projectId, uploadedAsset, "image");
+        
+        currentUploadedAsset = uploadedAsset;
+        showFilePreview(file.name, 'bi-file-image');
+        
+        console.log("Image uploaded:", uploadedAsset);
+    } catch (err) {
+        console.error("Error:", err);
+        alert("Error uploading image");
+    }
+}
+
+async function uploadVideoAssetForCurrentProject() {
+    const fileInput = document.getElementById('AssetUpload');
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const projectId = getIdFromURL();
+    
+    try {
+        const uploadedAsset = await uploadVideoAsset(projectId, file);
+        await addAssetToLibrary(projectId, uploadedAsset, "video");
+        
+        currentUploadedAsset = uploadedAsset;
+        showFilePreview(file.name, 'bi-camera-video');
+        
+        console.log("Video uploaded:", uploadedAsset);
+    } catch (err) {
+        console.error("Error:", err);
+        alert("Error uploading video");
+    }
+}
+
+// Show file preview after upload
+function showFilePreview(fileName, iconClass) {
+    // Hide upload button
+    document.getElementById('uploadAssetBtn').style.display = 'none';
+    
+    // Show preview
+    document.getElementById('fileIcon').className = `bi ${iconClass} mr-2`;
+    document.getElementById('fileName').textContent = fileName;
+    document.getElementById('filePreviewContainer').style.display = 'flex';
+}
+
+// Hide file preview
+function hideFilePreview() {
+    document.getElementById('filePreviewContainer').style.display = 'none';
+    document.getElementById('uploadAssetBtn').style.display = 'inline-flex';
+    currentUploadedAsset = null;
+}
+
+// Remove uploaded asset from server and library
+async function removeUploadedAsset() {
+    if (!currentUploadedAsset) {
+        console.warn("No asset to remove");
+        return;
+    }
+    
+    const projectId = getIdFromURL();
+    
+    try {
+        // Delete from server and library
+        await deleteAsset(projectId, currentUploadedAsset.id);
+        
+        console.log("Asset removed:", currentUploadedAsset.id);
+        
+        // Reset UI
+        hideFilePreview();
+        document.getElementById('AssetUpload').value = '';
+        
+    } catch (err) {
+        console.error("Error removing asset:", err);
+        alert("Error removing asset");
+    }
+}
+
+// Upload Audio Asset
+async function uploadAudioAsset(projectId, audioFile, assetId = null) {
+  const formData = new FormData();
+  formData.append("audio", audioFile);
+  if (assetId) {
+    formData.append("assetId", assetId);
+  }
+
+  try {
+    const response = await fetch(`${SERVER_BASE}/projects/${projectId}/upload`, {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`Upload failed: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log("Audio uploaded:", result);
+    return result.asset;
+  } catch (err) {
+    console.error("Error uploading audio:", err);
+    throw err;
+  }
+}
+
+// Upload Image Asset
+async function uploadImageAsset(projectId, imageFile, assetId = null) {
+  const formData = new FormData();
+  formData.append("image", imageFile);
+  if (assetId) {
+    formData.append("assetId", assetId);
+  }
+
+  try {
+    const response = await fetch(`${SERVER_BASE}/projects/${projectId}/upload`, {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`Upload failed: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log("Image uploaded:", result);
+    return result.asset;
+  } catch (err) {
+    console.error("Error uploading image:", err);
+    throw err;
+  }
+}
+
+// Upload Video Asset
+async function uploadVideoAsset(projectId, videoFile, assetId = null) {
+  const formData = new FormData();
+  formData.append("video", videoFile);
+  if (assetId) {
+    formData.append("assetId", assetId);
+  }
+
+  try {
+    const response = await fetch(`${SERVER_BASE}/projects/${projectId}/upload`, {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`Upload failed: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    console.log("Video uploaded:", result);
+    return result.asset;
+  } catch (err) {
+    console.error("Error uploading video:", err);
+    throw err;
+  }
+}
+
+// Save Text Asset (only JSON, no file upload)
+async function saveTextAsset(projectId, assetId, textContent) {
+  const asset = {
+    id: assetId,
+    type: "text",
+    content: textContent,
+    createdAt: new Date().toISOString()
+  };
+
+  // Salva direttamente in asset-library.json via ATON storage
+  const storageId = getProjectProtocolAssetLibraryStorageId(projectId);
+  const patch = {
+    [assetId]: asset
+  };
+
+  try {
+    await ATON.App.addToStorage(storageId, patch);
+    console.log("Text asset saved:", asset);
+    return asset;
+  } catch (err) {
+    console.error("Error saving text asset:", err);
+    throw err;
+  }
+}
+
+// Add uploaded asset to asset-library.json
+async function addAssetToLibrary(projectId, assetData) {
+  const storageId = getProjectProtocolAssetLibraryStorageId(projectId);
+  
+  // Determina il tipo in base ai campi presenti
+  let type = "unknown";
+  if (assetData.glb) type = "3d";
+  else if (assetData.audio) type = "audio";
+  else if (assetData.image) type = "image";
+  else if (assetData.video) type = "video";
+
+  const asset = {
+    ...assetData,
+    type: type,
+  };
+
+  const patch = {
+    [assetData.id]: asset
+  };
+
+  try {
+    await ATON.App.addToStorage(storageId, patch);
+    console.log("Asset added to library:", asset);
+    return asset;
+  } catch (err) {
+    console.error("Error adding asset to library:", err);
+    throw err;
+  }
+}
+
+// Delete asset from library AND physical files
+// Delete asset from library AND physical files
+async function deleteAsset(projectId, assetId) {
+  const storageId = getProjectProtocolAssetLibraryStorageId(projectId);
+  
+  try {
+    // 1. Read asset library to find the asset
+    const library = await ATON.App.getStorage(storageId) || {};
+    const asset = library[assetId];
+    
+    if (!asset) {
+      throw new Error(`Asset ${assetId} not found in library`);
+    }
+
+    // 2. Delete physical files if they exist
+    const filesToDelete = {};
+    if (asset.glb) filesToDelete.glbFilename = asset.glb.filename;
+    if (asset.thumb) filesToDelete.thumbFilename = asset.thumb.filename;
+    if (asset.audio) filesToDelete.audioFilename = asset.audio.filename;
+    if (asset.image) filesToDelete.imageFilename = asset.image.filename;
+    if (asset.video) filesToDelete.videoFilename = asset.video.filename;
+
+    if (Object.keys(filesToDelete).length > 0) {
+      const response = await fetch(`${SERVER_BASE}/projects/${projectId}/files`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(filesToDelete)
+      });
+
+      if (!response.ok) {
+        console.warn("Warning: Could not delete physical files");
+      }
+    }
+
+    // 3. Remove from asset library using deleteFromStorage
+    const patch = { [assetId]: {} };
+    await ATON.App.deleteFromStorage(storageId, patch);
+    
+    console.log("Asset deleted from library:", assetId);
+    return true;
+  } catch (err) {
+    console.error("Error deleting asset:", err);
+    throw err;
+  }
+}
+
+// Get all assets from library
+async function getAssetLibrary(projectId) {
+  const storageId = getProjectProtocolAssetLibraryStorageId(projectId);
+  try {
+    const library = await ATON.App.getStorage(storageId) || {};
+    return library;
+  } catch (err) {
+    console.error("Error getting asset library:", err);
+    return {};
+  }
+}
+
+// Get assets filtered by type
+async function getAssetsByType(projectId, type) {
+  const library = await getAssetLibrary(projectId);
+  return Object.values(library).filter(asset => asset.type === type);
+}
+
 // ===============================
 // EXPOSE FUNCTIONS TO HTML
 // ===============================
@@ -644,7 +981,16 @@ window.upload3DAssetForCurrentProject = upload3DAssetForCurrentProject;
 window.refresh3DAssetsForCurrentProject = refresh3DAssetsForCurrentProject;
 window.delete3DAsset = delete3DAsset;
 
-
 window.importProjectInfo = importProjectInfo;
 window.renderEnvThumbForModal = renderEnvThumbForModal;
 window.saveProtocolStep = saveProtocolStep;
+
+window.uploadAudioAsset = uploadAudioAsset;
+window.uploadImageAsset = uploadImageAsset;
+window.uploadVideoAsset = uploadVideoAsset;
+window.saveTextAsset = saveTextAsset;
+window.addAssetToLibrary = addAssetToLibrary;
+window.deleteAsset = deleteAsset;
+window.getAssetLibrary = getAssetLibrary;
+window.getAssetsByType = getAssetsByType;
+window.deleteAsset = deleteAsset;

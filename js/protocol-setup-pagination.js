@@ -164,3 +164,450 @@ function setPhaseEnvironment() {
 
     document.getElementById("thumb-step-env").querySelector('img').src = chosenEnv;
 }
+
+// --------
+// Handle the asset upload
+// --------
+
+function adaptAssetUpload() {
+    const selectValue = document.getElementById('assetTypeSelectGroup').value;
+    const fileInput = document.getElementById('AssetUpload');
+    const uploadBtn = document.getElementById('uploadAssetBtn');
+    const textAreaContainer = document.getElementById('textAreaContainer');
+    const textArea = document.getElementById('AssetTextArea');
+    const filePreviewContainer = document.getElementById('filePreviewContainer');
+    
+    // Reset all inputs
+    fileInput.value = '';
+    textArea.value = '';
+    currentUploadedAsset = null;
+    
+    // Hide everything first
+    uploadBtn.style.display = 'none';
+    textAreaContainer.style.display = 'none';
+    filePreviewContainer.style.display = 'none';
+    
+    switch(selectValue) {
+        case 'aud':
+            fileInput.accept = '.mp3,.wav,.ogg,.m4a';
+            fileInput.onchange = uploadAudioAssetForCurrentProject;
+            uploadBtn.style.display = 'inline-flex';
+            console.log('Asset upload set to: Audio');
+            break;
+            
+        case 'img':
+            fileInput.accept = '.jpg,.jpeg,.png,.gif,.webp';
+            fileInput.onchange = uploadImageAssetForCurrentProject;
+            uploadBtn.style.display = 'inline-flex';
+            console.log('Asset upload set to: Image');
+            break;
+            
+        case 'vid':
+            fileInput.accept = '.mp4,.webm,.ogg,.mov';
+            fileInput.onchange = uploadVideoAssetForCurrentProject;
+            uploadBtn.style.display = 'inline-flex';
+            console.log('Asset upload set to: Video');
+            break;
+            
+        case 'txt':
+            textAreaContainer.style.display = 'flex';
+            console.log('Asset input set to: Text (textarea)');
+            break;
+            
+        default:
+            console.log('Please choose an asset type');
+            break;
+    }
+}
+
+let tempAssetsList = []; // Global temporary storage for assets before final save
+
+async function saveUploadedAsset() {  
+    const selectValue = document.getElementById('assetTypeSelectGroup').value;
+    const projectId = getIdFromURL();
+    
+    const customName = document.getElementById('assetCustomName')?.value.trim();
+
+    if (!selectValue || selectValue === "") {
+        alert("Please select an asset format");
+        return;
+    }
+    
+    try {
+        let assetData;
+        const isEditing = !!window.currentEditingAssetId;
+        
+        if (selectValue === 'txt') {
+            const textContent = document.getElementById('AssetTextArea').value;
+            if (!textContent.trim()) {
+                alert("Please enter some text");
+                return;
+            }
+            
+            // Use existing ID if editing, create new if adding
+            const assetId = isEditing ? window.currentEditingAssetId : "text_" + Date.now();
+            assetData = await saveTextAsset(projectId, assetId, textContent, "");
+            
+        } else {
+            if (isEditing) {
+                // If editing, use existing asset (file may not have changed)
+                const library = await getAssetLibrary(projectId);
+                assetData = library[window.currentEditingAssetId];
+                
+                if (!assetData) {
+                    alert("Asset not found");
+                    return;
+                }
+            } else {
+                // If creating new, get the most recent uploaded file
+                const library = await getAssetLibrary(projectId);
+                const assets = Object.values(library);
+                const type = selectValue === 'aud' ? 'audio' : 
+                            selectValue === 'img' ? 'image' : 'video';
+                const recentAssets = assets.filter(a => a.type === type);
+                
+                if (recentAssets.length === 0) {
+                    alert("Please upload a file first");
+                    return;
+                }
+                
+                assetData = recentAssets[recentAssets.length - 1];
+            }
+        }
+        
+        if (customName) {
+            assetData.customName = customName;
+            
+            // Update in library with custom name
+            const storageId = getProjectProtocolAssetLibraryStorageId(projectId);
+            const library = await ATON.App.getStorage(storageId) || {};
+            if (library[assetData.id]) {
+                library[assetData.id].customName = customName;
+                await ATON.App.addToStorage(storageId, { [assetData.id]: library[assetData.id] });
+            }
+        }
+        
+        if (isEditing) {
+            // UPDATE existing row in table
+            updateAssetRowInTable(window.currentEditingAssetId, assetData);
+            
+            // Update in temp list
+            const index = tempAssetsList.findIndex(a => a.id === window.currentEditingAssetId);
+            if (index > -1) {
+                tempAssetsList[index] = assetData;
+            }
+            
+            console.log("Asset updated:", assetData);
+            
+            // Reset editing state
+            window.currentEditingAssetId = null;
+        } else {
+            // ADD new to temporary list and table
+            tempAssetsList.push(assetData);
+            addAssetRowToTable(assetData);
+            
+            console.log("Asset added:", assetData);
+        }
+        
+        // Reset form
+        document.getElementById('assetTypeSelectGroup').value = "";
+        document.getElementById('AssetTextArea').value = "";
+        document.getElementById('AssetUpload').value = "";
+        adaptAssetUpload();
+        
+    } catch (err) {
+        console.error("Error:", err);
+        alert("Error saving asset: " + err.message);
+    }
+}
+
+// Counter for table rows
+let assetRowCounter = 0;
+
+function addAssetRowToTable(assetData) {
+    console.log("Adding row for:", assetData);
+    
+    const tableWrapper = document.getElementById('media-table-wrapper');
+    const tbody = tableWrapper.querySelector('tbody');
+    
+    // Show table wrapper if first item
+    if (assetRowCounter === 0) {
+        tableWrapper.style.display = 'block';
+    }
+    
+    // Increment counter
+    assetRowCounter++;
+    
+    // Determine icon based on asset type
+    let iconClass = '';
+    let fileName = '';
+    let modalContent = '';
+    let format = '';
+    
+    // const customName = document.getElementById('assetCustomName')?.value.trim();
+    // Get custom name from assetData if exists, otherwise fallback to original filename
+    const customName = assetData.customName || '';
+    
+    switch(assetData.type) {
+        case 'text':
+            iconClass = 'bi-file-earmark-text';
+            fileName = customName || (assetData.content ? assetData.content.substring(0, 50) + '...' : 'Text asset');
+            modalContent = assetData.content;
+            format  = 'txt';
+            break;
+        case 'audio':
+            iconClass = 'bi-music-note-beamed';
+            fileName = customName || (assetData.audio ? assetData.audio.originalname : 'Audio file');
+            modalContent = assetData.audio.originalname;
+            format  = 'aud';
+            break;
+        case 'image':
+            iconClass = 'bi-file-earmark-image';
+            fileName = customName || (assetData.image ? assetData.image.originalname : 'Image file');
+            modalContent = assetData.image.originalname;
+            format  = 'img';
+            break;
+        case 'video':
+            iconClass = 'bi-camera-video';
+            fileName = customName || (assetData.video ? assetData.video.originalname : 'Video file');
+            modalContent = assetData.video.originalname;
+            format  = 'vid';
+            break;
+        default:
+            iconClass = 'bi-file-earmark';
+            fileName = customName || 'Unknown file';
+    }
+    
+    // Get selected category from radio buttons
+    const selectedRadio = document.querySelector('input[name="exampleRadios"]:checked');
+    const category = selectedRadio ? selectedRadio.value : 'variable'; // default to 'variable'
+    
+    // Set badge text based on category
+    const badgeText = category === 'instruction' ? 'Instruction' : 'Variable';
+    
+    // Create new row
+    const newRow = document.createElement('tr');
+    newRow.setAttribute('data-asset-id', assetData.id);
+    
+    newRow.innerHTML = `
+        <th scope="row">${assetRowCounter}</th>
+        <td><i class="bi ${iconClass}"></i></td>
+        <td>${fileName}</td>
+        <td><span class="badge rounded-pill bg-primary">${badgeText}</span></td>
+        <td>
+            <div class="btn-group btn-group-sm" role="group">
+                <button 
+                    type="button" 
+                    class="btn" 
+                    data-bs-toggle="modal" data-bs-target="#modalLibraryUpload" 
+                    onclick="editAssetRowinModal('${assetData.id}', '${format}', '${fileName}', '${category}', '${modalContent}')">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <button type="button" class="btn" onclick="deleteAssetRow('${assetData.id}')">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </td>
+    `;
+    
+    // Append to table
+    tbody.appendChild(newRow);
+    
+    resetAssetModal()
+
+    console.log(`Row added: #${assetRowCounter} - ${fileName} - ${badgeText}`);
+}
+
+function resetAssetModal() {
+    // Reset select to default
+    document.getElementById('assetTypeSelectGroup').value = "";
+    
+    // Clear custom name input
+    document.getElementById('assetCustomName').value = "";
+    
+    // Clear file input
+    document.getElementById('AssetUpload').value = "";
+    
+    // Clear textarea
+    document.getElementById('AssetTextArea').value = "";
+    
+    // Reset radio to "variable" (first option)
+    const variableRadio = document.querySelector('input[name="exampleRadios"][value="variable"]');
+    if (variableRadio) {
+        variableRadio.checked = true;
+    }
+    
+    // Hide all upload/preview containers
+    document.getElementById('uploadAssetBtn').style.display = 'none';
+    document.getElementById('filePreviewContainer').style.display = 'none';
+    document.getElementById('textAreaContainer').style.display = 'none';
+    
+    // Reset current uploaded asset
+    currentUploadedAsset = null;
+    
+    // Reset editing state
+    window.currentEditingAssetId = null;
+    
+    console.log("Asset modal reset to default state");
+}
+
+// Edit asset row - fill modal fields with existing data
+function editAssetRowinModal(id, format, filename, role, pathOrContent) {
+    console.log("Editing asset:", id, format, filename, role, pathOrContent);
+    
+    // Store current editing asset ID
+    window.currentEditingAssetId = id;
+    
+    // Set format select
+    const assetTypeSelect = document.getElementById('assetTypeSelectGroup');
+    assetTypeSelect.value = format;
+    adaptAssetUpload(); // Trigger UI adaptation
+    
+    // Set custom filename
+    document.getElementById('assetCustomName').value = filename;
+    
+    // Set role radio button
+    const roleRadio = document.querySelector(`input[name="exampleRadios"][value="${role}"]`);
+    if (roleRadio) {
+        roleRadio.checked = true;
+    }
+    
+    // Handle content based on format
+    if (format === 'txt') {
+        // Fill textarea with text content
+        document.getElementById('AssetTextArea').value = pathOrContent;
+    } else {
+        // Show file preview for audio/image/video
+        let iconClass = '';
+        
+        switch(format) {
+            case 'aud':
+                iconClass = 'bi-music-note-beamed';
+                break;
+            case 'img':
+                iconClass = 'bi-file-image';
+                break;
+            case 'vid':
+                iconClass = 'bi-camera-video';
+                break;
+        }
+        
+        // Extract filename from path
+        const fileNameFromPath = pathOrContent.split('/').pop();
+        
+        showFilePreview(fileNameFromPath, iconClass);
+    }
+    
+    console.log("Modal populated for editing");
+}
+
+// Update existing row in table
+function updateAssetRowInTable(assetId, assetData) {
+    const row = document.querySelector(`tr[data-asset-id="${assetId}"]`);
+    
+    if (!row) {
+        console.error("Row not found for asset:", assetId);
+        return;
+    }
+    
+    // Determine icon and filename
+    let iconClass = '';
+    let fileName = '';
+    
+    // Get custom name from assetData if exists
+    const customName = assetData.customName || '';
+    
+    switch(assetData.type) {
+        case 'text':
+            iconClass = 'bi-file-earmark-text';
+            fileName = customName || (assetData.content ? assetData.content.substring(0, 50) + '...' : 'Text asset');
+            break;
+        case 'audio':
+            iconClass = 'bi-music-note-beamed';
+            fileName = customName || (assetData.audio ? assetData.audio.originalname : 'Audio file');
+            break;
+        case 'image':
+            iconClass = 'bi-file-earmark-image';
+            fileName = customName || (assetData.image ? assetData.image.originalname : 'Image file');
+            break;
+        case 'video':
+            iconClass = 'bi-camera-video';
+            fileName = customName || (assetData.video ? assetData.video.originalname : 'Video file');
+            break;
+        default:
+            iconClass = 'bi-file-earmark';
+            fileName = customName || 'Unknown file';
+    }
+    
+    // Get selected category from radio buttons
+    const selectedRadio = document.querySelector('input[name="exampleRadios"]:checked');
+    const category = selectedRadio ? selectedRadio.value : 'variable';
+    const badgeText = category === 'instruction' ? 'Instruction' : 'Variable';
+    
+    // Update icon
+    const iconCell = row.querySelectorAll('td')[0];
+    iconCell.innerHTML = `<i class="bi ${iconClass}"></i>`;
+    
+    // Update filename
+    const titleCell = row.querySelectorAll('td')[1];
+    titleCell.textContent = fileName;
+    
+    // Update category badge
+    const categoryCell = row.querySelectorAll('td')[2];
+    categoryCell.innerHTML = `<span class="badge rounded-pill bg-primary">${badgeText}</span>`;
+    
+    console.log("Row updated for asset:", assetId);
+}
+
+// Delete asset row
+async function deleteAssetRow(assetId) {
+    if (!confirm("Are you sure you want to delete this asset?")) {
+        return;
+    }
+    
+    const projectId = getIdFromURL();
+    
+    try {
+        // Delete from server and library
+        await deleteAsset(projectId, assetId);
+        
+        // Remove row from table
+        const row = document.querySelector(`tr[data-asset-id="${assetId}"]`);
+        if (row) {
+            row.remove();
+            assetRowCounter--;
+            
+            // Renumber rows
+            renumberTableRows();
+            
+            // Hide table if empty
+            if (assetRowCounter === 0) {
+                document.getElementById('media-table-wrapper').style.display = 'none';
+            }
+        }
+        
+        // Remove from temp list if present
+        const index = tempAssetsList.findIndex(a => a.id === assetId);
+        if (index > -1) {
+            tempAssetsList.splice(index, 1);
+        }
+        
+        console.log("Asset deleted from table:", assetId);
+        
+    } catch (err) {
+        console.error("Error deleting asset:", err);
+        alert("Error deleting asset");
+    }
+}
+
+// Renumber table rows after deletion
+function renumberTableRows() {
+    const tbody = document.querySelector('#media-table-wrapper tbody');
+    const rows = tbody.querySelectorAll('tr');
+    
+    rows.forEach((row, index) => {
+        row.querySelector('th').textContent = index + 1;
+    });
+}
+
+// --------
