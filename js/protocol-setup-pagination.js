@@ -31,6 +31,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
     goToCurrentPage(paramsObject);
 
+    // populateCurrentPage(paramsObject);
+
     createEnvThumbModal();
 });
 
@@ -387,6 +389,7 @@ function addAssetRowToTable(assetData) {
     
     // Create new row
     const newRow = document.createElement('tr');
+    newRow.classList.add('row-asset');
     newRow.setAttribute('data-asset-id', assetData.id);
     
     newRow.innerHTML = `
@@ -611,3 +614,10 @@ function renumberTableRows() {
 }
 
 // --------
+
+function unlockNewPhase() {
+    document.getElementById("btn-add-class").disabled = false;
+    document.getElementById("btn-set-tm").disabled = false;
+    document.getElementById("selectGroup").disabled = false;
+    document.getElementById("selectMeasure").disabled = false;
+}

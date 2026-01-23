@@ -627,19 +627,42 @@ async function saveProtocolStep(bolVal = null) {
         break;
       
       case 3:
+        let uploadedAssetArray = Array.from(document.getElementsByClassName("row-asset"));
+
+
         patch = {
-          phase: {
-            [phaseNo]: {
-              assets: {
-                asset1: {
-                  id: "",
-                  role: "",
-                  content: "" // For text only
-                }
+          [referenceGM]: {
+              phase: {
+              [phaseNo]: {
+                assets: {}
               }
             }
           }
-        }
+        };
+
+        patch[referenceGM].phase[phaseNo].assets = {};
+
+        uploadedAssetArray.forEach(el => {
+
+
+          patch = {
+            [referenceGM]: {
+                phase: {
+                [phaseNo]: {
+                  assets: {
+                    [el.dataset.assetId]: {
+                      customName: el.childNodes[5].innerText,
+                      role: el.childNodes[7].innerText
+                    }
+                  }
+                }
+              }
+            }
+          };
+
+        });
+
+        console.log(patch);
   }
   
   }

@@ -13,9 +13,12 @@
                     "dir": true,
                     "fov": false
                 },
-                "taskDes": "Description",
-                "taskInst": "Instruction",
-                "hasCheck": true
+                "taskDes": "",
+                "taskInst": "",
+                "hasCheck": true,
+                "assets": {
+
+                }
             }
         }
     }

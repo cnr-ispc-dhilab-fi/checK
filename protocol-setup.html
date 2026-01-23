@@ -112,7 +112,7 @@
                     </div>
                     
                     <div class="col-sm-3 my-1 d-flex flex-row justify-content-around">
-                        <select class="form-select mr-sm-2 w-100" id="selectGroup">
+                        <select class="form-select mr-sm-2 w-100" id="selectGroup" disabled>
                             <!-- Populated via JS in check-client-->
                         </select>
                         
@@ -122,7 +122,7 @@
                         <select class="form-select mr-sm-2 w-100" id="selectMeasure" disabled>
                             <!-- Populated via JS in check-client-->
                         </select>
-                        <button type="button" class="btn btn-primary btn-sm mx-2" disabled>Go</button>
+                        <button type="button" class="btn btn-primary btn-sm mx-2" id="btn-set-tm" disabled>Go</button>
                         <div class="align-self-center">
                             <h4 class="text-end mx-2"><i class="bi bi-question-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="You can subdivide subjects in groups to test different variables (e.g. control groups)"></i></h4>
                         </div>
@@ -149,7 +149,7 @@
             <h4 class="text-center my-2">
                 <i class="bi bi-chevron-compact-down"></i>
             </h4>
-            <button type="button" class="btn btn-outline-primary w-100">
+            <button type="button" class="btn btn-outline-primary w-100" id="btn-add-class" disabled>
                 <i class="bi bi-plus-circle"></i>
             </button>
         </div>
@@ -383,112 +383,6 @@
                                     </tbody>
                                 </table>
                             </div>
-                                <!-- 
-                                <table class="table table-secondary table-striped">
-                                    <colgroup>
-                                        <col style="width: 10%">
-                                        <col style="width: 10%">
-                                        <col style="width: 45%">
-                                        <col style="width: 25%">
-                                        <col style="width: 10%">
-                                    </colgroup>
-                                    <thead class="custom-table-header">
-                                        <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Format</th>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">Category</th>
-                                        <th scope="col">Edit</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                        <th scope="row">1</th>
-                                        <td><i class="bi bi-file-earmark-text"></i></td>
-                                        <td>Testo audioguida 1</td>
-                                        <td><span class="badge rounded-pill bg-primary">Trigger</span></td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                                <button type="button" class="btn"><i class="bi bi-pencil-square"></i></button>
-                                                <button type="button" class="btn"><i class="bi bi-x-lg"></i></button>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                        <tr>
-                                        <th scope="row">2</th>
-                                        <td><i class="bi bi-file-earmark-text"></i></td>
-                                        <td>Testo audioguida 2</td>
-                                        <td><span class="badge rounded-pill bg-primary">Trigger</span></td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                                <button type="button" class="btn"><i class="bi bi-pencil-square"></i></button>
-                                                <button type="button" class="btn"><i class="bi bi-x-lg"></i></button>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                        <tr>
-                                        <th scope="row">3</th>
-                                        <td><i class="bi bi-music-note-beamed"></i></td>
-                                        <td>Registrazione audioguida 1</td>
-                                        <td><span class="badge rounded-pill bg-primary">Trigger</span></td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                                <button type="button" class="btn"><i class="bi bi-pencil-square"></i></button>
-                                                <button type="button" class="btn"><i class="bi bi-x-lg"></i></button>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                        <tr>
-                                        <th scope="row">4</th>
-                                        <td><i class="bi bi-music-note-beamed"></i></td>
-                                        <td>Registrazione audioguida 2</td>
-                                        <td><span class="badge rounded-pill bg-primary">Trigger</span></td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                                <button type="button" class="btn"><i class="bi bi-pencil-square"></i></button>
-                                                <button type="button" class="btn"><i class="bi bi-x-lg"></i></button>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                        <tr>
-                                        <th scope="row">5</th>
-                                        <td><i class="bi bi-file-earmark-image"></i></td>
-                                        <td>Immagine dipinto da trovare</td>
-                                        <td><span class="badge rounded-pill bg-primary">Instruction</span></td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                                <button type="button" class="btn"><i class="bi bi-pencil-square"></i></button>
-                                                <button type="button" class="btn"><i class="bi bi-x-lg"></i></button>
-                                            </div>
-                                        </td>                                        
-                                        </tr>
-                                        <tr>
-                                        <th scope="row">6</th>
-                                        <td><i class="bi bi-file-earmark-text"></i></td>
-                                        <td>Testo audioguida 3</td>
-                                        <td><span class="badge rounded-pill bg-primary">Trigger</span></td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                                <button type="button" class="btn"><i class="bi bi-pencil-square"></i></button>
-                                                <button type="button" class="btn"><i class="bi bi-x-lg"></i></button>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                        <tr>
-                                        <th scope="row">7</th>
-                                        <td><i class="bi bi-music-note-beamed"></i></td>
-                                        <td>Registrazione audioguida 3</td>
-                                        <td><span class="badge rounded-pill bg-primary">Trigger</span></td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                                                <button type="button" class="btn"><i class="bi bi-pencil-square"></i></button>
-                                                <button type="button" class="btn"><i class="bi bi-x-lg"></i></button>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                -->
                         </div>  
                     </div>
 
@@ -515,8 +409,8 @@
                 <button type="button" class="btn btn-outline-primary mx-1" onclick="updatePage({'p': 1, 's': (globalCurrentStepIndex -1)})">
                     Back
                 </button>
-                <button type="button" class="btn btn-primary mx-2">
-                    Next
+                <button type="button" class="btn btn-primary mx-2" onclick="saveProtocolStep(); unlockNewPhase()">
+                    Save Phase
                 </button>
             </div>   
         
@@ -531,7 +425,7 @@
  
 
         <div class="sticky-bottom-bar d-flex justify-content-end container" id="form-buttons" style="left: auto">
-        <button type="button" class="btn btn-outline-secondary mx-1" id="form-button-0" onclick="window.location.href=`project-form.html?id=${getIdFromURL()}&n=3`">Save Draft</button>
+        <!-- button type="button" class="btn btn-outline-secondary mx-1" id="form-button-0" onclick="window.location.href=`project-form.html?id=${getIdFromURL()}&n=3`">Save Draft</button -->
         <button type="button" class="btn btn-secondary mx-2" id="form-button-1" onclick="alert('You can set the protocol')" disabled>Final Revision</button>
         </div>
 
