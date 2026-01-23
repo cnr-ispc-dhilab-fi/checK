@@ -570,10 +570,11 @@ async function saveProtocolStep(bolVal = null) {
   projectId = getIdFromURL();
   phaseNo = getPhaseFromURL();
   stepNo = getStepFromURL();
+
   groupNo = getGroupFromURL();
   measureNo = getMeasureFromURL();
-
   let referenceGM = [measureNo, groupNo]
+
   if (getTemplateFromURL() == "0" && stepNo == "2") {
     stepNo = parseInt(stepNo) + 1;
   }
@@ -594,11 +595,12 @@ async function saveProtocolStep(bolVal = null) {
   
   switch (parseInt(stepNo)) {
     case 1:
+      const phaseName = document.getElementById("phase-name").value.trim();
       patch = {
         [referenceGM]: {
             phase: {
               [phaseNo]: {
-                name: document.getElementById("phase-name").value,
+                name: phaseName || `Phase ${phaseNo}`,
                 environmentID: document.getElementById("chosen-env").dataset.envid,
                 analytics: {
                   time: document.getElementById("trackTime").checked,
@@ -676,7 +678,128 @@ async function saveProtocolStep(bolVal = null) {
   }
 }
 
-// Functions to upload assets for the protocol step
+// Import project protocol config
+async function importProjectProtocolConfig() {
+    let projectId = getIdFromURL(); 
+    const storageId = getProjectProtocolConfigStorageId(projectId);
+    
+    try {
+        const protocolConfig = await ATON.App.getStorage(storageId);
+        
+        if (!protocolConfig) {
+            console.warn("No protocol config found for project:", projectId);
+            return null;
+        }
+        
+        return protocolConfig;
+        
+    } catch (err) {
+        console.error("Error importing protocol config:", err);
+        return null;
+    }
+}
+
+async function addPhaseToConfig(phaseNo) {
+    let projectId = getIdFromURL();
+    let groupNo = getGroupFromURL();
+    let measureNo = getMeasureFromURL();
+    let referenceGM = [measureNo, groupNo]
+
+    let patch = {
+         [referenceGM]: {
+            phase: {
+                [phaseNo]: {
+                  name: `Phase ${phaseNo}`
+                }
+            }
+          }
+        };
+
+    try {
+      const result = await ATON.App.addToStorage(getProjectProtocolConfigStorageId(projectId), patch);
+      console.log("Write result:", result);
+      console.log("Write successful!");
+  } catch (error) {
+      console.error("Write failed:", error);
+  }
+}
+
+// NOT WORKING!!!!
+async function deletePhaseFromConfig() {
+    let phaseNo = parseInt(getPhaseFromURL()); // Assicurati che sia numero
+    let projectId = getIdFromURL();
+    let groupNo = getGroupFromURL();
+    let measureNo = getMeasureFromURL();
+    let referenceGM = `${measureNo},${groupNo}`;
+    
+    const storageId = getProjectProtocolConfigStorageId(projectId);
+    
+    try {
+        console.log(`Deleting phase ${phaseNo} (type: ${typeof phaseNo}) from ${referenceGM}`);
+        
+        // Read entire config
+        const fullConfig = await ATON.App.getStorage(storageId);
+        
+        if (!fullConfig || !fullConfig[referenceGM] || !fullConfig[referenceGM].phase) {
+            console.error("Config not found");
+            return false;
+        }
+        
+        const phases = fullConfig[referenceGM].phase;
+        console.log("Phases before delete:", Object.keys(phases));
+        
+        // Check phase exists
+        if (phases[phaseNo] === undefined) {
+            console.error(`Phase ${phaseNo} not found`);
+            return false;
+        }
+        
+        // Build renumbered phases - IMPORTANT: use strict equality
+        const phasesArray = [];
+        Object.keys(phases)
+            .map(k => parseInt(k))
+            .sort((a, b) => a - b)
+            .forEach(key => {
+                console.log(`Comparing key ${key} (${typeof key}) with phaseNo ${phaseNo} (${typeof phaseNo}): ${key !== phaseNo}`);
+                if (key !== phaseNo) { // Both should be numbers now
+                    phasesArray.push(phases[key]);
+                }
+            });
+        
+        console.log("Phases after filtering:", phasesArray.length);
+        
+        const newPhases = {};
+        phasesArray.forEach((phase, idx) => {
+            newPhases[idx] = phase;
+        });
+        
+        console.log("New phases keys:", Object.keys(newPhases));
+        
+        // Delete all old phases
+        for (let key in phases) {
+            await ATON.App.deleteFromStorage(storageId, {
+                [referenceGM]: { phase: { [key]: {} } }
+            });
+        }
+        
+        // Add renumbered phases
+        await ATON.App.addToStorage(storageId, {
+            [referenceGM]: { phase: newPhases }
+        });
+        
+        console.log("Phase deleted and renumbered");
+        return true;
+        
+    } catch (err) {
+        console.error("Error:", err);
+        return false;
+    }
+}
+// NOT WORKING!!!!!!
+
+// ================================================
+//       Upload assets for each protocol step
+// ================================================
 
 let currentUploadedAsset = null; // Store current uploaded asset temporarily
 
@@ -1006,7 +1129,11 @@ window.delete3DAsset = delete3DAsset;
 
 window.importProjectInfo = importProjectInfo;
 window.renderEnvThumbForModal = renderEnvThumbForModal;
+
+window.addPhaseToConfig = addPhaseToConfig;
+window.deletePhaseFromConfig = deletePhaseFromConfig;
 window.saveProtocolStep = saveProtocolStep;
+window.importProjectProtocolConfig = importProjectProtocolConfig;
 
 window.uploadAudioAsset = uploadAudioAsset;
 window.uploadImageAsset = uploadImageAsset;

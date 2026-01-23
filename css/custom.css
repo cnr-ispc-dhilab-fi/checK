@@ -272,3 +272,12 @@ html {
 .step-container-hidden {
   display: none !important;
 }
+
+.invisiblle-scroll {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.invisiblle-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

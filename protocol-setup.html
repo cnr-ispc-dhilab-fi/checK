@@ -133,25 +133,30 @@
             </form>
 
     <!-- Main section -->
-    <section class="row mb-2 px-3">
+    <section class="row mb-2 px-3" style="height: 60vh;">
 
         <!-- COL 1 / List of PHASES -->
-        <div class="col-md-2 mt-2 text-center" id="phase-btn-container">
-            <button type="button" class="btn btn-outline-primary w-100" onclick="updatePage({'p': 0, 's': 0})">
-                Training <i id="iconTraining" class="bi bi-check-circle ml-2"></i></i>
-            </button>
-            <h4 class="text-center my-2">
-                <i class="bi bi-chevron-compact-down"></i>
-            </h4>
-            <button type="button" class="btn btn-outline-primary w-100" onclick="updatePage({'p': 1, 's': 1})">
-                Phase 1
-            </button>
-            <h4 class="text-center my-2">
-                <i class="bi bi-chevron-compact-down"></i>
-            </h4>
-            <button type="button" class="btn btn-outline-primary w-100" id="btn-add-class" disabled>
-                <i class="bi bi-plus-circle"></i>
-            </button>
+        <div class="col-md-2 mt-2 d-flex flex-column h-100">
+
+            <!-- 75% TOP -->
+            <div
+                id="phase-btn-container"
+                class="text-center d-flex flex-column overflow-auto invisiblle-scroll"
+                style="flex: 3 1 0;"
+            >
+                <!-- buttons here -->
+            </div>
+
+            <!-- 25% BOTTOM -->
+            <div
+                class="d-flex justify-content-around text-center"
+                style="flex: 1 1 0;"
+            >
+                <button type="button" class="btn btn-outline-danger w-100 align-self-end" id="btn-delete-phase" onclick="deletePhase()">
+                    Delete Phase
+                </button>
+            </div>
+
         </div>
 
         <!-- ***************************** -->
@@ -269,10 +274,10 @@
             </div>
                 
             <div class="d-flex justify-content-around mt-3">
-                <button type="button" class="btn btn-outline-primary mx-1" onclick="saveProtocolStep(); updatePage({'p': 0, 's': '0'})">
+                <button type="button" class="btn btn-outline-primary mx-1" onclick="saveProtocolStep(); updatePage({'p': getPhaseFromURL() - 1 , 's': '0'})">
                     Back
                 </button>
-                <button type="button" class="btn btn-primary mx-2" onclick="saveProtocolStep(); updatePage({'p': 1, 's': '2'})">
+                <button type="button" class="btn btn-primary mx-2" onclick="saveProtocolStep(); updatePage({'p': getPhaseFromURL(), 's': '2'})">
                     Next
                 </button>
             </div>    
@@ -330,10 +335,10 @@
             </div>
                 
             <div class="d-flex justify-content-around mt-3">
-                <button type="button" class="btn btn-outline-primary mx-1" onclick="saveProtocolStep(); updatePage({'p': 1, 's': '1'})">
+                <button type="button" class="btn btn-outline-primary mx-1" onclick="saveProtocolStep(); updatePage({'p':  getPhaseFromURL(), 's': '1'})">
                     Back
                 </button>
-                <button type="button" class="btn btn-primary mx-2" onclick="saveProtocolStep(); updatePage({'p': 1, 's': '3'})">
+                <button type="button" class="btn btn-primary mx-2" onclick="saveProtocolStep(); updatePage({'p': getPhaseFromURL(), 's': '3'})">
                     Next
                 </button>
             </div>   
@@ -406,7 +411,7 @@
             </div>
                 
             <div class="d-flex justify-content-around mt-3">
-                <button type="button" class="btn btn-outline-primary mx-1" onclick="updatePage({'p': 1, 's': (globalCurrentStepIndex -1)})">
+                <button type="button" class="btn btn-outline-primary mx-1" onclick="updatePage({'p': getPhaseFromURL(), 's': (globalCurrentStepIndex -1)})">
                     Back
                 </button>
                 <button type="button" class="btn btn-primary mx-2" onclick="saveProtocolStep(); unlockNewPhase()">

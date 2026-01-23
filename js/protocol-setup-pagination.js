@@ -38,31 +38,12 @@ window.addEventListener('DOMContentLoaded', function() {
 
 function goToCurrentPage(paramsObject) {
 
+
     // *************************************
-    // 1. HIGHLIGHT THE CORRECT PHASE BUTTON
+    // 1. SET PHASES STACK WITH CURRENT BUTTON
     // *************************************
 
-    // For the phase (controlled by p param)
-    let phaseContainer = document.getElementById("phase-btn-container");
-
-    // Select buttons
-    const buttons = Array.from(phaseContainer.children).filter(child => child.tagName === 'BUTTON'); 
-
-    // Initialise button list
-    buttons.forEach(btn => {
-        btn.classList.remove("btn-phase-active");
-        btn.classList.remove("btn-primary");
-        btn.classList.add("btn-outline-primary");
-    }); 
-
-    // Highlight correct button
-    let currentPhaseIndex = parseInt(paramsObject['p']);
-
-    let currentButton = buttons[currentPhaseIndex];
-
-    currentButton.classList.remove("btn-outline-primary");
-    currentButton.classList.add("btn-phase-active");
-    currentButton.classList.add("btn-primary");
+    uploadContentInPhase(paramsObject);
 
     // ---------------------------------------
 
@@ -73,6 +54,7 @@ function goToCurrentPage(paramsObject) {
     // For the step (controlled by s param)
     let stepContainer = Array.from(document.querySelectorAll(".step-detail-container"));
 
+    let currentPhaseIndex = parseInt(paramsObject['p']);
     let currentStepIndex = parseInt(paramsObject['s']); // To anticipate to handle difference in templates
 
     // You set tasks only in task and test (t = 1)
@@ -98,24 +80,113 @@ function goToCurrentPage(paramsObject) {
 
     // ---------------------------------------
 
+    // ADD HERE TWO SIMPLE STATEMENTS TO UPDATE THE SELECT INPUTS FOR GROUP AND REPEATED MEASURE
+
     globalCurrentStepIndex = currentStepIndex; 
     globalCurrentPhaseIndex = currentPhaseIndex;
 }
 
 
-function updatePage(parObj) {
+// ADD HERE THE CORRECT CONTENT UPLOAD FUNCTION
+
+async function uploadContentInPhase(paramsObject) {
+
+    // Access the phase stack
+    let phaseStack = document.getElementById("phase-btn-container");
+    
+    console.log("======================")
+
+    console.log(paramsObject)
+    const protocolConfig = await importProjectProtocolConfig();
+    
+    const gmKey = `${parseInt(paramsObject['m'])},${parseInt(paramsObject['g'])}`;
+    const noExistingPhases = Object.values(protocolConfig[gmKey]['phase']).length;
+
+    // Iterate over the phase of the protocol set for reference measure and group
+    for (let i = 0; i < Object.values(protocolConfig[gmKey]["phase"]).length; i++) {
+
+        let currentPhase = Object.values(protocolConfig[gmKey]["phase"])[i];
+
+        // Different button for training phase
+        if (i === 0) {
+
+            let divTrainingPhase = `
+            <button type="button" class="btn btn-outline-primary w-100" onclick="updatePage({'p': 0, 's': 0})">
+                Training <i id="iconTraining" class="bi bi-check-circle ml-2"></i></i>
+            </button>
+            <h4 class="text-center my-2">
+                <i class="bi bi-chevron-compact-down"></i>
+            </h4>
+            `;
+
+            phaseStack.insertAdjacentHTML('beforeend', divTrainingPhase);
+
+        // Standard button for other phase
+        } else {
+
+            let divPhase = `
+            <button type="button" class="btn btn-outline-primary w-100" onclick="updatePage({'p': ${i}, 's': 1})">
+                ${currentPhase["name"]}
+            </button>
+            <h4 class="text-center my-2">
+                <i class="bi bi-chevron-compact-down"></i>
+            </h4>
+            `;
+
+            // console.log("Create new button for other phases ",Object.values(protocolConfig[gmKey]["phase"])[i]);
+
+            phaseStack.insertAdjacentHTML('beforeend', divPhase);
+        }
+    }
+
+    phaseStack.insertAdjacentHTML('beforeend',`
+    <button type="button" class="btn btn-outline-primary w-100" id="btn-add-class" onclick="addNewPhase(${noExistingPhases})" disabled>
+                <i class="bi bi-plus-circle"></i>
+    </button>`);
+
+    // Select button of current phase
+    const buttons = Array.from(phaseStack.children).filter(child => child.tagName === 'BUTTON'); 
+    let currentPhaseIndex = parseInt(paramsObject['p']);
+    let currentButton = buttons[currentPhaseIndex];
+
+    // Highlight correct button
+    currentButton.classList.remove("btn-outline-primary");
+    currentButton.classList.add("btn-phase-active");
+    currentButton.classList.add("btn-primary");
+
+}
+
+// function updateStep...
+
+
+function addNewPhase(noExistingPhases) {
+    addPhaseToConfig(noExistingPhases);
+    updatePage({'p': parseInt(noExistingPhases), 's': 1});
+}
+
+function deletePhase() {
 
     queryParams = new URLSearchParams(window.location.search);
     const paramsObject = Object.fromEntries(queryParams);
+
+    deletePhaseFromConfig();
+
+    updatePage({'p': parseInt(paramsObject['p'])-1, 's': 1})
+
+}
+
+function updatePage(parObj) {
+
+    queryParams = new URLSearchParams(window.location.search);
+    paramsObject = Object.fromEntries(queryParams);
 
     for (const key in parObj) {
         paramsObject[key] = parObj[key];
     }
 
-    const newQueryParams = new URLSearchParams(paramsObject).toString();
-
+    const newQueryParams = new URLSearchParams(paramsObject);
     // Reload the page with the new parameters
-    window.location.search = newQueryParams;
+    window.location.search = newQueryParams.toString();
 }
 
 // == MINOR ANCILLARY FUNCTIONS ==
