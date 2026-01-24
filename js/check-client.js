@@ -533,6 +533,18 @@ async function renderEnvThumbForModal() {
   }
 }
 
+// Get all assets from library
+async function get3DEnvLibrary(projectId) {
+  const storageId = getProject3DAssetsStorageId(projectId);
+  try {
+    const library = await ATON.App.getStorage(storageId) || {};
+    return library;
+  } catch (err) {
+    console.error("Error getting asset library:", err);
+    return {};
+  }
+}
+
 // Save info 
 
 function getIdFromURL() {
@@ -578,8 +590,6 @@ async function saveProtocolStep(bolVal = null) {
   if (getTemplateFromURL() == "0" && stepNo == "2") {
     stepNo = parseInt(stepNo) + 1;
   }
-
-  console.log(stepNo);
 
   let patch = {};
 

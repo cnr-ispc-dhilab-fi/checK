@@ -5,21 +5,37 @@
         "phase": {
             "0": true,
             "1": {
-                "name": "First phase",
+                "name": "Phase 1",
+                "environmentID": "A1764174196505",
+                "analytics": {
+                    "time": true,
+                    "pos": false,
+                    "dir": true,
+                    "fov": false
+                },
+                "taskDes": "",
+                "taskInst": "",
+                "hasCheck": false,
+                "assets": {
+                    "1769267451331": {
+                        "customName": "planner",
+                        "role": "instruction"
+                    }
+                }
+            },
+            "2": {
+                "name": "Phase 2",
                 "environmentID": "A1764174148525",
                 "analytics": {
                     "time": false,
-                    "pos": true,
-                    "dir": true,
+                    "pos": false,
+                    "dir": false,
                     "fov": false
                 },
                 "taskDes": "",
                 "taskInst": "",
                 "hasCheck": true,
                 "assets": {}
-            },
-            "2": {
-                "name": "Phase 4"
             }
         }
     }

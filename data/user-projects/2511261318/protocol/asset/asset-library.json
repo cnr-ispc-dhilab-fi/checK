@@ -31,5 +31,37 @@
         },
         "type": "image",
         "customName": "fdf"
+    },
+    "1769267451331": {
+        "id": "1769267451331",
+        "createdAt": "2026-01-24T15:10:51.331Z",
+        "image": {
+            "filename": "1769267451286_dashboard-experimentplanner.png",
+            "originalname": "dashboard-experimentplanner.png",
+            "url": "/user-projects/2511261318/protocol/asset/1769267451286_dashboard-experimentplanner.png"
+        },
+        "type": "image",
+        "customName": "Fede"
+    },
+    "1769278867915": {
+        "id": "1769278867915",
+        "createdAt": "2026-01-24T18:21:07.915Z",
+        "image": {
+            "filename": "1769278867879_aDSC_4651.jpg",
+            "originalname": "aDSC_4651.jpg",
+            "url": "/user-projects/2511261318/protocol/asset/1769278867879_aDSC_4651.jpg"
+        },
+        "type": "image"
+    },
+    "1769279189422": {
+        "id": "1769279189422",
+        "createdAt": "2026-01-24T18:26:29.422Z",
+        "image": {
+            "filename": "1769279189379_dashboard-experimentplanner.png",
+            "originalname": "dashboard-experimentplanner.png",
+            "url": "/user-projects/2511261318/protocol/asset/1769279189379_dashboard-experimentplanner.png"
+        },
+        "type": "image",
+        "customName": "Experiment"
     }
 }

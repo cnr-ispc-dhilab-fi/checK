@@ -1,5 +1,6 @@
 // --- Global variables ---
 const STORAGE_TRAINING_KEY = "hasTraining";
+const STORAGE_MINIMUMPROTOCOL_KEY = "hasMinimumProtocol";
 
 let globalCurrentStepIndex;
 let globalCurrentPhaseIndex;
@@ -28,7 +29,13 @@ window.addEventListener('DOMContentLoaded', function() {
     // - g = Group
     // - m = Repeated Measure
     // - t = Template: 0 = Free Wander, 1 = Task and Test
+    // - v = A minimum protocol is validated? If true, no disabled select
 
+    if (paramsObject["v"]) {
+        document.getElementById("selectGroup").disabled = false;
+        document.getElementById("selectMeasure").disabled = false;
+        document.getElementById("btn-set-tm").disabled = false;
+    }
     goToCurrentPage(paramsObject);
 
     // populateCurrentPage(paramsObject);
@@ -57,6 +64,9 @@ function goToCurrentPage(paramsObject) {
     let currentPhaseIndex = parseInt(paramsObject['p']);
     let currentStepIndex = parseInt(paramsObject['s']); // To anticipate to handle difference in templates
 
+    let currentMeasureIndex = parseInt(paramsObject['m']);
+    let currentGroupIndex = parseInt(paramsObject['g']);
+
     // You set tasks only in task and test (t = 1)
     if (parseInt(paramsObject['t']) == 0) {
         stepContainer[2].remove();
@@ -75,8 +85,11 @@ function goToCurrentPage(paramsObject) {
     if (currentStepIndex === 1) {
         document.getElementById("thumb-and-analytics-div").style.display = "none";
     }
+
     // Display the correct step container
     stepContainer[currentStepIndex].classList.remove("step-container-hidden");
+
+    updateContentInStep(currentPhaseIndex, currentStepIndex, currentMeasureIndex, currentGroupIndex);
 
     // ---------------------------------------
 
@@ -156,7 +169,88 @@ async function uploadContentInPhase(paramsObject) {
 
 }
 
-// function updateStep...
+async function updateContentInStep(currentPhaseIndex, currentStepIndex, currentMeasureIndex, currentGroupIndex) {
+
+    const currentProtocol = await importProjectProtocolConfig();
+
+    let referenceGM = [currentMeasureIndex, currentGroupIndex]
+    let currentPhaseProtocol = currentProtocol[referenceGM]["phase"][currentPhaseIndex]; 
+
+    console.log("=== DEBUG ===");
+
+    switch(currentStepIndex) {
+
+        case 1:
+            // Update name
+            document.getElementById("phase-name").value = currentPhaseProtocol["name"] || "";
+
+            // Add image, if available
+            if (currentPhaseProtocol["environmentID"] !== "") {
+                document.getElementById("env-upload-btn").style.display = "none";      
+
+                let envToDisplay = document.getElementById("thumb-step-env").querySelector('img');
+
+                envToDisplay.dataset.envid = currentPhaseProtocol["environmentID"]
+
+                const envCatalog = await get3DEnvLibrary(getIdFromURL());
+                let envPath = `${SERVER_BASE}${envCatalog[currentPhaseProtocol["environmentID"]]["thumb"]["url"]}`;
+                envToDisplay.src = envPath;
+
+                document.getElementById("thumb-and-analytics-div").style.display = "flex";
+
+            
+                // Update the modal
+                resetHighlightInEnv();
+
+                // Check all elements with class glb-img
+                const thumbModal = Array.from(document.querySelectorAll('.glb-img')).find(img => 
+                    img.getAttribute('data-envid') === currentPhaseProtocol["environmentID"]
+                );
+                // const thumbModal = document.querySelector(`.glb-img[data-envid="${currentPhaseProtocol["environmentID"]}"]`);
+                console.log(thumbModal);
+                thumbModal.classList.add("environment-card-active");
+                thumbModal.setAttribute("id", "chosen-env");
+                
+
+                // Flag analytics
+                document.getElementById("trackTime").checked = currentPhaseProtocol["analytics"]["time"],
+                document.getElementById("trackPos").checked = currentPhaseProtocol["analytics"]["pos"],
+                document.getElementById("trackDir").checked = currentPhaseProtocol["analytics"]["dir"],
+                document.getElementById("trackFov").checked = currentPhaseProtocol["analytics"]["fov"]
+            }
+
+            // console.log(currentPhaseProtocol["name"], currentPhaseProtocol["environmentID"], currentPhaseProtocol["analytics"]);
+            break;
+
+        case 2:
+
+            document.getElementById("taskDesc").value = currentPhaseProtocol["taskDes"] || "";
+            document.getElementById("taskInst").value = currentPhaseProtocol["taskInst"] || "";
+
+            if (currentPhaseProtocol["hasCheck"] === false) {
+                const falseRadio = document.querySelector('input[name="checkCommand"][value="false"]');
+                if (falseRadio) {
+                    falseRadio.checked = true;
+                }
+            } else {
+                const trueRadio = document.querySelector('input[name="checkCommand"][value="true"]');
+                if (trueRadio) {
+                    trueRadio.checked = true;
+                }
+            }
+
+            console.log(currentPhaseProtocol["taskDes"], currentPhaseProtocol["taskInst"], currentPhaseProtocol["hasCheck"]);
+            break;
+
+        case 3:
+
+            if (currentPhaseProtocol["assets"] !== undefined && currentPhaseProtocol["assets"] !== "") {
+                await loadAssetsToTable(currentPhaseProtocol["assets"], projectId);
+            }
+            console.log(currentPhaseProtocol["assets"]);
+            break;
+    }
+}
 
 
 function addNewPhase(noExistingPhases) {
@@ -165,12 +259,10 @@ function addNewPhase(noExistingPhases) {
 }
 
 function deletePhase() {
-    queryParams = new URLSearchParams(window.location.search);
-    const paramsObject = Object.fromEntries(queryParams);
-    
+
     deletePhaseFromConfig().then(success => {
         if (success) {
-            updatePage({'p': parseInt(paramsObject['p']) - 1, 's': 1});
+            updatePage({'p': parseInt(globalCurrentPhaseIndex) - 1, 's': 1});
         } else {
             console.error("Failed to delete phase");
         }
@@ -214,18 +306,28 @@ async function createEnvThumbModal() {
     renderEnvThumbForModal();
 }
 
-function highlightEnvironmentCard(e) {
+
+function resetHighlightInEnv() {
 
     let envCards = document.getElementsByClassName("environment-thumb-cards");
 
-    [...envCards].forEach(el => {
+    [...envCards].forEach(div => {
+        let el = div.childNodes[1];
+        console.log(el);
         el.classList.remove("environment-card-active");
         el.removeAttribute("id");
+        console.log("Removed attribute from ", el)
     });
+
+}
+
+function highlightEnvironmentCard(e) {
+
+    resetHighlightInEnv();
 
     e.currentTarget.classList.add("environment-card-active");
 
-    e.currentTarget.setAttribute("id", "chosen-environent");
+    e.currentTarget.childNodes[1].setAttribute("id", "chosen-env");
 
 }
 
@@ -233,7 +335,7 @@ function setPhaseEnvironment() {
 
     document.getElementById("thumb-and-analytics-div").style.display = "flex";
 
-    let chosenEnv = document.getElementById("chosen-environent").querySelector('img').src;
+    let chosenEnv = document.getElementById("chosen-env").src;
 
     document.getElementById("thumb-step-env").querySelector('img').src = chosenEnv;
 }
@@ -492,6 +594,97 @@ function addAssetRowToTable(assetData) {
     console.log(`Row added: #${assetRowCounter} - ${fileName} - ${badgeText}`);
 }
 
+// Separate function
+async function loadAssetsToTable(assets, projectId) {
+    const tbody = document.querySelector('#media-table-wrapper tbody');
+    const tableWrapper = document.getElementById('media-table-wrapper');
+
+    if (!tbody || !tableWrapper) {
+        console.error("Table elements not found");
+        return;
+    }
+
+    // Clear existing rows
+    tbody.innerHTML = '';
+    assetRowCounter = 0;
+    
+    // Get asset library
+    const library = await getAssetLibrary(projectId);
+    
+    // Load each asset
+    for (let assetId in assets) {
+        const assetInfo = assets[assetId];
+        const fullAssetData = library[assetId];
+        
+        if (!fullAssetData) {
+            console.warn(`Asset ${assetId} not found in library`);
+            continue;
+        }
+        
+        assetRowCounter++;
+        
+        console.log(fullAssetData.type);
+        // Determine icon
+        let iconClass = '';
+        switch(fullAssetData.type) {
+            case 'text':
+                iconClass = 'bi-file-earmark-text';
+                break;
+            case 'audio':
+                iconClass = 'bi-music-note-beamed';
+                break;
+            case 'image':
+                iconClass = 'bi-file-earmark-image';
+                break;
+            case 'video':
+                iconClass = 'bi-camera-video';
+                break;
+            default:
+                iconClass = 'bi-file-earmark';
+        }
+        
+        const displayName = assetInfo.customName || fullAssetData.id;
+        const role = assetInfo.role || 'variable';
+        const badgeText = role === 'instruction' ? 'Instruction' : 'Variable';
+        
+        // Create row
+        const newRow = document.createElement('tr');
+        newRow.setAttribute('data-asset-id', assetId);
+        
+        newRow.innerHTML = `
+            <th scope="row">${assetRowCounter}</th>
+            <td><i class="bi ${iconClass}"></i></td>
+            <td>${displayName}</td>
+            <td><span class="badge rounded-pill bg-primary">${badgeText}</span></td>
+            <td>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button 
+                        type="button" 
+                        class="btn" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalLibraryUpload"
+                        onclick="editAssetRowinModal('${assetId}', '${fullAssetData.type}', '${displayName}', '${role}', '${fullAssetData[fullAssetData.type].filename}')"
+                    >
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button type="button" class="btn" onclick="deleteAssetRow('${assetId}')">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        tbody.appendChild(newRow);
+    }
+    
+    // Show table if assets exist
+    if (assetRowCounter > 0) {
+        tableWrapper.style.display = 'block';
+    }
+    
+    console.log(`Loaded ${assetRowCounter} assets to table`);
+}
+
 function resetAssetModal() {
     // Reset select to default
     document.getElementById('assetTypeSelectGroup').value = "";
@@ -531,6 +724,23 @@ function editAssetRowinModal(id, format, filename, role, pathOrContent) {
     
     // Store current editing asset ID
     window.currentEditingAssetId = id;
+    
+    switch(format) {
+        case "image":
+            format = "img";
+            break;
+        case "video":
+            format = "vid";
+            break;
+        case "audio":
+            format = "aud";
+            break;
+        case "text":
+            format = "txt";
+            break;
+        default:
+            break
+    }
     
     // Set format select
     const assetTypeSelect = document.getElementById('assetTypeSelectGroup');
@@ -686,9 +896,20 @@ function renumberTableRows() {
 
 // --------
 
-function unlockNewPhase() {
+
+async function unlockNewPhase() {
     document.getElementById("btn-add-class").disabled = false;
     document.getElementById("btn-set-tm").disabled = false;
-    document.getElementById("selectGroup").disabled = false;
-    document.getElementById("selectMeasure").disabled = false;
+
+    let selectGroup = document.getElementById("selectGroup");
+    selectGroup.disabled = false;
+    let selectMeasure = document.getElementById("selectMeasure");
+    selectMeasure.disabled = false;
+
+    const protocol = await importProjectProtocolConfig();
+
+    if ((selectGroup.childElementCount * selectMeasure.childElementCount) === (Object.keys(protocol).length - 2)) {
+        document.getElementById("form-final-save").disabled = false;
+    }
+
 }

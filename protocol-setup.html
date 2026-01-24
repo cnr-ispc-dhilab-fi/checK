@@ -68,7 +68,7 @@
         <div class="container">
             <!-- LEFT SIDE -->
             <div class="d-flex align-items-center me-auto">
-            <a class="navbar-brand d-flex align-items-center" href="#">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
                 <img src="img/logo-white.png" alt="checK" height="40" class="me-2">
             </a>
             </div>
@@ -138,7 +138,7 @@
         <!-- COL 1 / List of PHASES -->
         <div class="col-md-2 mt-2 d-flex flex-column h-100">
 
-            <!-- 75% TOP -->
+            <!-- 85% TOP -->
             <div
                 id="phase-btn-container"
                 class="text-center d-flex flex-column overflow-auto invisiblle-scroll"
@@ -147,7 +147,7 @@
                 <!-- buttons here -->
             </div>
 
-            <!-- 25% BOTTOM -->
+            <!-- 15% BOTTOM -->
             <div
                 class="d-flex justify-content-around text-center"
                 style="flex: 1 1 0;"
@@ -225,7 +225,7 @@
                             <h5>Choose a scene for this phase of your experiment</h5>
                         </div>
                         <div class="col-md-6 text-end">
-                            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalEnvChoice"> Choose from your library<i class="bi bi-upload mx-2"></i> </button>
+                            <button class="btn btn-secondary" id="env-upload-btn" data-bs-toggle="modal" data-bs-target="#modalEnvChoice"> Choose from your library<i class="bi bi-upload mx-2"></i> </button>
                         </div>
                     </div>
                     
@@ -431,7 +431,7 @@
 
         <div class="sticky-bottom-bar d-flex justify-content-end container" id="form-buttons" style="left: auto">
         <!-- button type="button" class="btn btn-outline-secondary mx-1" id="form-button-0" onclick="window.location.href=`project-form.html?id=${getIdFromURL()}&n=3`">Save Draft</button -->
-        <button type="button" class="btn btn-secondary mx-2" id="form-button-1" onclick="alert('You can set the protocol')" disabled>Final Revision</button>
+        <button type="button" class="btn btn-secondary mx-2" id="form-final-save" onclick="alert('You can set the protocol')" disabled>Final Revision</button>
         </div>
 
     </div>
