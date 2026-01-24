@@ -709,6 +709,33 @@ async function importProjectProtocolConfig() {
     }
 }
 
+async function initialiseProtcolPhases(g, m) {
+    let projectId = getIdFromURL();
+    let referenceGM = [g, m]
+
+    const sourceProtocol = await ATON.App.getStorage(getProjectProtocolConfigStorageId(projectId));
+  
+    if (!sourceProtocol[referenceGM]) {
+      let patch = {
+         [referenceGM]: {
+            phase: {
+                0: true,
+                1: {
+                  name: `Phase 1`
+                }
+            }
+          }
+        };
+
+      try {
+        const result = await ATON.App.addToStorage(getProjectProtocolConfigStorageId(projectId), patch);
+        console.log("Write result:", result);
+        console.log("Write successful!");
+      } catch (error) {
+          console.error("Write failed:", error);
+      }
+    }
+}
 async function addPhaseToConfig(phaseNo) {
     let projectId = getIdFromURL();
     let groupNo = getGroupFromURL();

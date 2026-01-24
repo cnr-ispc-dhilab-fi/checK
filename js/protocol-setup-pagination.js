@@ -89,7 +89,9 @@ function goToCurrentPage(paramsObject) {
     // Display the correct step container
     stepContainer[currentStepIndex].classList.remove("step-container-hidden");
 
-    updateContentInStep(currentPhaseIndex, currentStepIndex, currentMeasureIndex, currentGroupIndex);
+    if(currentPhaseIndex !== 0) {
+        updateContentInStep(currentPhaseIndex, currentStepIndex, currentMeasureIndex, currentGroupIndex);
+    }
 
     // ---------------------------------------
 
@@ -97,8 +99,15 @@ function goToCurrentPage(paramsObject) {
 
     globalCurrentStepIndex = currentStepIndex; 
     globalCurrentPhaseIndex = currentPhaseIndex;
+
 }
 
+window.addEventListener('load', function() {   
+    console.log("Window loaded!");
+    console.log(document.getElementById("selectGroup"));
+    document.getElementById("selectGroup").value = String(getGroupFromURL());
+    document.getElementById("selectMeasure").value = String(getMeasureFromURL());
+});
 
 // ADD HERE THE CORRECT CONTENT UPLOAD FUNCTION
 
@@ -112,8 +121,12 @@ async function uploadContentInPhase(paramsObject) {
     console.log(paramsObject)
     const protocolConfig = await importProjectProtocolConfig();
     
-    const gmKey = `${parseInt(paramsObject['m'])},${parseInt(paramsObject['g'])}`;
-    const noExistingPhases = Object.values(protocolConfig[gmKey]['phase']).length;
+    const gmKey = `${parseInt(paramsObject['g'])},${parseInt(paramsObject['m'])}`;
+
+    console.log((protocolConfig[gmKey]));
+    
+    const noExistingPhases = Object.values(protocolConfig[gmKey]['phase']).length; // Total number of existing phases
+
 
     // Iterate over the phase of the protocol set for reference measure and group
     for (let i = 0; i < Object.values(protocolConfig[gmKey]["phase"]).length; i++) {
@@ -175,8 +188,6 @@ async function updateContentInStep(currentPhaseIndex, currentStepIndex, currentM
 
     let referenceGM = [currentMeasureIndex, currentGroupIndex]
     let currentPhaseProtocol = currentProtocol[referenceGM]["phase"][currentPhaseIndex]; 
-
-    console.log("=== DEBUG ===");
 
     switch(currentStepIndex) {
 
@@ -896,7 +907,6 @@ function renumberTableRows() {
 
 // --------
 
-
 async function unlockNewPhase() {
     document.getElementById("btn-add-class").disabled = false;
     document.getElementById("btn-set-tm").disabled = false;
@@ -911,5 +921,20 @@ async function unlockNewPhase() {
     if ((selectGroup.childElementCount * selectMeasure.childElementCount) === (Object.keys(protocol).length - 2)) {
         document.getElementById("form-final-save").disabled = false;
     }
+
+}
+
+async function changeRefMeasureGroup() {
+
+    if (!confirm("Before changing reference group and repeated measure, are you sure to have saved the current step?")) {
+        return;
+    }
+
+    let selectGroupVal = document.getElementById("selectGroup").value;
+    let selectMeasureVal = document.getElementById("selectMeasure").value;
+
+    await initialiseProtcolPhases(selectGroupVal, selectMeasureVal);
+
+    updatePage({'g': selectGroupVal, 'm': selectMeasureVal, 'p': 0, 's': 0})
 
 }
