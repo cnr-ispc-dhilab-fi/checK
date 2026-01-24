@@ -724,9 +724,8 @@ async function addPhaseToConfig(phaseNo) {
   }
 }
 
-// NOT WORKING!!!!
 async function deletePhaseFromConfig() {
-    let phaseNo = parseInt(getPhaseFromURL()); // Assicurati che sia numero
+    let phaseNo = parseInt(getPhaseFromURL());
     let projectId = getIdFromURL();
     let groupNo = getGroupFromURL();
     let measureNo = getMeasureFromURL();
@@ -735,9 +734,9 @@ async function deletePhaseFromConfig() {
     const storageId = getProjectProtocolConfigStorageId(projectId);
     
     try {
-        console.log(`Deleting phase ${phaseNo} (type: ${typeof phaseNo}) from ${referenceGM}`);
+        console.log(`Deleting phase ${phaseNo} from ${referenceGM}`);
         
-        // Read entire config
+        // 1. Read entire config
         const fullConfig = await ATON.App.getStorage(storageId);
         
         if (!fullConfig || !fullConfig[referenceGM] || !fullConfig[referenceGM].phase) {
@@ -746,48 +745,59 @@ async function deletePhaseFromConfig() {
         }
         
         const phases = fullConfig[referenceGM].phase;
-        console.log("Phases before delete:", Object.keys(phases));
+        const sortedKeys = Object.keys(phases)
+            .map(k => parseInt(k))
+            .sort((a, b) => a - b);
         
-        // Check phase exists
+        console.log("Current phases:", sortedKeys);
+        console.log("Deleting phase:", phaseNo);
+        
+        // 2. Check phase exists
         if (phases[phaseNo] === undefined) {
             console.error(`Phase ${phaseNo} not found`);
             return false;
         }
         
-        // Build renumbered phases - IMPORTANT: use strict equality
-        const phasesArray = [];
-        Object.keys(phases)
-            .map(k => parseInt(k))
-            .sort((a, b) => a - b)
-            .forEach(key => {
-                console.log(`Comparing key ${key} (${typeof key}) with phaseNo ${phaseNo} (${typeof phaseNo}): ${key !== phaseNo}`);
-                if (key !== phaseNo) { // Both should be numbers now
-                    phasesArray.push(phases[key]);
-                }
-            });
-        
-        console.log("Phases after filtering:", phasesArray.length);
-        
-        const newPhases = {};
-        phasesArray.forEach((phase, idx) => {
-            newPhases[idx] = phase;
+        // 3. First, delete the target phase
+        await ATON.App.deleteFromStorage(storageId, {
+            [referenceGM]: { 
+                phase: { 
+                    [phaseNo]: {} 
+                } 
+            }
         });
         
-        console.log("New phases keys:", Object.keys(newPhases));
+        console.log(`Phase ${phaseNo} deleted`);
         
-        // Delete all old phases
-        for (let key in phases) {
-            await ATON.App.deleteFromStorage(storageId, {
-                [referenceGM]: { phase: { [key]: {} } }
-            });
+        // 4. Renumber ONLY phases that come AFTER the deleted one
+        for (let key of sortedKeys) {
+            if (key > phaseNo) {
+                const phaseData = phases[key];
+                const newKey = key - 1;
+                
+                console.log(`Renumbering: phase ${key} → phase ${newKey}`);
+                
+                // Delete old key
+                await ATON.App.deleteFromStorage(storageId, {
+                    [referenceGM]: { 
+                        phase: { 
+                            [key]: {} 
+                        } 
+                    }
+                });
+                
+                // Add with new key
+                await ATON.App.addToStorage(storageId, {
+                    [referenceGM]: { 
+                        phase: { 
+                            [newKey]: phaseData 
+                        } 
+                    }
+                });
+            }
         }
         
-        // Add renumbered phases
-        await ATON.App.addToStorage(storageId, {
-            [referenceGM]: { phase: newPhases }
-        });
-        
-        console.log("Phase deleted and renumbered");
+        console.log("Phase deletion and renumbering complete");
         return true;
         
     } catch (err) {
@@ -795,7 +805,6 @@ async function deletePhaseFromConfig() {
         return false;
     }
 }
-// NOT WORKING!!!!!!
 
 // ================================================
 //       Upload assets for each protocol step

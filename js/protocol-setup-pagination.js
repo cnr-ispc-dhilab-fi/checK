@@ -165,14 +165,16 @@ function addNewPhase(noExistingPhases) {
 }
 
 function deletePhase() {
-
     queryParams = new URLSearchParams(window.location.search);
     const paramsObject = Object.fromEntries(queryParams);
-
-    deletePhaseFromConfig();
-
-    updatePage({'p': parseInt(paramsObject['p'])-1, 's': 1})
-
+    
+    deletePhaseFromConfig().then(success => {
+        if (success) {
+            updatePage({'p': parseInt(paramsObject['p']) - 1, 's': 1});
+        } else {
+            console.error("Failed to delete phase");
+        }
+    });
 }
 
 function updatePage(parObj) {
@@ -232,8 +234,6 @@ function setPhaseEnvironment() {
     document.getElementById("thumb-and-analytics-div").style.display = "flex";
 
     let chosenEnv = document.getElementById("chosen-environent").querySelector('img').src;
-
-    // https://localhost:8083/a/checK/data/user-projects/2511261413/upload/thumb/1764175208247_A1764175207930_thumb.png
 
     document.getElementById("thumb-step-env").querySelector('img').src = chosenEnv;
 }
