@@ -91,7 +91,7 @@ async function createProjectFromUI() {
 
     alert(`New project created: ${projectInfo.id}`);
 
-    const url = `project-form.html?id=${encodeURIComponent(projectId)}&n=0`;
+    const url = `project-setup/project-form.html?id=${encodeURIComponent(projectId)}&n=0`;
 
     // Usa assign per essere super esplicito
     window.location.assign(url);

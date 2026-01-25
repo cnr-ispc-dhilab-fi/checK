@@ -9,17 +9,21 @@
                 "environmentID": "A1764174196505",
                 "analytics": {
                     "time": true,
-                    "pos": false,
+                    "pos": true,
                     "dir": true,
                     "fov": false
                 },
                 "taskDes": "",
                 "taskInst": "",
-                "hasCheck": false,
+                "hasCheck": true,
                 "assets": {
                     "1769267451331": {
                         "customName": "planner",
                         "role": "instruction"
+                    },
+                    "1769367497830": {
+                        "customName": "Venus",
+                        "role": "Variable"
                     }
                 }
             },

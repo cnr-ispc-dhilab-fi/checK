@@ -63,5 +63,16 @@
         },
         "type": "image",
         "customName": "Experiment"
+    },
+    "1769367497830": {
+        "id": "1769367497830",
+        "createdAt": "2026-01-25T18:58:17.830Z",
+        "image": {
+            "filename": "1769367497809_DSC00654.JPG",
+            "originalname": "DSC00654.JPG",
+            "url": "/user-projects/2511261318/protocol/asset/1769367497809_DSC00654.JPG"
+        },
+        "type": "image",
+        "customName": "Venus"
     }
 }
