@@ -1,0 +1,35 @@
+{
+    "1769437173076": {
+        "id": "1769437173076",
+        "createdAt": "2026-01-26T14:19:33.076Z",
+        "image": {
+            "filename": "1769437173058_aDSC_4651.jpg",
+            "originalname": "aDSC_4651.jpg",
+            "url": "/user-projects/2601261518/protocol/asset/1769437173058_aDSC_4651.jpg"
+        },
+        "type": "image",
+        "customName": "Fede"
+    },
+    "1769437209158": {
+        "id": "1769437209158",
+        "createdAt": "2026-01-26T14:20:09.158Z",
+        "image": {
+            "filename": "1769437209118_DSC00654.JPG",
+            "originalname": "DSC00654.JPG",
+            "url": "/user-projects/2601261518/protocol/asset/1769437209118_DSC00654.JPG"
+        },
+        "type": "image",
+        "customName": "Venus"
+    },
+    "1769437364062": {
+        "id": "1769437364062",
+        "createdAt": "2026-01-26T14:22:44.062Z",
+        "image": {
+            "filename": "1769437364046_DSC00654.JPG",
+            "originalname": "DSC00654.JPG",
+            "url": "/user-projects/2601261518/protocol/asset/1769437364046_DSC00654.JPG"
+        },
+        "type": "image",
+        "customName": "Venus"
+    }
+}

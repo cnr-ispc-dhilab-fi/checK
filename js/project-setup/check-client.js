@@ -594,7 +594,7 @@ async function saveProtocolStep(bolVal = null) {
 
   groupNo = getGroupFromURL();
   measureNo = getMeasureFromURL();
-  let referenceGM = [measureNo, groupNo]
+  let referenceGM = [groupNo, measureNo]
 
   if (getTemplateFromURL() == "0" && stepNo == "2") {
     stepNo = parseInt(stepNo) + 1;
