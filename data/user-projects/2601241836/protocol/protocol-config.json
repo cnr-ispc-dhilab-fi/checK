@@ -7,7 +7,7 @@
             "name": ""
         }
     },
-    "1,0": {
+    "1,1": {
         "phase": {
             "0": true,
             "1": {
@@ -18,7 +18,11 @@
                     "pos": false,
                     "dir": false,
                     "fov": false
-                }
+                },
+                "taskDes": "",
+                "taskInst": "",
+                "hasCheck": true,
+                "assets": {}
             }
         }
     }
