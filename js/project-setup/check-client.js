@@ -1,4 +1,4 @@
-// ATON/wapps/check/js/check-client.js
+// ATON/wapps/check/js/project-setpu/check-client.js
 
 const SERVER_BASE = "http://localhost:3001";
 

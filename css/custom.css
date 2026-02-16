@@ -281,3 +281,11 @@ html {
 .invisiblle-scroll::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
+#arrow-back-container {
+  font-size: 1.3em; color: var(--bs-primary);
+}
+
+#arrow-back-container:hover {
+  cursor: pointer;
+}
