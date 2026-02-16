@@ -1,0 +1,28 @@
+{
+    "projectId": "2602161716",
+    "createdAt": "2026-02-16T16:16:31.164Z",
+    "1,1": {
+        "phase": {
+            "0": true,
+            "1": {
+                "name": "Esplorazione mirata",
+                "environmentID": "A1771258683901",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "L'utente cerca un dipinto all'interno della sala",
+                "taskInst": "Ti ricordi di aver visto questo dipinto",
+                "hasCheck": true,
+                "assets": {
+                    "1771258790853": {
+                        "customName": "Ritratto di Aldrovandi",
+                        "role": "Instruction"
+                    }
+                }
+            }
+        }
+    }
+}
