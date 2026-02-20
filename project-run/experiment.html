@@ -37,7 +37,7 @@
 
     <title>checK - Onboard Subject</title>
 
-    <!-- 2. Bootstrap Build with SCSS-->
+    <!-- 2. Bootstrap Build with SCSS -->
     <link rel="stylesheet" href="../css/bootstrap-check.css">
 
     <!-- 3. Aton stylesheet -->
@@ -91,4 +91,133 @@
         </div>
     </nav>
 
+    <div class="container my-5">
+
+        <div class="row gx-10 my-5">
+
+            <!-- LEFT PANEL : METRICS & 3D ENVIRONMENT -->
+
+            <div class="col-md-6 justify-content-center">
+
+                <div>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Project</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">SubjectID</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Group</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Measure</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                </div>
+
+
+                <div id="ContainerView3D"> <!-- hosting the 3D environment --> </div>
+
+                <div class="row mt-3">  
+
+                    <h5>Information on the current phase</h5>
+                    <div class="col-sm-5">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Duration</td>
+                                    <td>...</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Repetitions</td>
+                                    <td>...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-sm-7">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Wrong selections:</td>
+                                    <td>...</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Correct selections:</td>
+                                    <td>...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div> 
+
+            </div>
+
+            <!-- RIGHT PANEL : INSTRUCTION & MULTIMEDIA -->
+
+            <div class="col-md-6 justify-content-center" style="background-color: var(--bs-secondary-disabled); border-radius: 0.25rem; padding-bottom: 1em;">
+
+                <h6 class="mt-2">Phase 1/4</h6>
+                <h4>Phase Name</h4>
+                <!-- Nav Tabs -->
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="task-tab" data-bs-toggle="tab" data-bs-target="#task-panel" type="button" role="tab" aria-controls="task-panel" aria-selected="true">
+                        Task and Instruction
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="multimedia-tab" data-bs-toggle="tab" data-bs-target="#multimedia-panel" type="button" role="tab" aria-controls="multimedia-panel" aria-selected="false">
+                        Multimedia
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="expTabContent">
+                    <!-- Task and Instruction Panel -->
+                    <div class="tab-pane fade show active" id="task-panel" role="tabpanel" aria-labelledby="task-tab">
+                        <div class="p-4">
+                        <h5>Task Description</h5>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        
+                        <h5 class="mt-4">Task Instruction</h5>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
+                        
+                        <!-- Asset Item 
+                        <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-file-image me-3"></i>
+                                <span>Immagine 1</span>
+                                </div>
+                                <button class="btn btn-sm btn-link">
+                                <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div> -->
+                    </div>
+                    
+                    <!-- Multimedia Panel -->
+                    <div class="tab-pane fade" id="multimedia-panel" role="tabpanel" aria-labelledby="multimedia-tab">
+                        <div class="p-4">
+                            <h5>Multimedia Content</h5>
+                            <p>Your multimedia assets will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const needs3D = true;
+    </script>
 </body>

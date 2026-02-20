@@ -289,3 +289,13 @@ html {
 #arrow-back-container:hover {
   cursor: pointer;
 }
+
+#idView3D {
+  width: 100% !important;
+  height: auto !important;
+}
+
+#expTabContent {
+  background-color: var(--bs-white);
+  height: 60vh;
+}

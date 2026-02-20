@@ -4,6 +4,7 @@
 // Shared with project setup client
 
 const SERVER_BASE = "http://localhost:3001";
+let currentPhase = 0;
 
 // ATON App setup
 let app = ATON.App.realize(false);
@@ -47,9 +48,22 @@ app.setup = () => {
     checkFlare = ATON.getFlare("check");
     console.log("Check flare:", checkFlare);
 
-    // Remove 3D view if not needed
+    // A boolean variable added at the end of the body determines whether we need a 3D view or not
     const view3D = document.getElementById("idView3D");
-    if (view3D) view3D.remove();
+
+    if(!needs3D) {
+
+      // Remove 3D view if not needed
+      if (view3D) view3D.remove();
+
+    } else {
+
+      const container = document.getElementById("ContainerView3D");
+      container.appendChild(view3D);
+
+      ATON.UI.addBasicEvents();
+      uploadScene(currentPhase)
+    }
   });
 };
 
@@ -90,7 +104,25 @@ function getMeasureFromURL() {
   return params.get("m");
 }
 
+function getGroupAndMeasureFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  let subjStringAsArray = params.get("run").split("-");
+  let group = subjStringAsArray[1].split("G")[1];
+  let measure = subjStringAsArray[2].split("M")[1];
+
+  let gmString = `${group},${measure}`;
+
+  return gmString;
+}
+
+function getSubjectIDFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  let subjStringAsArray = params.get("run").split("-");
+
+  return subjStringAsArray[0];
+}
 // --------------------------------
+
 
 async function updateGMSelect() { 
 
@@ -107,5 +139,28 @@ async function updateGMSelect() {
   for (let i = 1; i <= parseInt(configStorage["repeatedMeasures"]); i++) {
     selectMeasureEl.insertAdjacentHTML("beforeend", `<option value="${i}">Repeated Measure ${i}</option>`);
   }
+}
+
+
+async function uploadScene(phase) {
+
+  const protocolConfigStorage = await ATON.App.getStorage(getProjectProtocolConfigStorageId(getIdFromURL()));
+  const protocolAssetLibraryStorage = await ATON.App.getStorage(getProject3DAssetsStorageId(getIdFromURL()));
+
+  let phasesObj = protocolConfigStorage[getGroupAndMeasureFromURL()]["phase"];
+
+  let phaseKey = phase;
+  if (phase === 0) {
+    phaseKey += 1
+  }
+
+  let envID = phasesObj[phaseKey]["environmentID"];
+  let envPath = protocolAssetLibraryStorage[envID]["glb"]["url"];
+
+  ATON.createSceneNode(`phase${phaseKey}`).load(`${SERVER_BASE}${envPath}`).attachToRoot();
+  // !! -- Hard Coded: To replace with info from protocol config --
+  ATON.Nav.setHomePOV( new ATON.POV().setPosition(-0.467, 1.743, 6.391).setTarget(0.5, 2.234, 0.647) ); 
+  // --------------------------------------------------------------
+
 }
 
