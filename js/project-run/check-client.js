@@ -4,7 +4,6 @@
 // Shared with project setup client
 
 const SERVER_BASE = "http://localhost:3001";
-let currentPhase = 0;
 
 // ATON App setup
 let app = ATON.App.realize(false);
@@ -140,27 +139,3 @@ async function updateGMSelect() {
     selectMeasureEl.insertAdjacentHTML("beforeend", `<option value="${i}">Repeated Measure ${i}</option>`);
   }
 }
-
-
-async function uploadScene(phase) {
-
-  const protocolConfigStorage = await ATON.App.getStorage(getProjectProtocolConfigStorageId(getIdFromURL()));
-  const protocolAssetLibraryStorage = await ATON.App.getStorage(getProject3DAssetsStorageId(getIdFromURL()));
-
-  let phasesObj = protocolConfigStorage[getGroupAndMeasureFromURL()]["phase"];
-
-  let phaseKey = phase;
-  if (phase === 0) {
-    phaseKey += 1
-  }
-
-  let envID = phasesObj[phaseKey]["environmentID"];
-  let envPath = protocolAssetLibraryStorage[envID]["glb"]["url"];
-
-  ATON.createSceneNode(`phase${phaseKey}`).load(`${SERVER_BASE}${envPath}`).attachToRoot();
-  // !! -- Hard Coded: To replace with info from protocol config --
-  ATON.Nav.setHomePOV( new ATON.POV().setPosition(-0.467, 1.743, 6.391).setTarget(0.5, 2.234, 0.647) ); 
-  // --------------------------------------------------------------
-
-}
-
