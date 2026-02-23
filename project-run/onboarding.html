@@ -241,6 +241,24 @@
             
         }
 
+        // To update the select forms with the group and measure info - in onboarding.html
+
+        async function updateGMSelect() { 
+
+            projectId = getIdFromURL()
+
+            const configStorage = await ATON.App.getStorage(getProjectConfigStorageId(projectId));
+
+            let selectGroupEl = document.getElementById("selectGroup");
+            for (let i = 1; i <= parseInt(configStorage["groups"]); i++) {
+                selectGroupEl.insertAdjacentHTML("beforeend", `<option value="${i}">Group ${i}</option>`);
+            }
+
+            let selectMeasureEl = document.getElementById("selectMeasure");
+            for (let i = 1; i <= parseInt(configStorage["repeatedMeasures"]); i++) {
+                selectMeasureEl.insertAdjacentHTML("beforeend", `<option value="${i}">Repeated Measure ${i}</option>`);
+            }
+        }
 
     </script>
 </body>

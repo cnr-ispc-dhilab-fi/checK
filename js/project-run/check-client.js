@@ -41,7 +41,7 @@ function getProjectProtocolAssetLibraryStorageId(projectId) {
 app.setup = () => {
   ATON.realize();
 
-  ATON.on("AllFlaresReady", () => {
+  ATON.on("AllFlaresReady", async () => {
     console.log("All flares ready");
 
     checkFlare = ATON.getFlare("check");
@@ -61,7 +61,10 @@ app.setup = () => {
       container.appendChild(view3D);
 
       ATON.UI.addBasicEvents();
-      uploadScene(currentPhase)
+      
+      await uploadScene(currentPhase);
+
+      await updateLeftPanel(currentPhase);
     }
   });
 };
@@ -121,21 +124,3 @@ function getSubjectIDFromURL() {
   return subjStringAsArray[0];
 }
 // --------------------------------
-
-
-async function updateGMSelect() { 
-
-  projectId = getIdFromURL()
-
-  const configStorage = await ATON.App.getStorage(getProjectConfigStorageId(projectId));
-
-  let selectGroupEl = document.getElementById("selectGroup");
-  for (let i = 1; i <= parseInt(configStorage["groups"]); i++) {
-    selectGroupEl.insertAdjacentHTML("beforeend", `<option value="${i}">Group ${i}</option>`);
-  }
-
-  let selectMeasureEl = document.getElementById("selectMeasure");
-  for (let i = 1; i <= parseInt(configStorage["repeatedMeasures"]); i++) {
-    selectMeasureEl.insertAdjacentHTML("beforeend", `<option value="${i}">Repeated Measure ${i}</option>`);
-  }
-}

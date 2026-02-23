@@ -640,7 +640,7 @@ async function saveProtocolStep(bolVal = null) {
               [phaseNo]: {
                 taskDes: document.getElementById("taskDesc").value,
                 taskInst: document.getElementById("taskInst").value,
-                hasCheck: document.querySelector('input[name="checkCommand"]:checked').value === "true" 
+                hasCheck: document.querySelector('input[name="checkCommand"]:checked').value === "true"
               }
             }
           }
@@ -655,6 +655,7 @@ async function saveProtocolStep(bolVal = null) {
           [referenceGM]: {
               phase: {
               [phaseNo]: {
+                playsAnimation: document.getElementById("animationCheck").checked,
                 assets: {}
               }
             }

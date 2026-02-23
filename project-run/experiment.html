@@ -134,11 +134,11 @@
                             <tbody>
                                 <tr>
                                     <th scope="row">Duration</td>
-                                    <td id="phase-timer">...</td>
+                                    <td id="phase-timer">00:00</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Repetitions</td>
-                                    <td id="phase-iter">...</td>
+                                    <td id="phase-iter">0</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -149,17 +149,22 @@
                             <tbody>
                                 <tr>
                                     <th scope="row">Wrong selections:</td>
-                                    <td id="phase-wrong">...</td>
+                                    <td id="phase-wrong">0</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Correct selections:</td>
-                                    <td id="phase-correct">...</td>
+                                    <td id="phase-correct">0</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div> 
 
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mt-1">
+                    <button class="btn btn btn-outline-secondary">Discard Session</button>
+                    <button class="btn btn-secondary">Save Session</button>
+                </div>
             </div>
 
             <!-- RIGHT PANEL : INSTRUCTION & MULTIMEDIA -->
@@ -188,21 +193,27 @@
                     <div class="tab-pane fade show active" id="task-panel" role="tabpanel" aria-labelledby="task-tab">
                         <div class="p-4" id="task-content">
                             <h5>Task Description</h5>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            <p id="task-description-p">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                             
                             <h5 class="mt-4">Task Instruction</h5>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
+                            <p id="task-instruction-p">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
                             
-                            <!-- Asset Item 
-                            <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-file-image me-3"></i>
-                                    <span>Immagine 1</span>
-                                    </div>
-                                    <button class="btn btn-sm btn-link">
-                                    <i class="bi bi-eye"></i>
-                                    </button>
-                                </div>-->
+                            <!-- Asset Item -->
+                            <div id="instruction-media-table-wrapper">
+                                <table class="table table-secondary table-striped">
+                                    <colgroup>
+                                        <col style="width: 10%">
+                                        <col style="width: 10%">
+                                        <col style="width: 45%">
+                                        <col style="width: 25%">
+                                        <col style="width: 10%">
+                                    </colgroup>
+
+                                    <tbody>
+                                        <!-- Rows will be added dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div> 
                         <div class="p-4" id="training-content" style="display: none;">
                             <p>The subject is currently following a training on the use of VR controllers</p>
@@ -213,9 +224,31 @@
                     <div class="tab-pane fade" id="multimedia-panel" role="tabpanel" aria-labelledby="multimedia-tab">
                         <div class="p-4">
                             <h5>Multimedia Content</h5>
-                            <p>Your multimedia assets will appear here...</p>
+                            <p>No multimedia available</p>
+
+                            <!-- Asset Item -->
+                            <div id="variable-media-table-wrapper">
+                                <table class="table table-secondary table-striped">
+                                    <colgroup>
+                                        <col style="width: 10%">
+                                        <col style="width: 10%">
+                                        <col style="width: 45%">
+                                        <col style="width: 25%">
+                                        <col style="width: 10%">
+                                    </colgroup>
+
+                                    <tbody>
+                                        <!-- Rows will be added dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Buttons Content -->
+                <div class="d-flex justify-content-end mt-4">
+                    <button class="btn btn-primary" id="next-phase-button" onclick="goToNextPhase()">Next Phase</button>
                 </div>
             </div>
         </div>

@@ -13,15 +13,16 @@
                     "dir": true,
                     "fov": true
                 },
-                "taskDes": "L'utente cerca un dipinto all'interno della sala",
-                "taskInst": "Ti ricordi di aver visto questo dipinto",
+                "taskDes": "L'utente cerca un dipinto all'interno della sala. Quando l'ha trovata, clicca su un pulsante per confermare di averla trovata.",
+                "taskInst": "Ti ricordi di aver visto questo dipinto?",
                 "hasCheck": true,
                 "assets": {
                     "1771258790853": {
                         "customName": "Ritratto di Aldrovandi",
                         "role": "Instruction"
                     }
-                }
+                },
+                "playsAnimation": true
             }
         }
     }
