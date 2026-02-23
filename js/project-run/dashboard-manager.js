@@ -171,9 +171,11 @@ function addMultimediaTable(isInstruction, phase) {
     console.log(assets.length);
 
     console.log(tableContainer);
-    
+
     if (assets.length === 0) {
         tableContainer.style.display = "none";
         return;
     }
+
+    // NOW IT WORKS TILL HERE: TO DO] ADD ASSETS AS ROWS. NB FOR MULTIMEDIA YOU ALSO HAVE THE ANIMATION
 }
