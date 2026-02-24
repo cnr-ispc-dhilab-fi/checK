@@ -20,6 +20,22 @@
                     "1771258790853": {
                         "customName": "Ritratto di Aldrovandi",
                         "role": "Instruction"
+                    },
+                    "1771928409129": {
+                        "customName": "Mostro di Aldrovandi",
+                        "role": "Variable"
+                    },
+                    "1771933718529": {
+                        "customName": "Sample o' clock sound",
+                        "role": "Variable"
+                    },
+                    "1771933963437": {
+                        "customName": "Sample heritage video",
+                        "role": "Variable"
+                    },
+                    "text_1771934033972": {
+                        "customName": "Introduzione mostra",
+                        "role": "Variable"
                     }
                 },
                 "playsAnimation": true

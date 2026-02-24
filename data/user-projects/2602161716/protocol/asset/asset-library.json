@@ -8,6 +8,57 @@
             "url": "/user-projects/2602161716/protocol/asset/1771258790851_20221128101334_landscape_16_9_mobile.jpg"
         },
         "type": "image",
-        "customName": "Ritratto di Aldrovandi"
+        "customName": "Ritratto di Ulisse Aldrovandi"
+    },
+    "1771928409129": {
+        "id": "1771928409129",
+        "createdAt": "2026-02-24T10:20:09.129Z",
+        "image": {
+            "filename": "1771928409121_20210922130330.jpg",
+            "originalname": "20210922130330.jpg",
+            "url": "/user-projects/2602161716/protocol/asset/1771928409121_20210922130330.jpg"
+        },
+        "type": "image",
+        "customName": "Mostro di Aldrovandi"
+    },
+    "text_1771934033972": {
+        "id": "text_1771934033972",
+        "type": "text",
+        "content": "Dal 22 giugno 2023 è possibile visitare il nuovo percorso espositivo dedicato ad Ulisse Aldrovandi nelle sale del Museo di Palazzo Poggi che hanno ospitato la mostra «Altro Rinascimento. Ulisse Aldrovandi e le meraviglie del mondo», conclusasi il 28 maggio 2023 con più di 30000 visitatori.",
+        "createdAt": "2026-02-24T13:49:42.738Z",
+        "customName": "Introduzione alla mostra"
+    },
+    "1771933617892": {
+        "id": "1771933617892",
+        "createdAt": "2026-02-24T11:46:57.892Z",
+        "video": {
+            "filename": "1771933617856_19314-300877515_medium.mp4",
+            "originalname": "19314-300877515_medium.mp4",
+            "url": "/user-projects/2602161716/protocol/asset/1771933617856_19314-300877515_medium.mp4"
+        },
+        "type": "video",
+        "customName": "Video stock: museo"
+    },
+    "1771933718529": {
+        "id": "1771933718529",
+        "createdAt": "2026-02-24T11:48:38.529Z",
+        "audio": {
+            "filename": "1771933718520_freesound_community-musical-clock-24635.mp3",
+            "originalname": "freesound_community-musical-clock-24635.mp3",
+            "url": "/user-projects/2602161716/protocol/asset/1771933718520_freesound_community-musical-clock-24635.mp3"
+        },
+        "type": "audio",
+        "customName": "Suono stock: orologio"
+    },
+    "1771933963437": {
+        "id": "1771933963437",
+        "createdAt": "2026-02-24T11:52:43.437Z",
+        "video": {
+            "filename": "1771933963386_19314-300877515_medium.mp4",
+            "originalname": "19314-300877515_medium.mp4",
+            "url": "/user-projects/2602161716/protocol/asset/1771933963386_19314-300877515_medium.mp4"
+        },
+        "type": "video",
+        "customName": "Sample heritage video"
     }
 }

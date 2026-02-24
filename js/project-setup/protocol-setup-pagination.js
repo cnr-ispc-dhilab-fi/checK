@@ -654,9 +654,16 @@ async function loadAssetsToTable(assets, projectId) {
                 iconClass = 'bi-file-earmark';
         }
         
-        const displayName = assetInfo.customName || fullAssetData.id;
+        let pathOrContent;
+        if (fullAssetData.type === 'text') {
+            pathOrContent = fullAssetData.content || '';
+        } else {
+            pathOrContent = fullAssetData[fullAssetData.type].filename || '';
+        }
+
+        const displayName = fullAssetData.customName || fullAssetData.id;
         const role = assetInfo.role || 'variable';
-        const badgeText = role === 'instruction' ? 'Instruction' : 'Variable';
+        const badgeText = role === 'Instruction' ? 'Instruction' : 'Variable';
         
         // Create row
         const newRow = document.createElement('tr');
@@ -674,7 +681,7 @@ async function loadAssetsToTable(assets, projectId) {
                         class="btn" 
                         data-bs-toggle="modal" 
                         data-bs-target="#modalLibraryUpload"
-                        onclick="editAssetRowinModal('${assetId}', '${fullAssetData.type}', '${displayName}', '${role}', '${fullAssetData[fullAssetData.type].filename}')"
+                        onclick="editAssetRowinModal('${assetId}', '${fullAssetData.type}', '${displayName}', '${role}', '${pathOrContent}')"
                     >
                         <i class="bi bi-pencil-square"></i>
                     </button>

@@ -234,12 +234,21 @@ html {
   overflow-y: auto;
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
-  padding-bottom: 1em;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #media-table-wrapper::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
+}
+
+#variable-media-table-wrapper {
+  max-height: 40vh;
+  overflow-y: scroll;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#variable-media-table-wrapper table, #media-table-wrapper table {
+  margin-bottom: 0;
 }
 
 .custom-table-header {
@@ -273,12 +282,12 @@ html {
   display: none !important;
 }
 
-.invisiblle-scroll {
+.invisible-scroll {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
 
-.invisiblle-scroll::-webkit-scrollbar {
+.invisible-scroll::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
 

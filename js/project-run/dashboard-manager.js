@@ -1,4 +1,4 @@
-let currentPhase = 0;
+let currentPhase = 0; // 0!
 
 let projectConfig;
 let currenTemplate;
@@ -17,7 +17,6 @@ window.addEventListener('DOMContentLoaded', async function() {
 });
 
 async function uploadScene(phase) {
-
   protocolConfigStorage = await ATON.App.getStorage(getProjectProtocolConfigStorageId(getIdFromURL()));
   protocolAssetLibraryStorage = await ATON.App.getStorage(getProject3DAssetsStorageId(getIdFromURL()));
   phasesObj = protocolConfigStorage[getGroupAndMeasureFromURL()]["phase"];
@@ -151,31 +150,174 @@ function updateLeftPanel(phase) {
 
 }
 
+// This function populates the multimedia table in both the Instruction and Multimedia panel
 function addMultimediaTable(isInstruction, phase) {
+
+    // Step 1. Populate the "assets" array with the ID of the assrt to be shown (of correct role)
     let assets;
     let tableContainer = isInstruction 
     ? document.getElementById('instruction-media-table-wrapper') 
     : document.getElementById('variable-media-table-wrapper'); 
 
     if (isInstruction) {
-        assets = Object.values(phasesObj[phase]["assets"])
-        .filter(asset => asset.role === 'Instruction');
-
-        if (assets.length === 0) {}
+        assets = Object.keys(phasesObj[phase]["assets"])
+        .filter(asset => phasesObj[phase]["assets"][asset].role === 'Instruction');
     } else {
-        assets = Object.values(phasesObj[phase]["assets"])
-        .filter(asset => asset.role === 'Variable');
+        assets = Object.keys(phasesObj[phase]["assets"])
+        .filter(asset => phasesObj[phase]["assets"][asset].role === 'Variable');
     }
-
-    console.log("Is instruction? " + isInstruction);
-    console.log(assets.length);
-
-    console.log(tableContainer);
 
     if (assets.length === 0) {
+        // If no asset is provided, hide the table
         tableContainer.style.display = "none";
         return;
+    } else {
+
+        // Step 2. Show table and populate tbody with assets
+        tableContainer.style.display = "block";
+        const tbody = tableContainer.querySelector('tbody');
+
+        if (isInstruction) {
+
+            // For loop specific to Instruction
+            assets.forEach((assetKey) => {
+
+                console.log("Asset key:", assetKey);
+                
+                let asset = protocolMultimediaLibraryStorage[assetKey];
+                
+                console.log(protocolMultimediaLibraryStorage[asset]);
+
+                // Create row
+                const newRow = document.createElement('tr');
+                newRow.classList.add('row-asset');
+                newRow.setAttribute('data-asset-id', asset.id);
+                
+
+                newRow.innerHTML = `
+                    <td><i class="bi ${getMediaIconClass(asset)}"></i></td>
+                    <td>${asset.customName}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button 
+                                type="button" 
+                                class="btn" 
+                                onclick="viewAsset('${asset}')">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tbody.appendChild(newRow);
+            }); 
+        } else {
+
+            document.getElementById("multimedia-content-p").remove();
+            // Add row for 3D animation: if animation is active...
+
+            if (phasesObj[phase]["playsAnimation"]) {
+                const animationRow = document.createElement('tr');
+                animationRow.classList.add('row-asset');
+
+                animationRow.innerHTML = `
+                    <td><i class="bi bi-badge-3d"></i></td>
+                    <td>Environment animation</td>
+                    <td></td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button 
+                                type="button" 
+                                class="btn" 
+                                onclick="playMedia('3D Animation')">
+                                <i class="bi bi-play-circle"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+
+                tbody.appendChild(animationRow);
+            }
+
+            // For loop specific to Variables
+            assets.forEach((assetKey) => {
+
+                console.log("Asset key:", assetKey);
+                
+                let asset = protocolMultimediaLibraryStorage[assetKey];
+                
+                console.log(protocolMultimediaLibraryStorage[asset]);
+
+                // Create row
+                const newRow = document.createElement('tr');
+                newRow.classList.add('row-asset');
+                newRow.setAttribute('data-asset-id', asset.id);
+                
+                newRow.innerHTML = `
+                    <td><i class="bi ${getMediaIconClass(asset)}"></i></td>
+                    <td>${asset.customName}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button 
+                                type="button" 
+                                class="btn" 
+                                onclick="viewAsset('${asset}')">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button 
+                                type="button" 
+                                class="btn" 
+                                onclick="playMedia('${asset.id}')">
+                                <i class="bi bi-play-circle"></i>
+                            </button>
+                        </div>
+                    </td>
+                    `;
+
+                tbody.appendChild(newRow.cloneNode(true));
+                                
+            }); 
+
+        }
     }
 
-    // NOW IT WORKS TILL HERE: TO DO] ADD ASSETS AS ROWS. NB FOR MULTIMEDIA YOU ALSO HAVE THE ANIMATION
+    // <i class="bi ${iconClass}">...</i> NOW IT WORKS TILL HERE: TO DO] ADD ASSETS AS ROWS. NB FOR MULTIMEDIA YOU ALSO HAVE THE ANIMATION
 }
+
+// Ancillary function to select the correct icon
+function getMediaIconClass(asset) {
+    let iconClass = '';
+
+    switch(asset.type) {
+        case 'text':
+            iconClass = 'bi-file-earmark-text';
+            break;
+        case 'audio':
+            iconClass = 'bi-music-note-beamed';
+            break;
+        case 'image':
+            iconClass = 'bi-file-earmark-image';
+            break;
+        case 'video':
+            iconClass = 'bi-camera-video';
+            break;
+            default:
+            iconClass = 'bi-file-earmark';
+    }
+    
+    return iconClass;
+}
+
+// =========== MISSING ============
+// == Integration w/ the subject ==
+
+function playMedia(assetName) {
+    alert("The subject is viewing: " + assetName);
+}
+
+// ================================
+// ================================
