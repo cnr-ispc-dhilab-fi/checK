@@ -299,10 +299,6 @@ html {
   cursor: pointer;
 }
 
-.dashboard-panel {
-  max-width: 80vh;
-}
-
 #idView3D {
   width: 100% !important;
   height: 40vh !important;
@@ -311,7 +307,7 @@ html {
 
 #expTabContent {
   background-color: var(--bs-white);
-  height: 55vh;
+  height: 63vh;
 }
 
 #positionViewer {

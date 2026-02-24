@@ -10,7 +10,7 @@ let phasesObj;
 
 
 window.addEventListener('DOMContentLoaded', async function() {
-    await initialiseRightPanel();
+    await initialiseLeftPanel();
     projectConfig = await ATON.App.getStorage(getProjectConfigStorageId(getIdFromURL()));
     protocolMultimediaLibraryStorage = await ATON.App.getStorage(getProjectProtocolAssetLibraryStorageId(getIdFromURL()));
     currentTemplate = projectConfig["template"];
@@ -45,12 +45,12 @@ function goToNextPhase() {
 
 async function updatePhase(phase) {
     await uploadScene(phase);
-    await updateLeftPanel(phase);
+    await updateRightPanel(phase);
 
     // Call here function to start the timer
 }
 
-async function initialiseRightPanel() {
+async function initialiseLeftPanel() {
     
     const projectConfig = await ATON.App.getStorage(getProjectConfigStorageId(getIdFromURL()));
     document.getElementById("session-project").innerHTML = projectConfig["title"];
@@ -61,7 +61,7 @@ async function initialiseRightPanel() {
 
 }
 
-function updateLeftPanel(phase) {
+function updateRightPanel(phase) {
 
     console.log(phase);
     let titlePhase;
