@@ -1,4 +1,4 @@
-let currentPhase = 0; // 0!
+let currentPhase = 1; // 0!
 
 let projectConfig;
 let currenTemplate;
@@ -46,6 +46,8 @@ function goToNextPhase() {
 async function updatePhase(phase) {
     await uploadScene(phase);
     await updateLeftPanel(phase);
+
+    // Call here function to start the timer
 }
 
 async function initialiseRightPanel() {
@@ -129,7 +131,9 @@ function updateLeftPanel(phase) {
             // ---------------------------------------------------
 
             // 2A. POPULATE TABLE WITH VARIABLES
+            console.log("Variables table ready to be populated");
             addMultimediaTable(isInstruction = false, phase);
+            console.log("Variables table populated");
         }
 
         // 2B-1. ADD TEXTUAL CONTENT FOR TASK
@@ -153,7 +157,7 @@ function updateLeftPanel(phase) {
 // This function populates the multimedia table in both the Instruction and Multimedia panel
 function addMultimediaTable(isInstruction, phase) {
 
-    // Step 1. Populate the "assets" array with the ID of the assrt to be shown (of correct role)
+    // Step 1. Populate the "assets" array with the ID of the asset to be shown (of correct role)
     let assets;
     let tableContainer = isInstruction 
     ? document.getElementById('instruction-media-table-wrapper') 
@@ -161,10 +165,10 @@ function addMultimediaTable(isInstruction, phase) {
 
     if (isInstruction) {
         assets = Object.keys(phasesObj[phase]["assets"])
-        .filter(asset => phasesObj[phase]["assets"][asset].role === 'Instruction');
+        .filter(asset => phasesObj[phase]["assets"][asset].role.toLowerCase() === 'instruction');
     } else {
         assets = Object.keys(phasesObj[phase]["assets"])
-        .filter(asset => phasesObj[phase]["assets"][asset].role === 'Variable');
+        .filter(asset => phasesObj[phase]["assets"][asset].role.toLowerCase() === 'variable');
     }
 
     if (assets.length === 0) {
@@ -177,6 +181,8 @@ function addMultimediaTable(isInstruction, phase) {
         tableContainer.style.display = "block";
         const tbody = tableContainer.querySelector('tbody');
 
+        tbody.innerHTML = ""; // Clear previous content
+
         if (isInstruction) {
 
             // For loop specific to Instruction
@@ -186,7 +192,7 @@ function addMultimediaTable(isInstruction, phase) {
                 
                 let asset = protocolMultimediaLibraryStorage[assetKey];
                 
-                console.log(protocolMultimediaLibraryStorage[asset]);
+                console.log(asset);
 
                 // Create row
                 const newRow = document.createElement('tr');
@@ -202,7 +208,9 @@ function addMultimediaTable(isInstruction, phase) {
                             <button 
                                 type="button" 
                                 class="btn" 
-                                onclick="viewAsset('${asset}')">
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalLibraryViewer"
+                                onclick="previewAsset('${asset.id}', '${asset.type}')">
                                 <i class="bi bi-box-arrow-up-right"></i>
                             </button>
                         </div>
@@ -213,7 +221,6 @@ function addMultimediaTable(isInstruction, phase) {
             }); 
         } else {
 
-            document.getElementById("multimedia-content-p").remove();
             // Add row for 3D animation: if animation is active...
 
             if (phasesObj[phase]["playsAnimation"]) {
@@ -260,8 +267,10 @@ function addMultimediaTable(isInstruction, phase) {
                         <div class="btn-group btn-group-sm" role="group">
                             <button 
                                 type="button" 
-                                class="btn" 
-                                onclick="viewAsset('${asset}')">
+                                class="btn"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalLibraryViewer"
+                                onclick="previewAsset('${asset.id}', '${asset.type}')">
                                 <i class="bi bi-box-arrow-up-right"></i>
                             </button>
                         </div>
@@ -312,12 +321,70 @@ function getMediaIconClass(asset) {
     return iconClass;
 }
 
-// =========== MISSING ============
-// == Integration w/ the subject ==
+function previewAsset(assetId, assetType) {
 
-function playMedia(assetName) {
-    alert("The subject is viewing: " + assetName);
+    // Initialise the content
+    let previewContainer = document.getElementById("asset-preview-container");
+    previewContainer.innerHTML = "";
+
+    // Get the asset info
+    let assetToShow = protocolMultimediaLibraryStorage[assetId];
+
+    const mediaName = document.getElementById("modalLibraryViewerLabel");
+    mediaName.innerHTML = assetToShow.customName + " - Preview";
+
+    switch(assetType) {
+        case 'text':
+            const textElement = document.createElement('p');
+            textElement.textContent = assetToShow.content;
+            previewContainer.appendChild(textElement);
+            break;
+        case 'audio':
+            const audioElement = document.createElement('audio');
+            audioElement.setAttribute('controls', '');
+            const sourceAudio = document.createElement('source');
+            sourceAudio.setAttribute('src', `${SERVER_BASE}${assetToShow.audio.url}`);
+            sourceAudio.setAttribute('type', 'audio/mpeg');
+            audioElement.appendChild(sourceAudio);
+            previewContainer.appendChild(audioElement);
+            break;
+        case 'image':
+            const imageElement = document.createElement('img');
+            imageElement.setAttribute('src', `${SERVER_BASE}${assetToShow.image.url}`);
+            imageElement.setAttribute('alt', assetToShow.customName);
+            imageElement.classList.add('img-fluid');
+            previewContainer.appendChild(imageElement);
+            break;
+        case 'video':
+            const videoElement = document.createElement('video');
+            videoElement.setAttribute('controls', '');
+            const sourceVideo = document.createElement('source');
+            sourceVideo.setAttribute('src', `${SERVER_BASE}${assetToShow.video.url}`);
+            sourceVideo.setAttribute('type', 'video/mp4');
+            videoElement.appendChild(sourceVideo);
+            previewContainer.appendChild(videoElement);
+            break;
+    }
+
+    // When closing the modal, stop media and clean the container
+    const modal = document.getElementById('modalLibraryViewer');
+    modal.addEventListener('hidden.bs.modal', function () {
+        // Stop all audio and video in modal
+        const mediaElements = modal.querySelectorAll('audio, video');
+        mediaElements.forEach(media => {
+            media.pause();
+            media.currentTime = 0;
+        });
+        
+        // Clean the container
+        const previewContainer = document.getElementById('asset-preview-container');
+        if (previewContainer) {
+            previewContainer.innerHTML = '';
+        }
+});
 }
 
-// ================================
-// ================================
+// =============================
+// ==== Timer for the panel ====
+// -- Add functions for timer --
+// =============================

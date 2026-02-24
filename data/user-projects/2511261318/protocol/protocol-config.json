@@ -13,13 +13,13 @@
                     "dir": true,
                     "fov": false
                 },
-                "taskDes": "",
-                "taskInst": "",
+                "taskDes": "Description P1",
+                "taskInst": "Instruction P1",
                 "hasCheck": true,
                 "assets": {
                     "1769267451331": {
                         "customName": "planner",
-                        "role": "instruction"
+                        "role": "Instruction"
                     },
                     "1769367497830": {
                         "customName": "Venus",
@@ -36,10 +36,19 @@
                     "dir": false,
                     "fov": false
                 },
-                "taskDes": "",
-                "taskInst": "",
+                "taskDes": "Description P2",
+                "taskInst": "Instruction P2",
                 "hasCheck": true,
-                "assets": {}
+                "assets": {
+                    "1769267451331": {
+                        "customName": "planner",
+                        "role": "Variable"
+                    },
+                    "1769367497830": {
+                        "customName": "Venus",
+                        "role": "Instruction"
+                    }
+                }
             }
         }
     }

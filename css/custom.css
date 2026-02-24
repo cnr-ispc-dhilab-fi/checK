@@ -241,13 +241,13 @@ html {
   display: none; /* Chrome, Safari, Opera */
 }
 
-#variable-media-table-wrapper {
+#variable-media-table-wrapper, #instruction-media-table-wrapper {
   max-height: 40vh;
   overflow-y: scroll;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-#variable-media-table-wrapper table, #media-table-wrapper table {
+#variable-media-table-wrapper table, #media-table-wrapper table, #instruction-media-table-wrapper table {
   margin-bottom: 0;
 }
 
@@ -299,12 +299,31 @@ html {
   cursor: pointer;
 }
 
+.dashboard-panel {
+  max-width: 80vh;
+}
+
 #idView3D {
   width: 100% !important;
-  height: auto !important;
+  height: 40vh !important;
+  object-fit: cover;
 }
 
 #expTabContent {
   background-color: var(--bs-white);
-  height: 60vh;
+  height: 55vh;
+}
+
+#positionViewer {
+  max-width: 50% !important;
+}
+
+#selectionComment {
+  margin-left: 1em;
+  margin-right: 1em;
+
+}
+
+.modal-ul {
+  list-style-position: inside;
 }

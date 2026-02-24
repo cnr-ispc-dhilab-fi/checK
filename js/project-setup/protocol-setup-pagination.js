@@ -569,7 +569,7 @@ function addAssetRowToTable(assetData) {
     const category = selectedRadio ? selectedRadio.value : 'variable'; // default to 'variable'
     
     // Set badge text based on category
-    const badgeText = category === 'instruction' ? 'Instruction' : 'Variable';
+    const badgeText = category.toLowerCase() === 'instruction' ? 'Instruction' : 'Variable';
     
     // Create new row
     const newRow = document.createElement('tr');
@@ -663,7 +663,7 @@ async function loadAssetsToTable(assets, projectId) {
 
         const displayName = fullAssetData.customName || fullAssetData.id;
         const role = assetInfo.role || 'variable';
-        const badgeText = role === 'Instruction' ? 'Instruction' : 'Variable';
+        const badgeText = role.toLowerCase() === 'instruction' ? 'Instruction' : 'Variable';
         
         // Create row
         const newRow = document.createElement('tr');
@@ -844,7 +844,7 @@ function updateAssetRowInTable(assetId, assetData) {
     // Get selected category from radio buttons
     const selectedRadio = document.querySelector('input[name="exampleRadios"]:checked');
     const category = selectedRadio ? selectedRadio.value : 'variable';
-    const badgeText = category === 'instruction' ? 'Instruction' : 'Variable';
+    const badgeText = category.toLowerCase() === 'instruction' ? 'Instruction' : 'Variable';
     
     // Update icon
     const iconCell = row.querySelectorAll('td')[0];

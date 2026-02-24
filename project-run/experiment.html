@@ -58,6 +58,8 @@
 
 	<!-- Main js entry -->
     <script type="text/javascript" src="../js/project-run/dashboard-manager.js"></script>
+    <script type="text/javascript" src="../js/project-run/session-manager.js"></script>
+
     <script type="text/javascript" src="../js/project-run/check-client.js"></script>
 
     
@@ -94,11 +96,11 @@
 
     <div class="container my-5">
 
-        <div class="row gx-10 my-5">
+        <div class="row gx-10">
 
             <!-- LEFT PANEL : METRICS & 3D ENVIRONMENT -->
 
-            <div class="col-md-6 justify-content-center">
+            <div class="col-md-6 justify-content-center dashboard-panel">
 
                 <div>
                     <table class="table">
@@ -169,7 +171,7 @@
 
             <!-- RIGHT PANEL : INSTRUCTION & MULTIMEDIA -->
 
-            <div class="col-md-6 justify-content-center" style="background-color: var(--bs-secondary-disabled); border-radius: 0.25rem; padding-bottom: 1em;">
+            <div class="col-md-6 justify-content-center dashboard-panel" style="background-color: var(--bs-secondary-disabled); border-radius: 0.25rem; padding-bottom: 1em;">
 
                 <h6 class="mt-2" id="phase-in-protocol-label">Phase 1/4</h6>
                 <h4 id="phase-name-label">Phase Name</h4>
@@ -199,7 +201,7 @@
                             <p id="task-instruction-p">No task instruction provided.</p>
                             
                             <!-- Asset Item -->
-                            <div id="instruction-media-table-wrapper">
+                            <div id="instruction-media-table-wrapper" class="invisible-scroll">
                                 <table class="table table-secondary table-striped">
                                     <colgroup>
                                         <col style="width: 10%">
@@ -222,7 +224,7 @@
                     <div class="tab-pane fade" id="multimedia-panel" role="tabpanel" aria-labelledby="multimedia-tab">
                         <div class="p-4">
                             <h5>Multimedia Content</h5>
-                            <p id="multimedia-content-p">No multimedia available</p>
+                            <p id="multimedia-content-p"></p>
 
                             <!-- Asset Item -->
                             <div id="variable-media-table-wrapper" class="invisible-scroll" style="margin-top: 2rem;">
@@ -247,6 +249,116 @@
                 <div class="d-flex justify-content-end mt-4">
                     <button class="btn btn-primary" id="next-phase-button" onclick="goToNextPhase()">Next Phase</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 1 / Preview asset in the library -->
+    <div class="modal fade" id="modalLibraryViewer" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLibraryViewerLabel">Multimedia asset preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body container">
+
+                    <div class="row align-items-start" id="asset-preview-container">
+                        <p></p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2 / Subject trigger -->
+    <div class="modal fade" id="modalSelectionViewer" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Revise the selection of the subject</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body container">
+
+                    <div class="row align-items-start" id="selection-container">
+                        <p>The subject is currently in this position</p>
+
+                        <div class="d-flex justify-content-center">
+                            <img id="positionViewer" class="img-fluid" alt="Screenshot" src="../img/position_subj.png" width="50%" height="auto">
+                        </div>
+
+                        <p style="margin-top: 1em;">You can add any comment you deem necessary</p>
+                        <div class="d-flex justify-content-start">
+                            <textarea class="form-control" aria-label="With textarea" id="selectionComment" rows="2" placeholder="Add any remark on how the subject completed its task"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Discard</button>
+                    <div>
+                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" onclick="changePhaseModal(false)">Wrong</button>
+                        <button type="button" class="btn btn-outline-success"  data-bs-dismiss="modal" onclick="changePhaseModal(true)">Correct</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+     <!-- Modal 3 / Next Phase -->
+    <div class="modal fade" id="modalPhaseChange" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">What's next?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body container">
+                    <div class="row align-items-start" id="selection-container">
+                        <p>Your protocol has <span id="phaseCountSpan"></span> different phase(s). You are currently in Phase <span id="currentPhaseSpan"></span></p>
+                        <p>The subject:
+                            <ul class="ps-3 modal-ul" >
+                                <li><span id="taskCorrectBoolSpan"></span> the last task successfully</li>
+                                <li>repeated this phase: <span id="taskRepeatCountSpan"></span> times</li>
+                                <li>made in total: <span id="taskCorrectCountSpan"></span> correct selection(s)</li>
+                                <li>made in total: <span id="taskMistakeCountSpan"></span> mistakes</li>
+                            </ul>
+                        </p>
+                    </div>
+                    
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal" onclick="changePhaseModal(false)">Wrong</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal" onclick="changePhaseModal(true)">Correct</button>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-3">
+                    
+                    <div class="row g-2 align-items-center">
+                        <div class="col-12 col-md-auto">
+                            <span>Or jump to:</span>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" id="phaseJumpSelect">
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-auto">
+                            <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">Go</button> <!-- missing onclick function to jump to the selected phase -->
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
