@@ -64,7 +64,7 @@ app.setup = () => {
       
       await uploadScene(currentPhase);
 
-      await updateLeftPanel(currentPhase);
+      await updateRightPanel(currentPhase);
     }
   });
 };

@@ -230,7 +230,7 @@ html {
 }
 
 #media-table-wrapper {
-  max-height: 34vh;
+  max-height: 32vh;
   overflow-y: auto;
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
