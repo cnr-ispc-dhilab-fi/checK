@@ -6,7 +6,7 @@ This repository contains the material of **checK** (Cultural Heritage Experiment
 
 1. Clone the ATON flare for checK ("[check-flare](https://github.com/cnr-ispc-dhilab-fi/check-flare)") in `[your main aton instance]/config/flares/`
 2. Clone this repository in `[your main aton instance]/webapps/`. See main [ATON Framework repository](https://github.com/phoenixbf/aton)
-3. Open terminal in your main ATON instance and run `npm start`. You can access the dashboard at [https://localhost:8083/a/check](https://localhost:8083/a/check)
+3. Open terminal in your main ATON instance and run `npm start`. You can access the dashboard at `https://localhost:[port]/a/check`
  
 ## Acknowledgment
 
