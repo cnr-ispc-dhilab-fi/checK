@@ -56,9 +56,10 @@
     <script type="text/javascript" src="/dist/THREE.bundle.js"></script>
     <script type="text/javascript" src="/dist/ATON.min.js"></script>
 
-    <script type="text/javascript" src="../js/project-setup/check-client.js"></script>
+    <script type="text/javascript" src="../js/client-root.js"></script>
+    <script type="text/javascript" src="../js/project-setup/client-setup.js"></script>
 
-    <script type="text/javascript" src="../js/project-setup/protocol-setup-pagination.js"></script>
+    <script type="text/javascript" src="../js/project-setup/pagination-protocol.js"></script>
 </head>
 
 <body>
@@ -233,10 +234,14 @@
                         <div class="col-md-6 text-start">
                             <div style="position: relative; display: inline-block; width: 100%" id="thumb-step-env">
                                 <img src="" class="img-fluid thumb-image-3denv-protocol" alt="Responsive image">
-                                
-                                <button class="thumb-3Denv-manag-btn" type="button" aria-label="Edit"
-                                    onclick="" style="right: 16px;" data-bs-toggle="modal" data-bs-target="#modalEnvChoice">
-                                    <i class="bi bi-pencil-square"></i>
+
+                                <div class="thumb-env-hover-overlay" onclick="hathorEditScene(currentPhaseSceneID)">
+                                    <button class="btn btn-primary btn-sm" type="button">Edit Scene</button>
+                                </div>
+
+                                <button class="thumb-3Denv-manag-btn" type="button" aria-label="Remove environment"
+                                    onclick="clearPhaseEnvironment()" style="right: 16px;">
+                                    <i class="bi bi-x-lg"></i>
                                 </button>
                             </div>
                         </div>

@@ -193,6 +193,28 @@ html {
   object-fit: cover;
   border-radius: 0.25rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: filter 0.2s ease;
+}
+
+#thumb-step-env:hover .thumb-image-3denv-protocol {
+  filter: brightness(0.45);
+}
+
+.thumb-env-hover-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(var(--bs-secondary-rgb), 0.45);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  z-index: 3;
+}
+
+#thumb-step-env:hover .thumb-env-hover-overlay {
+  opacity: 1;
 }
 
 .thumb-3Denv-manag-btn {

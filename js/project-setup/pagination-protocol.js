@@ -2,6 +2,19 @@
 const STORAGE_TRAINING_KEY = "hasTraining";
 const STORAGE_MINIMUMPROTOCOL_KEY = "hasMinimumProtocol";
 
+let currentPhaseSceneID = null;
+
+// Always show either the env thumbnail OR the choose button — never both, never neither
+function showEnvThumb() {
+    document.getElementById("thumb-and-analytics-div").style.display = "flex";
+    document.getElementById("env-upload-btn").style.display = "none";
+}
+
+function showEnvChooseBtn() {
+    document.getElementById("thumb-and-analytics-div").style.display = "none";
+    document.getElementById("env-upload-btn").style.display = "";
+}
+
 let globalCurrentStepIndex;
 let globalCurrentPhaseIndex;
 //  -----------------------
@@ -19,8 +32,8 @@ window.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    queryParams = new URLSearchParams(window.location.search);
-    
+    const queryParams = new URLSearchParams(window.location.search);
+
     const paramsObject = Object.fromEntries(queryParams);
 
     // The object has:
@@ -83,7 +96,7 @@ function goToCurrentPage(paramsObject) {
 
     
     if (currentStepIndex === 1) {
-        document.getElementById("thumb-and-analytics-div").style.display = "none";
+        showEnvChooseBtn();
     }
 
     // Display the correct step container
@@ -196,41 +209,41 @@ async function updateContentInStep(currentPhaseIndex, currentStepIndex, currentM
             document.getElementById("phase-name").value = currentPhaseProtocol["name"] || "";
 
             // Add image, if available
-            if (currentPhaseProtocol["environmentID"] !== "") {
-                document.getElementById("env-upload-btn").style.display = "none";      
-
-                let envToDisplay = document.getElementById("thumb-step-env").querySelector('img');
-
-                envToDisplay.dataset.envid = currentPhaseProtocol["environmentID"]
-
+            if (currentPhaseProtocol["sceneID"]) {
                 const envCatalog = await get3DEnvLibrary(getIdFromURL());
-                let envPath = `${ATON_BASE}${envCatalog[currentPhaseProtocol["environmentID"]]["thumb"]["url"]}`;
-                envToDisplay.src = envPath;
+                const envId = Object.keys(envCatalog).find(k => envCatalog[k].sceneID === currentPhaseProtocol["sceneID"]);
 
-                document.getElementById("thumb-and-analytics-div").style.display = "flex";
+                if (envId) {
+                    let envToDisplay = document.getElementById("thumb-step-env").querySelector('img');
+                    envToDisplay.dataset.envid = envId;
 
-            
-                // Update the modal
-                resetHighlightInEnv();
+                    let envPath = `${ATON_BASE}${envCatalog[envId]["thumb"]["url"]}`;
+                    envToDisplay.src = envPath;
 
-                // Check all elements with class glb-img
-                const thumbModal = Array.from(document.querySelectorAll('.glb-img')).find(img => 
-                    img.getAttribute('data-envid') === currentPhaseProtocol["environmentID"]
-                );
-                // const thumbModal = document.querySelector(`.glb-img[data-envid="${currentPhaseProtocol["environmentID"]}"]`);
-                console.log(thumbModal);
-                thumbModal.classList.add("environment-card-active");
-                thumbModal.setAttribute("id", "chosen-env");
-                
+                    currentPhaseSceneID = currentPhaseProtocol["sceneID"];
 
-                // Flag analytics
-                document.getElementById("trackTime").checked = currentPhaseProtocol["analytics"]["time"],
-                document.getElementById("trackPos").checked = currentPhaseProtocol["analytics"]["pos"],
-                document.getElementById("trackDir").checked = currentPhaseProtocol["analytics"]["dir"],
-                document.getElementById("trackFov").checked = currentPhaseProtocol["analytics"]["fov"]
+                    showEnvThumb();
+
+                    // Update the modal
+                    resetHighlightInEnv();
+
+                    const thumbModal = Array.from(document.querySelectorAll('.glb-img')).find(img =>
+                        img.getAttribute('data-envid') === envId
+                    );
+                    if (thumbModal) {
+                        thumbModal.classList.add("environment-card-active");
+                        thumbModal.setAttribute("id", "chosen-env");
+                    }
+
+                    // Flag analytics
+                    document.getElementById("trackTime").checked = currentPhaseProtocol["analytics"]["time"];
+                    document.getElementById("trackPos").checked = currentPhaseProtocol["analytics"]["pos"];
+                    document.getElementById("trackDir").checked = currentPhaseProtocol["analytics"]["dir"];
+                    document.getElementById("trackFov").checked = currentPhaseProtocol["analytics"]["fov"];
+                }
             }
 
-            // console.log(currentPhaseProtocol["name"], currentPhaseProtocol["environmentID"], currentPhaseProtocol["analytics"]);
+            // console.log(currentPhaseProtocol["name"], currentPhaseProtocol["sceneID"], currentPhaseProtocol["analytics"]);
             break;
 
         case 2:
@@ -282,8 +295,8 @@ function deletePhase() {
 
 function updatePage(parObj) {
 
-    queryParams = new URLSearchParams(window.location.search);
-    paramsObject = Object.fromEntries(queryParams);
+    const queryParams = new URLSearchParams(window.location.search);
+    const paramsObject = Object.fromEntries(queryParams);
 
     for (const key in parObj) {
         paramsObject[key] = parObj[key];
@@ -342,8 +355,47 @@ function highlightEnvironmentCard(e) {
 
 }
 
+async function realizeATONSceneConfig(projectId, envId, envPath) {
+    const storageId = getProject3DAssetsStorageId(projectId);
+    const envStorage = await ATON.App.getStorage(storageId);
+    const env = envStorage[envId];
+
+    // Reuse existing scene if already created for this environment
+    if (env.sceneID) return env.sceneID;
+
+    // Create new scene file on server
+    const sceneID = generateCheckSceneID();
+    const sceneData = {
+        status: "complete",
+        environment: { lightprobes: { auto: false } },
+        scenegraph: {
+            nodes: { main: { urls: [`http://localhost:8080${envPath}`] } },
+            edges: { ".": ["main"] }
+        },
+        viewpoints: {
+            home: {
+                position: [0.08861357090474999, 1.7210880003869535, 4.35850649630467],
+                target:   [0.04188403263111715, 1.3615881117363315, 3.426532150996322],
+                fov: 50
+            }
+        }
+    };
+
+    await fetch(`${SERVER_BASE}/projects/${projectId}/upload/scenes/${sceneID}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sceneData)
+    });
+
+    // Persist sceneID on the environment entry
+    await ATON.App.addToStorage(storageId, { [envId]: { ...env, sceneID } });
+
+    return sceneID;
+}
+
 async function setPhaseEnvironment() {
 
+    const projectId = getIdFromURL();
     let env3DStorage = await ATON.App.getStorage(getProject3DAssetsStorageId(projectId));
 
     // Access the selected environment
@@ -351,8 +403,32 @@ async function setPhaseEnvironment() {
     let chosenEnvPath = env3DStorage[String(chosenEnvID)]["glb"]["url"];
     let chosenEnvThumb = document.getElementById("chosen-env").src;
 
-    await initialiseATONScene(chosenEnvPath)
+    // Create or reuse the scene for this environment
+    currentPhaseSceneID = await realizeATONSceneConfig(projectId, chosenEnvID, chosenEnvPath);
 
+    // Preview in browser
+    await initialiseATONScene(chosenEnvPath);
+
+    // Visualise chosen environment and possible analytics
+    document.getElementById("thumb-step-env").querySelector('img').src = chosenEnvThumb;
+    showEnvThumb();
+
+}
+
+function hathorEditScene(sid) {
+    window.location.href = `protocol-scene-editor.html?sid=${sid}`;
+}
+
+function clearPhaseEnvironment() {
+    document.getElementById("thumb-step-env").querySelector('img').src = "";
+    showEnvChooseBtn();
+
+    // Remove the "main" scenegraph node from the ATON scene
+    let E = {};
+    E.scenegraph = {};
+    E.scenegraph.nodes = {};
+    E.scenegraph.nodes["main"] = {};
+    ATON.SceneHub.patch(E, ATON.SceneHub.MODE_DEL);
 }
 
 function generateCheckSceneID() {
@@ -373,76 +449,26 @@ function generateCheckSceneID() {
 }
 
 async function initialiseATONScene(path) {
-    let patch_config;
+    let E = {};
 
-    let idScene = generateCheckSceneID(); // Create unique ID for the scene
+    E.scenegraph = {};
+    E.scenegraph.nodes = {};
+    E.scenegraph.nodes["main"] = {};
+    E.scenegraph.nodes["main"].urls = [`http://localhost:8080${path}`];
+    E.scenegraph.edges = { ".": ["main"] };
 
-    patch_config = {
-        "status":"complete",
-        "environment": {
-            "lightprobes": {"auto":false}
-        },
-        "scenegraph": {
-            "nodes": {
-                "main":{
-                    "urls":[`http://localhost:8080${path}`]
-                }
-            },
-            "edges":{
-                ".":["main"]
-            }
-        },
-        "viewpoints":
-            {"home":{
-                "position":[0.08861357090474999,1.7210880003869535,4.35850649630467],
-                "target":[0.04188403263111715,1.3615881117363315,3.426532150996322],
-                "fov":50
-            }
-        }
-    }
+    E.environment = {};
+    E.environment.lightprobes = { auto: false };
 
-    console.log(patch_inventory);
-    console.log(patch_config);
+    E.viewpoints = {};
+    E.viewpoints.home = {
+        position: [0.08861357090474999, 1.7210880003869535, 4.35850649630467],
+        target:   [0.04188403263111715, 1.3615881117363315, 3.426532150996322],
+        fov: 50
+    };
 
-    /*
-
-            let E = {};
-        if (N.t === ATON.NTYPES.SEM){
-            E.semanticgraph = {};
-            E.semanticgraph.nodes = {};
-            E.semanticgraph.nodes[N.nid] = {};
-            E.semanticgraph.nodes[N.nid].show = N.v; 
-        }
-        else {
-            E.scenegraph = {};
-            E.scenegraph.nodes = {};
-            E.scenegraph.nodes[N.nid] = {};
-            E.scenegraph.nodes[N.nid].show = N.v;
-        }
-
-        ATON.SceneHub.patch( E, ATON.SceneHub.MODE_ADD);
-
-    */
-
-    // Scene JSON written directly to ATON/data/scenes/check-user/{sceneId}/scene.json
-    // via check-server PUT endpoint (ATON.App.addToStorage writes to wapps/checK/data/, not data/)
-    await fetch(`${SERVER_BASE}/projects/${getIdFromURL()}/upload/scenes/${idScene}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(patch_config)
-    });
-
-}
-
-function setPhaseEnvironmentBOX() {
-
-    document.getElementById("thumb-and-analytics-div").style.display = "flex";
-
-    let chosenEnv = document.getElementById("chosen-env").src;
-
-    // DA QUI DEVI MODIFICARE
-
-    document.getElementById("thumb-step-env").querySelector('img').src = chosenEnv;
+    console.log(E);
+    ATON.SceneHub.patch(E, ATON.SceneHub.MODE_ADD);
 }
 
 // --------
