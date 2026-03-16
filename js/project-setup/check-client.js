@@ -15,14 +15,22 @@ const PROJECTS_STORAGE_ID = "user-projects/projects";                     // lis
 // SERVER FUNCTIONS FOR PROJECT FORM
 // =================================
 
-// Helper to build a storage id for the asset library of a given project
+// Helper to build a storage id for the metadata (main config) of a given project
+function getProjectConfigStorageId(projectId) {
+  return `user-projects/${projectId}/config`;
+}
+
+// Helper to build a storage id for the asset library and ATON scenes of a given project
 function getProject3DAssetsStorageId(projectId) {
   return `user-projects/${projectId}/upload/upload`;
 }
 
-// Helper to build a storage id for the metadata (main config) of a given project
-function getProjectConfigStorageId(projectId) {
-  return `user-projects/${projectId}/config`;
+function getProjectATONScenesLists(projectId) {
+  return `user-projects/${projectId}/upload/aton-scenes/scene-list`;
+}
+
+function getProjectATONSceneConfig(projectId, sceneId) {
+  return `user-projects/${projectId}/upload/aton-scenes/${sceneId}`;
 }
 
 // Helper to build a storage id for the protocol of a given project

@@ -342,11 +342,85 @@ function highlightEnvironmentCard(e) {
 
 }
 
-function setPhaseEnvironment() {
+async function setPhaseEnvironment() {
+
+    let env3DStorage = await ATON.App.getStorage(getProject3DAssetsStorageId(projectId));
+
+    // Access the selected environment
+    let chosenEnvID = document.getElementById("chosen-env").dataset.envid;
+    let chosenEnvPath = env3DStorage[String(chosenEnvID)]["glb"]["url"];
+    let chosenEnvThumb = document.getElementById("chosen-env").src;
+
+    await initialiseATONScene(chosenEnvPath, chosenEnvID)
+
+}
+
+function generateCheckSceneID() {
+    // Get current date in YYYYMMDD format
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const datePrefix = `${year}${month}${day}`;
+    
+    // Generate random hex string (6 characters to match original length)
+    const randomHex = Math.random().toString(16).substring(2, 8);
+    
+    // Combine: YYYYMMDD-check-XXXXXX
+    const sceneID = `${datePrefix}-check-${randomHex}`;
+    
+    return sceneID;
+}
+
+async function initialiseATONScene(path, envId) {
+    let patch_config;
+    let patch_inventory;
+
+    let idScene = generateCheckSceneID(); // Create unique ID for the scene
+
+    patch_inventory = {
+        [idScene] : `${envId}`
+    }
+
+    patch_config = {
+        "status":"complete",
+        "environment": {
+            "lightprobes": {"auto":false}
+        },
+        "scenegraph": {
+            "nodes": {
+                "main":{
+                    "urls":[`http://localhost:8080/a/checK/data${path}`]
+                }
+            },
+            "edges":{
+                ".":["main"]
+            }
+        },
+        "viewpoints":
+            {"home":{
+                "position":[0.08861357090474999,1.7210880003869535,4.35850649630467],
+                "target":[0.04188403263111715,1.3615881117363315,3.426532150996322],
+                "fov":50
+            }
+        }
+    }
+
+    console.log(patch_inventory);
+    console.log(patch_config);
+
+    await ATON.App.addToStorage(getProjectATONScenesLists(getIdFromURL()), patch_inventory);
+    await ATON.App.addToStorage(getProjectATONSceneConfig(getIdFromURL(), idScene), patch_config);
+
+}
+
+function setPhaseEnvironmentBOX() {
 
     document.getElementById("thumb-and-analytics-div").style.display = "flex";
 
     let chosenEnv = document.getElementById("chosen-env").src;
+
+    // DA QUI DEVI MODIFICARE
 
     document.getElementById("thumb-step-env").querySelector('img').src = chosenEnv;
 }

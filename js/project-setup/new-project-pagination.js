@@ -71,7 +71,7 @@ window.onload = () => {
 };
 
 // --- navigation ---
-function goToFormSections(isForward, chosenTemplate = null) {
+async function goToFormSections(isForward, chosenTemplate = null) {
 
   const currentIdx = getSectionIndexFromURL();
 
@@ -82,7 +82,7 @@ function goToFormSections(isForward, chosenTemplate = null) {
   const projectId = getIdFromURL()
 
   if (((currentIdx === 2) & (isForward)) | ((currentIdx === 1) & (isForward))) {
-    saveProjectConfigFromForm(currentIdx);
+    await saveProjectConfigFromForm(currentIdx);
   } if ((currentIdx === 3) & (isForward)) {
     window.location.href = `project-summary.html?id=${projectId}`;
   } else {
