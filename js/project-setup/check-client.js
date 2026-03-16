@@ -1,6 +1,8 @@
 // ATON/wapps/check/js/project-setpu/check-client.js
 
 const SERVER_BASE = "http://localhost:3001";
+// ATON main server — serves 3D models and thumbnails from data/collections/
+const ATON_BASE = "http://localhost:8080";
 
 // ATON App setup
 let app = ATON.App.realize(false);
@@ -20,17 +22,9 @@ function getProjectConfigStorageId(projectId) {
   return `user-projects/${projectId}/config`;
 }
 
-// Helper to build a storage id for the asset library and ATON scenes of a given project
+// Helper to build a storage id for the 3D environments library of a given project
 function getProject3DAssetsStorageId(projectId) {
-  return `user-projects/${projectId}/upload/upload`;
-}
-
-function getProjectATONScenesLists(projectId) {
-  return `user-projects/${projectId}/upload/aton-scenes/scene-list`;
-}
-
-function getProjectATONSceneConfig(projectId, sceneId) {
-  return `user-projects/${projectId}/upload/aton-scenes/${sceneId}`;
+  return `user-projects/${projectId}/environments`;
 }
 
 // Helper to build a storage id for the protocol of a given project
@@ -164,14 +158,14 @@ async function renderProjectCard(projectMeta, container) {
   }
 
 
-  let projectsUpload = await ATON.App.getStorage(`user-projects/${id}/upload/upload`);
+  let projectsUpload = await ATON.App.getStorage(`user-projects/${id}/environments`);
 
   let first3DAsset = projectsUpload[Object.keys(projectsUpload)[0]];
 
   const cardHtml = `
     <div class="col-md-4 col-sm-12">
       <div class="card dashboard-card check-card-class" onclick="window.location.href='project-setup/protocol-summary.html?id=${id}'">
-        <img src="${SERVER_BASE}${first3DAsset.thumb.url}" class="card-img-top" alt="Thumb for project #${id}">
+        <img src="${ATON_BASE}${first3DAsset.thumb.url}" class="card-img-top" alt="Thumb for project #${id}">
         <div class="card-body">
           <h4 class="card-title">${titleLabel}</h5>
           <p class="card-text">Template: ${configStorage.template}</p>
@@ -293,12 +287,12 @@ async function renderProjectSummaryFromStorage() {
     let carouselChild = "";
     if (i == 0) {
       carouselChild = `<div class="carousel-item active">
-                          <img src="${SERVER_BASE}${assets3SArray[i].thumb.url}" class="d-block w-100" style="width: 512px; object-fit: contain" alt="Thumb 3D asset no. ${i}">
+                          <img src="${ATON_BASE}${assets3SArray[i].thumb.url}" class="d-block w-100" style="width: 512px; object-fit: contain" alt="Thumb 3D asset no. ${i}">
                         </div>`;
 
     } else {
       carouselChild = `<div class="carousel-item">
-                          <img src="${SERVER_BASE}${assets3SArray[i].thumb.url}" class="d-block w-100" style="width: 512px; object-fit: contain" alt="Thumb 3D asset no. ${i}">
+                          <img src="${ATON_BASE}${assets3SArray[i].thumb.url}" class="d-block w-100" style="width: 512px; object-fit: contain" alt="Thumb 3D asset no. ${i}">
                         </div>`;
     }
 
@@ -412,9 +406,9 @@ function add3DAssetCard(projectId, assetId, asset) {
 
   let thumbUrl = "";
   if (asset.thumb && asset.thumb.url) {
-    thumbUrl = `${SERVER_BASE}${asset.thumb.url}`;
+    thumbUrl = `${ATON_BASE}${asset.thumb.url}`;
   } else if (asset.thumb && asset.thumb.filename) {
-    thumbUrl = `${SERVER_BASE}/user-projects/${projectId}/upload/thumb/${asset.thumb.filename}`;
+    thumbUrl = `${ATON_BASE}/collections/check-user/models/${projectId}/thumb/${asset.thumb.filename}`;
   }
 
   const cardHtml = `
@@ -530,14 +524,14 @@ async function renderEnvThumbForModal() {
 
   try {
     const uploadedImg =
-      (await ATON.App.getStorage(`user-projects/${projectId}/upload/upload`)) || {};
+      (await ATON.App.getStorage(`user-projects/${projectId}/environments`)) || {};
     
     for (const key in uploadedImg) {
 
       let thumbHtml = `
         <div class="col-md-3 mb-3 d-flex justify-content-center div-environment-thumb-cards">
             <div class="card environment-thumb-cards" onclick="highlightEnvironmentCard(event)">       
-                <img src="${SERVER_BASE}${uploadedImg[key]["thumb"]["url"]}" data-envid="${key}" class="card-img-top glb-img" id="chosen-env" alt="thumbnail 3D asset">
+                <img src="${ATON_BASE}${uploadedImg[key]["thumb"]["url"]}" data-envid="${key}" class="card-img-top glb-img" id="chosen-env" alt="thumbnail 3D asset">
             </div>
         </div>
       `;

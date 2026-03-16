@@ -29,7 +29,7 @@ async function uploadScene(phase) {
   let envID = phasesObj[phaseKey]["environmentID"];
   let envPath = protocolAssetLibraryStorage[envID]["glb"]["url"];
 
-  ATON.createSceneNode(`phase${phaseKey}`).load(`${SERVER_BASE}${envPath}`).attachToRoot();
+  ATON.createSceneNode(`phase${phaseKey}`).load(`${ATON_BASE}${envPath}`).attachToRoot();
   // !! -- Hard Coded: To replace with info from protocol config --
   ATON.Nav.setHomePOV( new ATON.POV().setPosition(-0.467, 1.743, 6.391).setTarget(0.5, 2.234, 0.647) ); 
   // --------------------------------------------------------------

@@ -4,6 +4,8 @@
 // Shared with project setup client
 
 const SERVER_BASE = "http://localhost:3001";
+// ATON main server — serves 3D models and thumbnails from data/collections/
+const ATON_BASE = "http://localhost:8080";
 
 // ATON App setup
 let app = ATON.App.realize(false);
@@ -18,9 +20,9 @@ const PROJECTS_STORAGE_ID = "user-projects/projects";                     // lis
 // SERVER FUNCTIONS FOR PROJECT FORM
 // =================================
 
-// Helper to build a storage id for the asset library of a given project
+// Helper to build a storage id for the 3D environments library of a given project
 function getProject3DAssetsStorageId(projectId) {
-  return `user-projects/${projectId}/upload/upload`;
+  return `user-projects/${projectId}/environments`;
 }
 
 // Helper to build a storage id for the metadata (main config) of a given project

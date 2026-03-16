@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="/res/aton-logo.png" sizes="512x512" type="image/png">
+
+<!-- Add iOS meta tags and icons -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="ATON Sample">
+<link rel="apple-touch-icon" href="/res/aton-logo.png">
+<meta name="description" content="ATON Sample">
+<!-- Add meta theme-color -->
+<meta name="theme-color" content="#000000" />
+
+<title>ATON App sample</title>
+<link rel="stylesheet" type="text/css" href="/res/css/aton.css">
+
+<script type="text/javascript" src="/vendors/vendors.min.js"></script>
+
+<script type="text/javascript" src="/dist/THREE.bundle.js"></script>
+<script type="module" src="/src/ATON.js"></script>
+<script>
+window.addEventListener('load', ()=>{
+    // Realize our App
+    let myApp = ATON.App.realize();
+
+    // Setup: this is executed once (App initialization)
+    // This may include UI setup (HTML), events handling, etc.
+    myApp.setup = ()=>{
+        
+        // CAMBIA CON UI ! ! !
+        ATON.UI.realize(); // Realize the base front-end
+        ATON.FE.addBasicLoaderEvents(); // Add basic front-end events (loading spinner, automatic home, ...)
+        // ------------------
+
+        // Create and load a sample 3D model
+        //myApp.loadJSONConfig("http://localhost:8080/a/checK/data/user-projects/2603160914/upload/aton-scenes/20260316-check-4a8e69.json");
+        // myApp.loadScene("bastet/20260316-check-4a8e69");
+
+        ATON.SceneHub.load(
+            "http://localhost:8080/scenes/check-user/20260316-check-4a8e69/scene.json",
+                "20260316-check-4a8e69"
+        );
+
+        ATON.Nav.setFirstPersonControl();
+
+        ATON.FE.uiAddButtonEditMode("idTopToolbar");
+        ATON.FE.uiAddButtonFirstPerson("idTopToolbar");
+        ATON.FE.uiAddButtonHome("idTopToolbar");
+
+        ATON.FE.popupPOV2 = ()=>{
+            let htmlcontent = "<h1>Viewpoint</h1>";
+            htmlcontent += "<div class='select' style='width:200px;'><select id='idPOVmode'>";
+            htmlcontent += "<option value='0'>Set as Home viewpoint</option>";
+            htmlcontent += "<option value='1'>Add viewpoint</option>";
+            htmlcontent += "</select><div class='selectArrow'></div></div>";
+            htmlcontent += "<div class='atonBTN atonBTN-green' id='btnPOV' style='width:90%'>OK</div>"; // <img src='"+FE.PATH_RES_ICONS+"pov.png'>
+            if ( !ATON.FE.popupShow(htmlcontent) ) return;
+            let mode = $("#idPOVmode").val();
+        };
+
+        ATON.FE.popupPOV = ()=>{
+            let pov = ATON.Nav.copyCurrentPOV();
+            console.log(pov);
+
+            let htmlcontent = "<div class='atonPopupTitle'>Viewpoint</div>";
+
+            htmlcontent += "<div class='atonBlockRound' style='padding:2px; display:block; background-color:rgba(0,255,0, 0.1)'>";
+            htmlcontent += "<div style='text-align:right;'>";
+
+            let strCurrEye = pov.pos.x.toPrecision(3)+","+pov.pos.y.toPrecision(3)+","+pov.pos.z.toPrecision(3);
+            let strCurrTgt = pov.target.x.toPrecision(3)+","+pov.target.y.toPrecision(3)+","+pov.target.z.toPrecision(3);
+
+            //htmlcontent += "<strong>Position</strong>: "+pov.pos.x.toPrecision(3)+","+pov.pos.y.toPrecision(3)+","+pov.pos.z.toPrecision(3)+"<br>";
+            //htmlcontent += "<strong>Target</strong>: "+pov.target.x.toPrecision(3)+","+pov.target.y.toPrecision(3)+","+pov.target.z.toPrecision(3)+"<br>";
+            //htmlcontent += "<strong>FoV</strong>: "+pov.fov+"<br>";
+            htmlcontent += "<strong>Position</strong>: <input id='idPOVeye' type='text' size='20' placeholder='x,y,z' value='"+strCurrEye+"'><br>";
+            htmlcontent += "<strong>Target</strong>: <input id='idPOVtgt' type='text' size='20' placeholder='x,y,z' value='"+strCurrTgt+"'><br>";
+            htmlcontent += "<strong>FoV</strong>: <input id='idPOVfov' type='text' size='20' placeholder='f' value='"+pov.fov+"'><br>";
+
+            htmlcontent += "</div>";
+
+            htmlcontent += "<div class='atonBTN atonBTN-green atonBTN-horizontal atonBTN-text' id='btnPOVgo'><img src='"+ATON.FE.PATH_RES_ICONS+"pov.png'>Go</div>";
+            htmlcontent += "</div><br>";
+
+            // if (ATON.FE.getCurrentUIP()==="editor"){ ... }
+            ATON.FE.uiSetEditMode(true, "idTopToolbar");
+            htmlcontent += "<div class='atonBTN atonBTN-gray atonBTN-horizontal atonBTN-text' id='btnPOVsetHome'><img src='"+ATON.FE.PATH_RES_ICONS+"home.png'>Set as Home</div><br>";
+            htmlcontent += "<div class='atonBlockRound' style='padding:2px; display:block; background-color:rgba(255,255,2555, 0.1)'>";
+            htmlcontent += "<div class='atonBTN atonBTN-gray atonBTN-horizontal atonBTN-text' id='btnPOVadd'><img src='"+ATON.FE.PATH_RES_ICONS+"pov.png'>Add current viewpoint</div>";
+            htmlcontent += "as: <input id='idPOVid' type='text' size='15' placeholder='Viewpoint-ID' value='"+ATON.Utils.generateID("pov")+"'></div>";
+            
+        /*
+            htmlcontent += "<img id='idPOVmodeIcon' src='"+ATON.FE.PATH_RES_ICONS+"home.png' class='atonDefIcon'>&nbsp;";
+            htmlcontent += "<div class='select' style='width:250px;'><select id='idPOVmode'>";
+            htmlcontent += "<option value='h'>Set viewpoint as Home</option>";
+            htmlcontent += "<option value='v'>Add viewpoint</option>";
+            htmlcontent += "</select><div class='selectArrow'></div></div><br><br>";
+
+            htmlcontent += "<div id='idPOVmodeHome'>";
+            htmlcontent += "";
+            htmlcontent += "</div>";
+
+            htmlcontent += "<div id='idPOVmodeAdd' style='display:none'>";
+            htmlcontent += "<label for='idPOVkword'>keywords (comma-separated)</label><br><input id='idPOVkwords' type='text'>";
+            htmlcontent += "</div>";
+
+            htmlcontent += "<div class='atonBTN atonBTN-green' id='btnPOV' style='width:90%'>OK</div>"; // <img src='"+FE.PATH_RES_ICONS+"pov.png'>
+        */
+            if ( !ATON.FE.popupShow(htmlcontent) ) return;
+
+            let povid = undefined;
+
+            $("#btnPOVgo").click(()=>{
+                let eye = $("#idPOVeye").val();
+                let tgt = $("#idPOVtgt").val();
+                let fov = $("#idPOVfov").val();
+
+                eye = eye.split(",");
+                tgt = tgt.split(",");
+
+                if (eye.length !== 3 || tgt.length !== 3) return;
+        
+                let goPOV = new ATON.POV();
+                goPOV.setPosition(
+                    parseFloat(eye[0]),
+                    parseFloat(eye[1]),
+                    parseFloat(eye[2])
+                );
+                goPOV.setTarget( 
+                    parseFloat(tgt[0]),
+                    parseFloat(tgt[1]),
+                    parseFloat(tgt[2])
+                );
+                goPOV.setFOV( parseFloat(fov) );
+
+                ATON.Nav.requestPOV( goPOV );
+            });
+
+            $("#btnPOVsetHome").click(()=>{
+                povid = "home";
+
+                ATON.Nav.setHomePOV( pov );
+
+                ATON.FE.popupClose();
+
+                let E = {};
+                E.viewpoints = {};
+                E.viewpoints[povid] = {};
+                E.viewpoints[povid].position = [pov.pos.x, pov.pos.y, pov.pos.z];
+                E.viewpoints[povid].target   = [pov.target.x, pov.target.y, pov.target.z];
+                E.viewpoints[povid].fov      = pov.fov;
+
+                ATON.SceneHub.patch( E, ATON.SceneHub.MODE_ADD);
+                ATON.Photon.fire("AFE_AddSceneEdit", E);
+
+
+            });
+
+            $("#btnPOVadd").click(()=>{
+                povid = $("#idPOVid").val().trim(); //ATON.Utils.generateID("pov");
+                if (povid.length < 3) return;
+
+                pov.as(povid);
+
+                //console.log(pov)
+
+                ATON.Nav.addPOV(pov);
+                HATHOR.uiUpdatePOVs();
+
+                ATON.FE.popupClose();
+
+                let E = {};
+                E.viewpoints = {};
+                E.viewpoints[povid] = {};
+                E.viewpoints[povid].position = [pov.pos.x, pov.pos.y, pov.pos.z];
+                E.viewpoints[povid].target   = [pov.target.x, pov.target.y, pov.target.z];
+                E.viewpoints[povid].fov      = pov.fov;
+
+                ATON.SceneHub.patch( E, ATON.SceneHub.MODE_ADD);
+                ATON.Photon.fire("AFE_AddSceneEdit", E);
+            });
+
+            HATHOR.popupPOV = ()=>{
+            let pov = ATON.Nav.copyCurrentPOV();
+            console.log(pov);
+
+            let htmlcontent = "<div class='atonPopupTitle'>Viewpoint</div>";
+
+            htmlcontent += "<div class='atonBlockRound' style='padding:2px; display:block; background-color:rgba(0,255,0, 0.1)'>";
+            htmlcontent += "<div style='text-align:right;'>";
+
+            let strCurrEye = pov.pos.x.toPrecision(3)+","+pov.pos.y.toPrecision(3)+","+pov.pos.z.toPrecision(3);
+            let strCurrTgt = pov.target.x.toPrecision(3)+","+pov.target.y.toPrecision(3)+","+pov.target.z.toPrecision(3);
+
+            //htmlcontent += "<strong>Position</strong>: "+pov.pos.x.toPrecision(3)+","+pov.pos.y.toPrecision(3)+","+pov.pos.z.toPrecision(3)+"<br>";
+            //htmlcontent += "<strong>Target</strong>: "+pov.target.x.toPrecision(3)+","+pov.target.y.toPrecision(3)+","+pov.target.z.toPrecision(3)+"<br>";
+            //htmlcontent += "<strong>FoV</strong>: "+pov.fov+"<br>";
+            htmlcontent += "<strong>Position</strong>: <input id='idPOVeye' type='text' size='20' placeholder='x,y,z' value='"+strCurrEye+"'><br>";
+            htmlcontent += "<strong>Target</strong>: <input id='idPOVtgt' type='text' size='20' placeholder='x,y,z' value='"+strCurrTgt+"'><br>";
+            htmlcontent += "<strong>FoV</strong>: <input id='idPOVfov' type='text' size='20' placeholder='f' value='"+pov.fov+"'><br>";
+
+            htmlcontent += "</div>";
+
+            htmlcontent += "<div class='atonBTN atonBTN-green atonBTN-horizontal atonBTN-text' id='btnPOVgo'><img src='"+ATON.FE.PATH_RES_ICONS+"pov.png'>Go</div>";
+            htmlcontent += "</div><br>";
+
+            if (ATON.FE.getCurrentUIP()==="editor"){
+                htmlcontent += "<div class='atonBTN atonBTN-gray atonBTN-horizontal atonBTN-text' id='btnPOVsetHome'><img src='"+ATON.FE.PATH_RES_ICONS+"home.png'>Set as Home</div><br>";
+                htmlcontent += "<div class='atonBlockRound' style='padding:2px; display:block; background-color:rgba(255,255,2555, 0.1)'>";
+                htmlcontent += "<div class='atonBTN atonBTN-gray atonBTN-horizontal atonBTN-text' id='btnPOVadd'><img src='"+ATON.FE.PATH_RES_ICONS+"pov.png'>Add current viewpoint</div>";
+                htmlcontent += "as: <input id='idPOVid' type='text' size='15' placeholder='Viewpoint-ID' value='"+ATON.Utils.generateID("pov")+"'></div>";
+            }
+        /*
+            htmlcontent += "<img id='idPOVmodeIcon' src='"+ATON.FE.PATH_RES_ICONS+"home.png' class='atonDefIcon'>&nbsp;";
+            htmlcontent += "<div class='select' style='width:250px;'><select id='idPOVmode'>";
+            htmlcontent += "<option value='h'>Set viewpoint as Home</option>";
+            htmlcontent += "<option value='v'>Add viewpoint</option>";
+            htmlcontent += "</select><div class='selectArrow'></div></div><br><br>";
+
+            htmlcontent += "<div id='idPOVmodeHome'>";
+            htmlcontent += "";
+            htmlcontent += "</div>";
+
+            htmlcontent += "<div id='idPOVmodeAdd' style='display:none'>";
+            htmlcontent += "<label for='idPOVkword'>keywords (comma-separated)</label><br><input id='idPOVkwords' type='text'>";
+            htmlcontent += "</div>";
+
+            htmlcontent += "<div class='atonBTN atonBTN-green' id='btnPOV' style='width:90%'>OK</div>"; // <img src='"+FE.PATH_RES_ICONS+"pov.png'>
+        */
+            if ( !ATON.FE.popupShow(htmlcontent) ) return;
+
+            let povid = undefined;
+
+            $("#btnPOVgo").click(()=>{
+                let eye = $("#idPOVeye").val();
+                let tgt = $("#idPOVtgt").val();
+                let fov = $("#idPOVfov").val();
+
+                eye = eye.split(",");
+                tgt = tgt.split(",");
+
+                if (eye.length !== 3 || tgt.length !== 3) return;
+        
+                let goPOV = new ATON.POV();
+                goPOV.setPosition(
+                    parseFloat(eye[0]),
+                    parseFloat(eye[1]),
+                    parseFloat(eye[2])
+                );
+                goPOV.setTarget( 
+                    parseFloat(tgt[0]),
+                    parseFloat(tgt[1]),
+                    parseFloat(tgt[2])
+                );
+                goPOV.setFOV( parseFloat(fov) );
+
+                ATON.Nav.requestPOV( goPOV );
+            });
+
+            $("#btnPOVsetHome").click(()=>{
+                povid = "home";
+
+                ATON.Nav.setHomePOV( pov );
+
+                ATON.FE.popupClose();
+
+                let E = {};
+                E.viewpoints = {};
+                E.viewpoints[povid] = {};
+                E.viewpoints[povid].position = [pov.pos.x, pov.pos.y, pov.pos.z];
+                E.viewpoints[povid].target   = [pov.target.x, pov.target.y, pov.target.z];
+                E.viewpoints[povid].fov      = pov.fov;
+
+                ATON.SceneHub.patch( E, ATON.SceneHub.MODE_ADD);
+                ATON.Photon.fire("AFE_AddSceneEdit", E);
+
+
+            });
+
+            $("#btnPOVadd").click(()=>{
+                povid = $("#idPOVid").val().trim(); //ATON.Utils.generateID("pov");
+                if (povid.length < 3) return;
+
+                pov.as(povid);
+
+                //console.log(pov)
+
+                ATON.Nav.addPOV(pov);
+                HATHOR.uiUpdatePOVs();
+
+                ATON.FE.popupClose();
+
+                let E = {};
+                E.viewpoints = {};
+                E.viewpoints[povid] = {};
+                E.viewpoints[povid].position = [pov.pos.x, pov.pos.y, pov.pos.z];
+                E.viewpoints[povid].target   = [pov.target.x, pov.target.y, pov.target.z];
+                E.viewpoints[povid].fov      = pov.fov;
+
+                ATON.SceneHub.patch( E, ATON.SceneHub.MODE_ADD);
+                ATON.Photon.fire("AFE_AddSceneEdit", E);
+            });
+
+        /*
+            $("#idPOVmode").on("change",()=>{
+                let mode = $("#idPOVmode").val();
+                
+                if (mode === 'h'){
+                    $("#idPOVmodeIcon").attr("src",ATON.FE.PATH_RES_ICONS+"home.png");
+                    $("#idPOVmodeHome").show();
+                    $("#idPOVmodeAdd").hide();
+                }
+                else {
+                    $("#idPOVmodeIcon").attr("src",ATON.FE.PATH_RES_ICONS+"pov.png");
+                    $("#idPOVmodeHome").hide();
+                    $("#idPOVmodeAdd").show();
+                }
+            });
+
+            $("#btnPOV").click(()=>{
+                let mode = $("#idPOVmode").val();
+                let povid = "home";
+
+                // Home
+                if (mode === 'h'){
+                    ATON.Nav.setHomePOV( pov );
+                }
+                // New viewpoint
+                else {
+                    povid = ATON.Utils.generateID("pov");
+                    pov.as(povid);
+
+                    let kwords = $("#idPOVkwords").val();
+                    if (kwords.length>1) pov.addKeywords(kwords);
+
+                    ATON.Nav.addPOV(pov);
+                    HATHOR.uiUpdatePOVs();
+                }
+
+                ATON.FE.popupClose();
+
+                let E = {};
+                E.viewpoints = {};
+                E.viewpoints[povid] = {};
+                E.viewpoints[povid].position = [pov.pos.x, pov.pos.y, pov.pos.z];
+                E.viewpoints[povid].target   = [pov.target.x, pov.target.y, pov.target.z];
+                E.viewpoints[povid].fov      = pov.fov;
+
+                ATON.SceneHub.patch( E, ATON.SceneHub.MODE_ADD);
+                ATON.Photon.fire("AFE_AddSceneEdit", E);
+
+                console.log(pov);
+            });
+        */
+        };
+        };
+        ATON.FE.uiAddButton(
+            "idTopToolbar",
+            "pov",
+            ATON.FE.popupPOV, "Set POV"
+        );
+
+        ATON.FE.uiAddButtonInfo("idTopToolbar");
+
+        // Set sample panorama
+        //ATON.setMainPanorama("samples/pano/bg-welcome.jpg");
+
+        // Setup a lightprobe centered in the 3D model
+        //ATON.addLightProbe( new ATON.LightProbe().setPosition(0,0,0).setNear(1.0) );
+    };
+
+    // Update: this is executed continuously
+    myApp.update = ()=>{
+        let t = ATON.getElapsedTime();
+
+        let N = ATON.getSceneNode("acube");
+        if (N){
+            N.scale.y = 1.2 + (Math.cos(t) * 0.5); // stretch the node along y axis depending on current time
+        }
+    };
+
+    // Ok, let's run our App!
+    myApp.run();
+});
+</script>
+</head>
+
+<body oncontextmenu="return false;">
+    <!-- Top Toolbar -->
+    <div id="idTopToolbar" class="atonToolbar atonToolbar-top-left"></div>
+
+    <!-- Bottom Toolbar -->
+    <div id="idBottomToolbar" class="atonToolbar atonToolbar-bottom"></div>
+
+    <!-- Main Popup -->
+    <div id="idPopup" class="atonPopupContainer" style="display:none;"></div>
+
+    <!-- Loader -->
+    <div id="idLoader" class="atonCenterLoader" style="display:none;"></div>
+
+    <!-- Powered by -->
+    <div id='idPoweredBy' class="atonToolbar atonToolbar-bottom poweredBy" >
+        Powered by <a href="http://osiris.itabc.cnr.it/scenebaker/index.php/projects/aton/" target="_blank">ATON</a>
+    </div>
+</body>

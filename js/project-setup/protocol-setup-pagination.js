@@ -204,7 +204,7 @@ async function updateContentInStep(currentPhaseIndex, currentStepIndex, currentM
                 envToDisplay.dataset.envid = currentPhaseProtocol["environmentID"]
 
                 const envCatalog = await get3DEnvLibrary(getIdFromURL());
-                let envPath = `${SERVER_BASE}${envCatalog[currentPhaseProtocol["environmentID"]]["thumb"]["url"]}`;
+                let envPath = `${ATON_BASE}${envCatalog[currentPhaseProtocol["environmentID"]]["thumb"]["url"]}`;
                 envToDisplay.src = envPath;
 
                 document.getElementById("thumb-and-analytics-div").style.display = "flex";
@@ -351,7 +351,7 @@ async function setPhaseEnvironment() {
     let chosenEnvPath = env3DStorage[String(chosenEnvID)]["glb"]["url"];
     let chosenEnvThumb = document.getElementById("chosen-env").src;
 
-    await initialiseATONScene(chosenEnvPath, chosenEnvID)
+    await initialiseATONScene(chosenEnvPath)
 
 }
 
@@ -372,15 +372,10 @@ function generateCheckSceneID() {
     return sceneID;
 }
 
-async function initialiseATONScene(path, envId) {
+async function initialiseATONScene(path) {
     let patch_config;
-    let patch_inventory;
 
     let idScene = generateCheckSceneID(); // Create unique ID for the scene
-
-    patch_inventory = {
-        [idScene] : `${envId}`
-    }
 
     patch_config = {
         "status":"complete",
@@ -390,7 +385,7 @@ async function initialiseATONScene(path, envId) {
         "scenegraph": {
             "nodes": {
                 "main":{
-                    "urls":[`http://localhost:8080/a/checK/data${path}`]
+                    "urls":[`http://localhost:8080${path}`]
                 }
             },
             "edges":{
@@ -409,8 +404,33 @@ async function initialiseATONScene(path, envId) {
     console.log(patch_inventory);
     console.log(patch_config);
 
-    await ATON.App.addToStorage(getProjectATONScenesLists(getIdFromURL()), patch_inventory);
-    await ATON.App.addToStorage(getProjectATONSceneConfig(getIdFromURL(), idScene), patch_config);
+    /*
+
+            let E = {};
+        if (N.t === ATON.NTYPES.SEM){
+            E.semanticgraph = {};
+            E.semanticgraph.nodes = {};
+            E.semanticgraph.nodes[N.nid] = {};
+            E.semanticgraph.nodes[N.nid].show = N.v; 
+        }
+        else {
+            E.scenegraph = {};
+            E.scenegraph.nodes = {};
+            E.scenegraph.nodes[N.nid] = {};
+            E.scenegraph.nodes[N.nid].show = N.v;
+        }
+
+        ATON.SceneHub.patch( E, ATON.SceneHub.MODE_ADD);
+
+    */
+
+    // Scene JSON written directly to ATON/data/scenes/check-user/{sceneId}/scene.json
+    // via check-server PUT endpoint (ATON.App.addToStorage writes to wapps/checK/data/, not data/)
+    await fetch(`${SERVER_BASE}/projects/${getIdFromURL()}/upload/scenes/${idScene}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch_config)
+    });
 
 }
 
