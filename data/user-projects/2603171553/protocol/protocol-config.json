@@ -16,11 +16,20 @@
                 "taskDes": "This is the task description",
                 "taskInst": "This is the task instruction",
                 "assets": {
-                    "text_1773761797961": {
-                        "customName": "Bio Aldrovandi",
+                    "1773763285054": {
+                        "customName": "Monster Turtle",
+                        "role": "Instruction"
+                    },
+                    "text_1773763325770": {
+                        "customName": "Aldrovandi's Bio",
+                        "role": "Variable"
+                    },
+                    "1773763356518": {
+                        "customName": "Background Music",
                         "role": "Variable"
                     }
-                }
+                },
+                "playsAnimation": true
             }
         }
     }

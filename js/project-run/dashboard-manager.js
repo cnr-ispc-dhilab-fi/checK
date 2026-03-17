@@ -26,13 +26,25 @@ async function uploadScene(phase) {
     phaseKey += 1
   }
 
-  let envID = phasesObj[phaseKey]["environmentID"];
-  let envPath = protocolAssetLibraryStorage[envID]["glb"]["url"];
+  let s_id = `check-user/${phasesObj[phaseKey]["sceneID"]}`;
 
-  ATON.createSceneNode(`phase${phaseKey}`).load(`${ATON_BASE}${envPath}`).attachToRoot();
-  // !! -- Hard Coded: To replace with info from protocol config --
-  ATON.Nav.setHomePOV( new ATON.POV().setPosition(-0.467, 1.743, 6.391).setTarget(0.5, 2.234, 0.647) ); 
-  // --------------------------------------------------------------
+  console.log(s_id);
+
+  let APP = ATON.App.realize();
+
+    APP.setup = ()=>{
+        // Realize base ATON and add base UI events
+        ATON.realize();
+        ATON.UI.addBasicEvents();
+
+        // Load the scene
+        ATON.App.loadScene(s_id, ()=>{ 
+
+            // Set first-person navigation
+            ATON.Nav.setFirstPersonControl();
+        });
+
+    }
 }
 
 function goToNextPhase() {

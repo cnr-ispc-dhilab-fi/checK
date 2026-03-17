@@ -516,19 +516,9 @@ async function saveProtocolStep(bolVal = null) {
         patch[referenceGM].phase[phaseNo].assets = {};
 
         uploadedAssetArray.forEach(el => {
-          patch = {
-            [referenceGM]: {
-              phase: {
-                [phaseNo]: {
-                  assets: {
-                    [el.dataset.assetId]: {
-                      customName: el.childNodes[5].innerText,
-                      role: el.childNodes[7].innerText
-                    }
-                  }
-                }
-              }
-            }
+          patch[referenceGM].phase[phaseNo].assets[el.dataset.assetId] = {
+            customName: el.childNodes[5].innerText,
+            role: el.childNodes[7].innerText
           };
         });
 

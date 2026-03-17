@@ -38,7 +38,9 @@ function getRunIDFromURL() {
 function getGroupAndMeasureFromURL() {
   const params = new URLSearchParams(window.location.search);
   let subjStringAsArray = params.get("run").split("-");
+  console.log(subjStringAsArray)
   let group = subjStringAsArray[1].split("G")[1];
+  console.log(group)
   let measure = subjStringAsArray[2].split("M")[1];
   return `${group},${measure}`;
 }
