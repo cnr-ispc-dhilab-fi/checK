@@ -17,11 +17,9 @@ app.setup = () => {
     } else {
       const container = document.getElementById("ContainerView3D");
       container.appendChild(view3D);
+      window.dispatchEvent(new Event('resize'));
 
-      ATON.UI.addBasicEvents();
-
-      await uploadScene(currentPhase);
-      await updateRightPanel(currentPhase);
+      await loadPhaseATONScene(currentPhase);
     }
   });
 };

@@ -1,54 +1,35 @@
-let currentPhase = 1; // 0!
+let currentPhase = 0; // 0!
 
 let projectConfig;
 let currenTemplate;
 
 let protocolConfigStorage;
-let protocolAssetLibraryStorage;
 let protocolMultimediaLibraryStorage;
 let phasesObj;
 
 
 window.addEventListener('DOMContentLoaded', async function() {
-    await initialiseLeftPanel();
+    // == UPDATE VARIABLES WITH JSON STORAGE ==
+
+    // Update the variabel
     projectConfig = await ATON.App.getStorage(getProjectConfigStorageId(getIdFromURL()));
+    protocolConfigStorage = await ATON.App.getStorage(getProjectProtocolConfigStorageId(getIdFromURL()));
     protocolMultimediaLibraryStorage = await ATON.App.getStorage(getProjectProtocolAssetLibraryStorageId(getIdFromURL()));
+
+    // Retrieve list of phases and current template
+    phasesObj = protocolConfigStorage[getGroupAndMeasureFromURL()]["phase"];
     currentTemplate = projectConfig["template"];
+
+    // =======================================
+
+    // Update content in the panels
+    await updateSessionMetadata(); // Left panel, session metadata: does not change throughout the phases 
+    await updateRightPanel(currentPhase); // Right panel: its content will change throughout the phases
+
 });
 
-async function uploadScene(phase) {
-  protocolConfigStorage = await ATON.App.getStorage(getProjectProtocolConfigStorageId(getIdFromURL()));
-  protocolAssetLibraryStorage = await ATON.App.getStorage(getProject3DAssetsStorageId(getIdFromURL()));
-  phasesObj = protocolConfigStorage[getGroupAndMeasureFromURL()]["phase"];
-
-  let phaseKey = phase;
-  if (phase === 0) {
-    phaseKey += 1
-  }
-
-  let s_id = `check-user/${phasesObj[phaseKey]["sceneID"]}`;
-
-  console.log(s_id);
-
-  let APP = ATON.App.realize();
-
-    APP.setup = ()=>{
-        // Realize base ATON and add base UI events
-        ATON.realize();
-        ATON.UI.addBasicEvents();
-
-        // Load the scene
-        ATON.App.loadScene(s_id, ()=>{ 
-
-            // Set first-person navigation
-            ATON.Nav.setFirstPersonControl();
-        });
-
-    }
-}
-
+// To go forward in the experiment protocol
 function goToNextPhase() {
-
     if (currentPhase < Object.keys(phasesObj).length - 1) {
         currentPhase++;
         updatePhase(currentPhase);
@@ -56,22 +37,49 @@ function goToNextPhase() {
 }
 
 async function updatePhase(phase) {
-    await uploadScene(phase);
+    await loadPhaseATONScene(phase);
     await updateRightPanel(phase);
 
     // Call here function to start the timer
 }
 
-async function initialiseLeftPanel() {
-    
-    const projectConfig = await ATON.App.getStorage(getProjectConfigStorageId(getIdFromURL()));
-    document.getElementById("session-project").innerHTML = projectConfig["title"];
+// ==========================================
+// == LEFT PANEL: METADATA, METRICS, SCENE ==
+// ==========================================
 
+// Session metadata in the header
+async function updateSessionMetadata() {
+    document.getElementById("session-project").innerHTML = projectConfig["title"];
     document.getElementById("session-subject").innerHTML = getSubjectIDFromURL();
     document.getElementById("session-group").innerHTML = getGroupAndMeasureFromURL().split(",")[0];
     document.getElementById("session-measure").innerHTML = getGroupAndMeasureFromURL().split(",")[1];
-
 }
+
+// Update the scene visualised in ATON
+async function loadPhaseATONScene(phase) {
+
+    // First time called by client-exprun.js
+
+    // For training phase, show the environment of the first phase
+    let phaseKey = phase;
+    if (phase === 0) {
+        phaseKey += 1
+    }
+
+    // Access the scene id for the current phase
+    let s_id = `check-user/${phasesObj[phaseKey]["sceneID"]}`;
+
+    ATON.App.loadScene(s_id, () => {
+        ATON.Nav.setFirstPersonControl();
+        ATON.Nav.requestHome(0.3);
+        console.log("set fpc");
+    });
+  
+}
+
+// ===========================================
+// == RIGHT PANEL: MULTIMEDIA & INSTRUCTIONS =
+// ===========================================
 
 function updateRightPanel(phase) {
 
