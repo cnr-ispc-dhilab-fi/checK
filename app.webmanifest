@@ -1,11 +1,11 @@
 {
-	"name": "app_template",
+	"name": "check",
 	"background_color": "#BBB",
 	"display": "fullscreen",
 	"scope": "/",
 	"icons": [
 	    {
-	    "src": "appicon.png",
+	    "src": "img/logo-full.png",
 	    "sizes": "512x512",
 	    "type": "image/png"
 	    }

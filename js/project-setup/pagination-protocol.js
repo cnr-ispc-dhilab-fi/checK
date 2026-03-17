@@ -23,15 +23,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
     importProjectInfo();
 
-    if (getHasTraining() === undefined){
-        document.getElementById("iconTraining").classList.remove("bi-check-circle");
-    } else {
-        if (!getHasTraining()) {
-            document.getElementById("iconTraining").classList.remove("bi-check-circle"); 
-            document.getElementById("iconTraining").classList.remove("bi-x-circle");
-        }
-    }
-
     const queryParams = new URLSearchParams(window.location.search);
 
     const paramsObject = Object.fromEntries(queryParams);
@@ -160,6 +151,13 @@ async function uploadContentInPhase(paramsObject) {
 
             phaseStack.insertAdjacentHTML('beforeend', divTrainingPhase);
 
+            // Update icon based on training choice (element now exists in DOM)
+            const iconEl = document.getElementById("iconTraining");
+            if (getHasTraining() === false) {
+                iconEl.classList.remove("bi-check-circle");
+                iconEl.classList.add("bi-x-circle");
+            }
+
         // Standard button for other phase
         } else {
 
@@ -223,6 +221,7 @@ async function updateContentInStep(currentPhaseIndex, currentStepIndex, currentM
                     currentPhaseSceneID = currentPhaseProtocol["sceneID"];
 
                     showEnvThumb();
+                    updateHomePovAlert(getIdFromURL(), currentPhaseSceneID);
 
                     // Update the modal
                     resetHighlightInEnv();
@@ -251,19 +250,7 @@ async function updateContentInStep(currentPhaseIndex, currentStepIndex, currentM
             document.getElementById("taskDesc").value = currentPhaseProtocol["taskDes"] || "";
             document.getElementById("taskInst").value = currentPhaseProtocol["taskInst"] || "";
 
-            if (currentPhaseProtocol["hasCheck"] === false) {
-                const falseRadio = document.querySelector('input[name="checkCommand"][value="false"]');
-                if (falseRadio) {
-                    falseRadio.checked = true;
-                }
-            } else {
-                const trueRadio = document.querySelector('input[name="checkCommand"][value="true"]');
-                if (trueRadio) {
-                    trueRadio.checked = true;
-                }
-            }
-
-            console.log(currentPhaseProtocol["taskDes"], currentPhaseProtocol["taskInst"], currentPhaseProtocol["hasCheck"]);
+            console.log(currentPhaseProtocol["taskDes"], currentPhaseProtocol["taskInst"]);
             break;
 
         case 3:
@@ -412,11 +399,51 @@ async function setPhaseEnvironment() {
     // Visualise chosen environment and possible analytics
     document.getElementById("thumb-step-env").querySelector('img').src = chosenEnvThumb;
     showEnvThumb();
+    updateHomePovAlert(projectId, currentPhaseSceneID);
 
+}
+
+async function saveAndNavigate(navObj) {
+    await saveProtocolStep();
+    updatePage(navObj);
+}
+
+async function saveTrainingAndNavigate(bolVal, navObj) {
+    setHasTraining(bolVal);
+    await saveProtocolStep(bolVal);
+    updatePage(navObj);
+}
+
+async function saveAndUnlockPhase() {
+    await saveProtocolStep();
+    unlockNewPhase();
 }
 
 function hathorEditScene(sid) {
     window.location.href = `protocol-scene-editor.html?sid=${sid}`;
+}
+
+async function updateHomePovAlert(projectId, sceneID) {
+    const alertWarn = document.getElementById("home-pov-alert");
+    const alertSuccess = document.getElementById("home-pov-alert-success");
+    const linkWarn = document.getElementById("scene-editor-link-warn");
+    const linkSuccess = document.getElementById("scene-editor-link-success");
+    if (!alertWarn || !alertSuccess) return;
+
+    const editorUrl = `protocol-scene-editor.html?sid=${sceneID}`;
+    if (linkWarn) linkWarn.href = editorUrl;
+    if (linkSuccess) linkSuccess.href = editorUrl;
+
+    try {
+        const res = await fetch(`${SERVER_BASE}/projects/${projectId}/upload/scenes/${sceneID}`);
+        const scene = await res.json();
+        const hasHome = !!(scene?.viewpoints?.home);
+        alertWarn.style.display = hasHome ? "none" : "";
+        alertSuccess.style.display = hasHome ? "" : "none";
+    } catch {
+        alertWarn.style.display = "";
+        alertSuccess.style.display = "none";
+    }
 }
 
 function clearPhaseEnvironment() {
@@ -459,13 +486,6 @@ async function initialiseATONScene(path) {
 
     E.environment = {};
     E.environment.lightprobes = { auto: false };
-
-    E.viewpoints = {};
-    E.viewpoints.home = {
-        position: [0.08861357090474999, 1.7210880003869535, 4.35850649630467],
-        target:   [0.04188403263111715, 1.3615881117363315, 3.426532150996322],
-        fov: 50
-    };
 
     console.log(E);
     ATON.SceneHub.patch(E, ATON.SceneHub.MODE_ADD);

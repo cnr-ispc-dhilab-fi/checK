@@ -492,8 +492,7 @@ async function saveProtocolStep(bolVal = null) {
             phase: {
               [phaseNo]: {
                 taskDes: document.getElementById("taskDesc").value,
-                taskInst: document.getElementById("taskInst").value,
-                hasCheck: document.querySelector('input[name="checkCommand"]:checked').value === "true"
+                taskInst: document.getElementById("taskInst").value
               }
             }
           }

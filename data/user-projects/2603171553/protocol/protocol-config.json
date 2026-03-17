@@ -1,0 +1,27 @@
+{
+    "projectId": "2603171553",
+    "createdAt": "2026-03-17T14:53:16.088Z",
+    "1,1": {
+        "phase": {
+            "0": true,
+            "1": {
+                "name": "Phase 1",
+                "sceneID": "20260317-check-5382f1",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": false
+                },
+                "taskDes": "This is the task description",
+                "taskInst": "This is the task instruction",
+                "assets": {
+                    "text_1773761797961": {
+                        "customName": "Bio Aldrovandi",
+                        "role": "Variable"
+                    }
+                }
+            }
+        }
+    }
+}

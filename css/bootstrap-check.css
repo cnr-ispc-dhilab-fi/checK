@@ -33,7 +33,7 @@
   --bs-secondary: #D19C6B;
   --bs-secondary-disabled: #F6EBE1;
   --bs-success: #7BAF7B;
-  --bs-info: #4CA8A1;
+  --bs-info: #7A8BBF;
   --bs-warning: #E2B857;
   --bs-danger: #C94C4C;
   --bs-light: #EBEAE9;
@@ -41,7 +41,7 @@
   --bs-primary-rgb: 70, 70, 115;
   --bs-secondary-rgb: 209, 156, 107;
   --bs-success-rgb: 123, 175, 123;
-  --bs-info-rgb: 76, 168, 161;
+  --bs-info-rgb: 122, 139, 191;
   --bs-warning-rgb: 226, 184, 87;
   --bs-danger-rgb: 201, 76, 76;
   --bs-light-rgb: 235, 234, 233;
@@ -49,7 +49,7 @@
   --bs-primary-text-emphasis: #1c1c2e;
   --bs-secondary-text-emphasis: rgb(83.6, 62.4, 42.8);
   --bs-success-text-emphasis: rgb(77, 105, 49.2);
-  --bs-info-text-emphasis: rgb(30.4, 67.2, 64.4);
+  --bs-info-text-emphasis: rgb(49, 55, 76);
   --bs-warning-text-emphasis: rgb(90.4, 73.6, 34.8);
   --bs-danger-text-emphasis: rgb(80.4, 30.4, 30.4);
   --bs-light-text-emphasis: #495057;
@@ -57,7 +57,7 @@
   --bs-primary-bg-subtle: #dadae3;
   --bs-secondary-bg-subtle: rgb(245.8, 235.2, 225.4);
   --bs-success-bg-subtle: rgb(228.6, 239, 228.6);
-  --bs-info-bg-subtle: rgb(219.2, 237.6, 236.2);
+  --bs-info-bg-subtle: rgb(228, 231, 242);
   --bs-warning-bg-subtle: rgb(249.2, 240.8, 221.4);
   --bs-danger-bg-subtle: rgb(244.2, 219.2, 219.2);
   --bs-light-bg-subtle: rgb(246.5, 247, 247);
@@ -65,7 +65,7 @@
   --bs-primary-border-subtle: #b5b5c7;
   --bs-secondary-border-subtle: rgb(236.6, 215.4, 195.8);
   --bs-success-border-subtle: rgb(202.2, 223, 202.2);
-  --bs-info-border-subtle: rgb(183.4, 220.2, 217.4);
+  --bs-info-border-subtle: rgb(200, 207, 228);
   --bs-warning-border-subtle: rgb(243.4, 226.6, 187.8);
   --bs-danger-border-subtle: rgb(233.4, 183.4, 183.4);
   --bs-light-border-subtle: #e9ecef;
