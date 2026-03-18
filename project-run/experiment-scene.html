@@ -49,10 +49,6 @@
         /* -------------- */
 
         /* --- Custom setting --- */
-        #idTopToolbar {
-            background-color: rgba(209,156,107, 0.3);
-        }
-
         .aton-std-bg {
             background-color: var(--bs-gray-100) !important;
         }
@@ -70,6 +66,7 @@
         // Extract scene ID for URL
         const params = new URLSearchParams(window.location.search);
         const s_id = `check-user/${params.get("sid")}`;
+        const role = params.get("r");
 
         let currentPov = [] // initialise current pos for main button
 
@@ -87,14 +84,30 @@
                 ATON.Nav.setFirstPersonControl();
 
                 // == Edit the interface with UI ==
-
                 ATON.UI.get("idTopToolbar").append(
                     // 1.  Back to checK platform
-                    ATON.UI.elem(`<h4>Tester mode</h4>`),
+                    ATON.UI.elem(`<h4 id="atonRoleHeader">Unknown mode</h4>`),
 
                     // 2. See home POV
                     //ATON.UI.createButtonHome()
+                    
                 );
+
+                // Multi-user with Photon
+                ATON.Photon.connect();
+
+                // Customise UI and User ID according to Role
+                if (role === "0") {
+                    ATON.Photon.uid = "Tester";
+                    document.getElementById("idTopToolbar").style.backgroundColor = "rgba(209,156,107, 0.3)";
+                    document.getElementById("atonRoleHeader").innerHTML = "Tester mode";
+                } else if (role === "1") {
+                    ATON.Photon.uid = "Subject";
+                    document.getElementById("idTopToolbar").style.backgroundColor = "rgba(70,70,115, 0.3)";
+                    document.getElementById("atonRoleHeader").innerHTML = "Subject mode";
+                } else {
+                    document.getElementById("idTopToolbar").style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+                }
 
             });
         }

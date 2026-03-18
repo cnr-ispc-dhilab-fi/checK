@@ -74,7 +74,7 @@ function loadPhaseATONScene(phase) {
 
     if (currentATONURLParams.get("sid") !== s_id) {
         // Update the iFrame containing the ATON Scene - only if you need to update
-        document.getElementById('testerATONSceneFrame').src = `exp-scene-tester.html?id=${params.id}&run=${params.run}&sid=${s_id}&r=1`;  
+        document.getElementById('testerATONSceneFrame').src = `experiment-scene.html?id=${params.id}&run=${params.run}&sid=${s_id}&r=0`;  
     }
     
 }
