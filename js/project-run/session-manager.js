@@ -1,3 +1,5 @@
+const params = new URLSearchParams(window.location.search);
+
 // ==== Replace trigger by subject
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {

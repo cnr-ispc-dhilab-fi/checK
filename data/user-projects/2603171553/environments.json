@@ -13,5 +13,20 @@
             "url": "/collections/check-user/models/2603171553/thumb/1773759241433_A1773759241381_thumb.png"
         },
         "sceneID": "20260317-check-5382f1"
+    },
+    "A1773841475857": {
+        "id": "A1773841475857",
+        "createdAt": "2026-03-18T13:44:35.903Z",
+        "glb": {
+            "filename": "1773841475873_room2.glb",
+            "originalname": "room2.glb",
+            "url": "/collections/check-user/models/2603171553/1773841475873_room2.glb"
+        },
+        "thumb": {
+            "filename": "1773841475900_A1773841475857_thumb.png",
+            "originalname": "A1773841475857_thumb.png",
+            "url": "/collections/check-user/models/2603171553/thumb/1773841475900_A1773841475857_thumb.png"
+        },
+        "sceneID": "20260318-check-7151d5"
     }
 }

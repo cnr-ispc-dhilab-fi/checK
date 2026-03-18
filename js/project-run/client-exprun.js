@@ -1,6 +1,7 @@
 // ATON/wapps/checK/js/project-run/client-exprun.js
 // Experiment-run specific client — requires check-client.js
 
+/*
 app.setup = () => {
   ATON.realize();
 
@@ -23,7 +24,7 @@ app.setup = () => {
     }
   });
 };
-
+*/
 // ===============================
 // RUN-SPECIFIC URL HELPERS
 // ===============================

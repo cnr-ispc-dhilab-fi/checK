@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" href="/res/aton-logo.png" sizes="512x512" type="image/png">
+
+    <!-- Add iOS meta tags and icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="ATON Sample">
+    <link rel="apple-touch-icon" href="/res/aton-logo.png">
+    <meta name="description" content="ATON Sample">
+    <!-- Add meta theme-color -->
+    <meta name="theme-color" content="#000000" />
+
+    <meta name="aton:appid" content="checK">
+
+    <title>checK - Tester Scene Viewer </title>
+    <link rel="stylesheet" type="text/css" href="/res/css/aton.css">
+    <link rel="stylesheet" href="../css/bootstrap-check.css">
+    <link rel="stylesheet" href="/res/css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <style>
+        /* --- Typography setup --- */
+        /* Import fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+
+        /* Headings (all levels) */
+        h1, h2, h3, h4, h5, h6 {
+        font-family: "Crimson Pro", serif;
+        }
+
+        /* Paragraphs and general body text */
+        p, li, a, span, button, input, textarea {
+        font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+                    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important; 
+        }
+
+        /* Global fallback for the body */
+        body {
+            font-family: "DM Sans", sans-serif !important;
+        }
+        /* -------------- */
+
+        /* --- Custom setting --- */
+        #idTopToolbar {
+            background-color: rgba(209,156,107, 0.3);
+        }
+
+        .aton-std-bg {
+            background-color: var(--bs-gray-100) !important;
+        }
+
+        .legenda-icon-modal {
+            margin-bottom: 1em;
+        }
+    </style>
+
+    <script type="text/javascript" src="/vendors/vendors.min.js"></script>
+    <script type="text/javascript" src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/dist/THREE.bundle.js"></script>
+    <script type="text/javascript" src="/dist/ATON.min.js"></script>
+    <script>
+        // Extract scene ID for URL
+        const params = new URLSearchParams(window.location.search);
+        const s_id = `check-user/${params.get("sid")}`;
+
+        let currentPov = [] // initialise current pos for main button
+
+        let APP = ATON.App.realize();
+
+        APP.setup = ()=>{
+            // Realize base ATON and add base UI events
+            ATON.realize();
+            ATON.UI.addBasicEvents();
+
+            // Load the scene
+            ATON.App.loadScene(s_id, ()=>{ 
+
+                // Set first-person navigation
+                ATON.Nav.setFirstPersonControl();
+
+                // == Edit the interface with UI ==
+
+                ATON.UI.get("idTopToolbar").append(
+                    // 1.  Back to checK platform
+                    ATON.UI.elem(`<h4>Tester mode</h4>`),
+
+                    // 2. See home POV
+                    //ATON.UI.createButtonHome()
+                );
+
+            });
+        }
+
+            
+    </script>
+</head>
+
+<body oncontextmenu="return false;">
+
+    <!-- Top Toolbar -->
+    <div id="idTopToolbar" class="atonToolbar atonToolbar-top-left">
+    </div>
+
+    <!-- Bottom Toolbar -->
+    <div id="idBottomToolbar" class="atonToolbar atonToolbar-bottom">
+        <div class="d-flex align-items-center me-auto justify-content-end" style="margin-left: 1em ">
+            <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                <img src="../img/logo-white.png" alt="checK" height="40" class="me-2">
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Popup -->
+    <div id="idPopup" class="atonPopupContainer" style="display:none;"></div>
+
+    <!-- Loader -->
+    <div id="idLoader" class="atonCenterLoader" style="display:none;"></div>
+
+    <!-- Powered by -->
+    <div id='idPoweredBy' class="atonToolbar atonToolbar-bottom poweredBy" >
+        Powered by <a href="http://osiris.itabc.cnr.it/scenebaker/index.php/projects/aton/" style="color: white;" target="_blank">ATON</a>
+    </div>
+</body>

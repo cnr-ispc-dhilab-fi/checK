@@ -27,5 +27,16 @@
         },
         "type": "audio",
         "customName": "Background Music"
+    },
+    "1773841535044": {
+        "id": "1773841535044",
+        "createdAt": "2026-03-18T13:45:35.044Z",
+        "video": {
+            "filename": "1773841535032_mixkit-louvre-museum-in-paris-time-lapse-4267-hd-ready.mp4",
+            "originalname": "mixkit-louvre-museum-in-paris-time-lapse-4267-hd-ready.mp4",
+            "url": "/user-projects/2603171553/protocol/asset/1773841535032_mixkit-louvre-museum-in-paris-time-lapse-4267-hd-ready.mp4"
+        },
+        "type": "video",
+        "customName": "Louvre Museum"
     }
 }

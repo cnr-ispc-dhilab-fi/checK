@@ -7,7 +7,6 @@ let protocolConfigStorage;
 let protocolMultimediaLibraryStorage;
 let phasesObj;
 
-
 window.addEventListener('DOMContentLoaded', async function() {
     // == UPDATE VARIABLES WITH JSON STORAGE ==
 
@@ -22,10 +21,11 @@ window.addEventListener('DOMContentLoaded', async function() {
 
     // =======================================
 
-    // Update content in the panels
-    await updateSessionMetadata(); // Left panel, session metadata: does not change throughout the phases 
-    await updateRightPanel(currentPhase); // Right panel: its content will change throughout the phases
+    // Update content in the header of the left panel (does not change throughout the phases)
+    await updateSessionMetadata();
 
+    // Update phase-dependent content: right panel and ATON scene
+    await updatePhase(currentPhase);
 });
 
 // To go forward in the experiment protocol
@@ -37,7 +37,8 @@ function goToNextPhase() {
 }
 
 async function updatePhase(phase) {
-    await loadPhaseATONScene(phase);
+    // We add this bool to handle situation where the user will make the visitor repeat the same phase
+    loadPhaseATONScene(phase);
     await updateRightPanel(phase);
 
     // Call here function to start the timer
@@ -55,10 +56,8 @@ async function updateSessionMetadata() {
     document.getElementById("session-measure").innerHTML = getGroupAndMeasureFromURL().split(",")[1];
 }
 
-// Update the scene visualised in ATON
-async function loadPhaseATONScene(phase) {
-
-    // First time called by client-exprun.js
+// Update the scene visualised in ATON for the tester
+function loadPhaseATONScene(phase) {
 
     // For training phase, show the environment of the first phase
     let phaseKey = phase;
@@ -66,15 +65,18 @@ async function loadPhaseATONScene(phase) {
         phaseKey += 1
     }
 
-    // Access the scene id for the current phase
-    let s_id = `check-user/${phasesObj[phaseKey]["sceneID"]}`;
+    // Access currently uploaded scene
+    let currentATONURL =  new URL(document.getElementById('testerATONSceneFrame').src);
+    let currentATONURLParams = new URLSearchParams(currentATONURL.search);
 
-    ATON.App.loadScene(s_id, () => {
-        ATON.Nav.setFirstPersonControl();
-        ATON.Nav.requestHome(0.3);
-        console.log("set fpc");
-    });
-  
+    // Access the scene id for the current phase
+    let s_id = `${phasesObj[phaseKey]["sceneID"]}`;
+
+    if (currentATONURLParams.get("sid") !== s_id) {
+        // Update the iFrame containing the ATON Scene - only if you need to update
+        document.getElementById('testerATONSceneFrame').src = `exp-scene-tester.html?id=${params.id}&run=${params.run}&sid=${s_id}&r=1`;  
+    }
+    
 }
 
 // ===========================================

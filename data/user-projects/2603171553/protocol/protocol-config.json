@@ -5,7 +5,7 @@
         "phase": {
             "0": true,
             "1": {
-                "name": "Phase 1",
+                "name": "Explore Aldrovandi 1",
                 "sceneID": "20260317-check-5382f1",
                 "analytics": {
                     "time": true,
@@ -30,6 +30,25 @@
                     }
                 },
                 "playsAnimation": true
+            },
+            "2": {
+                "name": "Explore Aldrovandi 2",
+                "sceneID": "20260318-check-7151d5",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": false,
+                    "fov": false
+                },
+                "taskDes": "Task description 2",
+                "taskInst": "Task instruction 1",
+                "playsAnimation": true,
+                "assets": {
+                    "1773841535044": {
+                        "customName": "Louvre Museum",
+                        "role": "Variable"
+                    }
+                }
             }
         }
     }
