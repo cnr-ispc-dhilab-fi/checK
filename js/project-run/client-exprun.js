@@ -1,30 +1,3 @@
-// ATON/wapps/checK/js/project-run/client-exprun.js
-// Experiment-run specific client — requires check-client.js
-
-/*
-app.setup = () => {
-  ATON.realize();
-
-  ATON.on("AllFlaresReady", async () => {
-    console.log("All flares ready");
-
-    checkFlare = ATON.getFlare("check");
-    console.log("Check flare:", checkFlare);
-
-    const view3D = document.getElementById("idView3D");
-
-    if (!needs3D) {
-      if (view3D) view3D.remove();
-    } else {
-      const container = document.getElementById("ContainerView3D");
-      container.appendChild(view3D);
-      window.dispatchEvent(new Event('resize'));
-
-      await loadPhaseATONScene(currentPhase);
-    }
-  });
-};
-*/
 // ===============================
 // RUN-SPECIFIC URL HELPERS
 // ===============================
@@ -49,3 +22,28 @@ function getSubjectIDFromURL() {
   let subjStringAsArray = params.get("run").split("-");
   return subjStringAsArray[0];
 }
+
+// ===============================
+// RETRIEVE DATA FROM STORAGE
+// ===============================
+
+let projectConfig;
+
+let protocolConfigStorage;
+
+let protocolMultimediaLibraryStorage;
+
+let phasesObj;
+
+let currenTemplate;
+
+async function updateStorageObjects() {
+
+  projectConfig                    = await ATON.App.getStorage(getProjectConfigStorageId(getIdFromURL()));
+  console.log("DEBUG 0", projectConfig);
+  protocolConfigStorage            = await ATON.App.getStorage(getProjectProtocolConfigStorageId(getIdFromURL()));
+  protocolMultimediaLibraryStorage = await ATON.App.getStorage(getProjectProtocolAssetLibraryStorageId(getIdFromURL()));
+  currentTemplate = projectConfig["template"];
+  phasesObj       = protocolConfigStorage[getGroupAndMeasureFromURL()]["phase"];
+
+};

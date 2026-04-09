@@ -2,11 +2,13 @@
 // Shared base — loaded by both project-setup and project-run pages
 
 const SERVER_BASE = "http://localhost:3001";
+
 // ATON main server — serves 3D models and thumbnails from data/collections/
 const ATON_BASE = "http://localhost:8080";
 
 // ATON App setup
 let app = ATON.App.realize(false);
+
 app.requireFlares(["check-flare"]);
 
 let checkFlare = null;

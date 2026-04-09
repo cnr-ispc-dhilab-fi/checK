@@ -1,0 +1,168 @@
+// Extract scene ID for URL
+const params = new URLSearchParams(window.location.search);
+const s_id = `check-user/${params.get("sid")}`;
+const role = params.get("r");
+
+let currentPov = [] // initialise current pos for main button
+
+let APP = ATON.App.realize();
+
+APP.setup = () => {
+    // Realize base ATON and add base UI events
+    ATON.realize();
+    ATON.UI.addBasicEvents();
+
+    // Load the scene
+    ATON.App.loadScene(s_id, () => {
+
+
+        // Multi-user with Photon
+        ATON.Photon.connect();
+
+        // Set tester as invisible according to Role
+        var isTester = role == 0;                   // Tester (Psycologist, Curator etc): r = 0
+        ATON.Photon.bSendState = !isTester;         // Tester does not share the state of his avatar with others
+        ATON.Photon.setAvatarsVisibility(isTester); // Subject (r = 1) share the state but cannot see the Tester
+
+        // Customise according to Role
+        if (role === "0") {       // Psychologist, Curator etc (Tester)
+
+            // Set third-person navigation
+            ATON.Nav.setOrbitControl();
+
+            // Add toolbar to tester interface
+            ATON.UI.get("idTopToolbar").append(
+                ATON.UI.elem(`<h4 id="atonRoleHeader">Tester mode</h4>`),
+            );
+            document.getElementById("idTopToolbar").style.backgroundColor = "rgba(209,156,107, 0.3)";
+
+        } else if (role === "1") { // Visitor, Participant, Patient etc (Subject)
+
+            // Set first-person navigation
+            ATON.Nav.setFirstPersonControl();
+        }
+
+        // ================================
+        // == LISTENER FOR PHOTON EVENTS ==
+        // ================================
+
+        // TESTER AS LISTENER (RECEIVES EVENTS FROM SUBJECT)
+
+        // 1. Update tester position (follows the subject from above)
+        ATON.Photon.on("updateTesterPos", (newTesterPov) => {
+            if (role == 0) {
+                ATON.Nav.requestPOV(newTesterPov, 0.05);
+            }
+        });
+
+        // 2. Show modal in tester interface when subject clicks on the main button
+        ATON.Photon.on("showModal", (testerPov) => {
+            if (role == 0) {
+                let cover = ATON.Utils.takeScreenshotFromPOV(testerPov, 256);
+                window.parent.subjectTrigger(cover);
+                window.parent.console.log(cover.src);
+                return cover.src;
+            }
+        });
+
+        // SUBJECT AS LISTENER (RECEIVES EVENTS FROM TESTER)
+
+        // 3. Load ATON scene in subject
+
+        ATON.Photon.on("loadScene", (sceneId) => {
+            console.log("Internal debug 1");
+            if (role == 1) {
+                console.log("Internal debug 2");
+                window.location.href = `experiment-scene.html?sid=${sceneId}&r=1`;
+            }
+        });
+
+
+        // Chi manda messaggio
+        // ATON.Photon.fireEvent("nameofevent",objectsended);
+        // ATON.Photon.fireEvent("gotoscene",{sid: "20260318-check-7151d5", r: 1});
+
+        ATON.Photon.on("gotoscene", (objectrecived) => {
+            console.log("col coso");
+            window.location.href = `experiment-scene.html?sid=${objectrecived.sid}&r=${objectrecived.r}`;
+        });
+
+    });
+
+}
+
+// ========================
+// == FIRE PHOTON EVENTS ==
+// ========================
+
+// TESTER AS LISTENER (RECEIVES EVENTS FROM SUBJECT)
+
+// 1. Update position of the tester according subject's POV
+function calibrateTesterPOV() {
+    let subjectPov = ATON.Nav.copyCurrentPOV();
+
+    let newTesterPov = {
+        fov: 50,
+        pos: {
+            x: subjectPov.pos.x,
+            y: subjectPov.pos.y + 1.75,
+            z: subjectPov.pos.z
+        },
+        target: subjectPov.pos,
+        up: subjectPov.up
+    };
+
+    return newTesterPov;
+}
+
+function updatePos() {
+    if (role == 1) {
+        ATON.Photon.fireEvent("updateTesterPos", calibrateTesterPOV());
+    }
+}
+
+setInterval(updatePos, 0.01);
+
+// ------------------------------------------------
+
+// 2. Update position of the subject
+
+// [!] Associate to VR controller trigger [!]
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        triggerModal();
+    }
+});
+
+// Fire modal (use ancillary function to ensure correct position)
+function triggerModal() {
+    if (role == 1) {
+        ATON.Photon.fireEvent("showModal", calibrateTesterPOV());
+    }
+}
+
+// ------------------------------------------------
+
+// SUBJECT AS LISTENER (RECEIVES EVENTS FROM TESTER)
+
+// 3. Load ATON scene in subject
+
+async function subjectATONSceneLoader(sid) {
+    if (role == 0) {
+        window.parent.console.log("DEBUG 2");
+        await ATON.Photon.fireEvent("loadScene", sid);
+    }
+}
+
+// ----- TEMPLATE TO FIRE EVENTS FROM AND INSIDE IFRAME 
+
+function cilecca() {
+    console.log("cilecca");
+    ATON.Photon.fireEvent("gotoscene", { sid: "20260318-check-7151d5", r: 1 })
+}
+
+// iframediv.contentWindow.cilecca()  !!!!!!!!! 
+// iframediv.contentWindow.window.parent.subjectTrigger
+
+
+

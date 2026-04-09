@@ -1,30 +1,31 @@
 const params = new URLSearchParams(window.location.search);
 
-// ==== Replace trigger by subject
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        subjectTrigger();
-    }
-});
+// ===================================
+// == TRIGGER FUNCTIONS FOR SUBJECT ==
+// These functions call events through
+// Photon.fire to act on subject's in-
+// terface. See experiment-scene.html 
+// for listeners & ancillary funtions
+// ===================================
 
-// =========== MISSING ============
-// == Integration w/ the subject ==
+function loadPhaseSubjectATONScene(s_id) {
+    console.log("DEBUG 1", s_id);
+    let atonFrame = document.getElementById("testerATONSceneFrame");
+    atonFrame.contentWindow.subjectATONSceneLoader(s_id);
+}
 
+// Missing: SPATIAL UI
 function playMedia(assetName) {
     alert("The subject is viewing: " + assetName);
 }
 
-// ================================
-// ================================
+// ==================================
+// === MODAL ACTIVATION FUNCTIONS ===
+// ==================================
 
+function subjectTrigger(cover) {
 
-function subjectTrigger() {
-
-    // - - - - - - - - - - - - - - - - - - -
-    // ! REPLACE with position of the user !
-    // - Initialise before loading the img -
-    // - - - - - - - - - - - - - - - - - - -
-
+    $('#positionViewer').attr("src", cover.src);
     $('#modalSelectionViewer').modal('show');
 
 }

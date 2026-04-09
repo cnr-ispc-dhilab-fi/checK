@@ -62,95 +62,14 @@
     <script type="text/javascript" src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="/dist/THREE.bundle.js"></script>
     <script type="text/javascript" src="/dist/ATON.min.js"></script>
-    <script>
-        // Extract scene ID for URL
-        const params = new URLSearchParams(window.location.search);
-        const s_id = `check-user/${params.get("sid")}`;
-        const role = params.get("r");
 
-        let currentPov = [] // initialise current pos for main button
+    <!-- Main js entry -->
+    <script type="text/javascript" src="../js/client-root.js"></script>
+    <script type="text/javascript" src="../js/project-run/client-exprun.js"></script>
 
-        let APP = ATON.App.realize();
+    <script type="text/javascript" src="../js/project-run/subject-manager.js"></script>
+    <script type="text/javascript" src="../js/project-run/aton-main.js"></script>
 
-        APP.setup = ()=>{
-            // Realize base ATON and add base UI events
-            ATON.realize();
-            ATON.UI.addBasicEvents();
-
-            // Load the scene
-            ATON.App.loadScene(s_id, ()=>{ 
-
-                // Set first-person navigation
-                ATON.Nav.setFirstPersonControl();
-
-                // == Edit the interface with UI ==
-                ATON.UI.get("idTopToolbar").append(
-                    // 1.  Back to checK platform
-                    ATON.UI.elem(`<h4 id="atonRoleHeader">Unknown mode</h4>`),
-
-                    // 2. See home POV
-                    //ATON.UI.createButtonHome()
-                    
-                );
-
-                // Multi-user with Photon
-                ATON.Photon.connect();
-
-                // ATON.Photon.touchAvatar(role) ATON.Photon.uid = role;
-
-                // Customise UI according to Role
-                if (role === "0") { // Psicologo
-                    document.getElementById("idTopToolbar").style.backgroundColor = "rgba(209,156,107, 0.3)";
-                    document.getElementById("atonRoleHeader").innerHTML = "Tester mode";
-                } else if (role === "1") { // Testato
-                    document.getElementById("idTopToolbar").style.backgroundColor = "rgba(70,70,115, 0.3)";
-                    document.getElementById("atonRoleHeader").innerHTML = "Subject mode";
-                } else {
-                    document.getElementById("idTopToolbar").style.backgroundColor = "rgba(255, 255, 255, 0.3)";
-                }
-
-                // Set tester as invisible according to Role
-                var isTester = role == 0;
-                ATON.Photon.bSendState = !isTester; // Il controllore non manda il proprio stato
-                ATON.Photon.setAvatarsVisibility(isTester); //L'utente ha la visibilità degli avatar = false
- 
-                // Tutti gli utenti connessi ricevono questo messaggio
-                ATON.Photon.on("nameofevent",(objectrecived)=>{
-                    console.log(objectrecived)
-                });
-
-                ATON.Photon.on("gotoscene",(objectrecived)=>{
-                    console.log("col coso");
-                    window.location.href = `experiment-scene.html?sid=${objectrecived.sid}&r=${objectrecived.r}`;
-                });
-
-                ATON.Photon.on("showmmodal",()=>{
-                    if (role == 0) {
-                        window.parent.subjectTrigger();
-                    }
-                });
-
-                // Chi manda messaggio
-                //ATON.Photon.fireEvent("nameofevent",objectsended);
-
-                // ATON.Photon.fireEvent("gotoscene",{sid: "20260318-check-7151d5", r: 1});
-
-                console.log(ATON.Photon.avatarList);
-
-            });
-
-        }
-
-        function cilecca() {
-            console.log("cilecca");
-        }
-
-        // iframediv.contentWindow.cilecca()  !!!!!!!!! 
-
-        // iframediv.contentWindow.window.parent.subjectTrigger
-
-            
-    </script>
 </head>
 
 <body oncontextmenu="return false;">

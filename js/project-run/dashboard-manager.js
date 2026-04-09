@@ -1,25 +1,9 @@
-let currentPhase = 0; // 0!
-
-let projectConfig;
-let currenTemplate;
-
-let protocolConfigStorage;
-let protocolMultimediaLibraryStorage;
-let phasesObj;
+let currentPhase = 1; // 0!
 
 window.addEventListener('DOMContentLoaded', async function() {
-    // == UPDATE VARIABLES WITH JSON STORAGE ==
 
-    // Update the variabel
-    projectConfig = await ATON.App.getStorage(getProjectConfigStorageId(getIdFromURL()));
-    protocolConfigStorage = await ATON.App.getStorage(getProjectProtocolConfigStorageId(getIdFromURL()));
-    protocolMultimediaLibraryStorage = await ATON.App.getStorage(getProjectProtocolAssetLibraryStorageId(getIdFromURL()));
-
-    // Retrieve list of phases and current template
-    phasesObj = protocolConfigStorage[getGroupAndMeasureFromURL()]["phase"];
-    currentTemplate = projectConfig["template"];
-
-    // =======================================
+    // Update the storage content (in client-run)
+    await updateStorageObjects();
 
     // Update content in the header of the left panel (does not change throughout the phases)
     await updateSessionMetadata();
@@ -28,17 +12,11 @@ window.addEventListener('DOMContentLoaded', async function() {
     await updatePhase(currentPhase);
 });
 
-// To go forward in the experiment protocol
-function goToNextPhase() {
-    if (currentPhase < Object.keys(phasesObj).length - 1) {
-        currentPhase++;
-        updatePhase(currentPhase);
-    }
-}
 
 async function updatePhase(phase) {
-    // We add this bool to handle situation where the user will make the visitor repeat the same phase
+
     loadPhaseATONScene(phase);
+
     await updateRightPanel(phase);
 
     // Call here function to start the timer
@@ -56,8 +34,8 @@ async function updateSessionMetadata() {
     document.getElementById("session-measure").innerHTML = getGroupAndMeasureFromURL().split(",")[1];
 }
 
-// Update the scene visualised in ATON for the tester
-function loadPhaseATONScene(phase) {
+// Do we need to update the ATON scene?
+function checkAtonUpdate(phase) {
 
     // For training phase, show the environment of the first phase
     let phaseKey = phase;
@@ -72,9 +50,35 @@ function loadPhaseATONScene(phase) {
     // Access the scene id for the current phase
     let s_id = `${phasesObj[phaseKey]["sceneID"]}`;
 
+    let needsATONUpdate = false; 
+
+    // Update the iFrame containing the ATON Scene if necessary
     if (currentATONURLParams.get("sid") !== s_id) {
-        // Update the iFrame containing the ATON Scene - only if you need to update
-        document.getElementById('testerATONSceneFrame').src = `experiment-scene.html?id=${params.id}&run=${params.run}&sid=${s_id}&r=0`;  
+        needsATONUpdate = true;
+    } else {
+        needsATONUpdate = false;
+    }
+
+    return { boolATON: needsATONUpdate, s_id, params: currentATONURLParams}
+}
+
+// Update the scene visualised in ATON for the tester
+function loadPhaseATONScene(phase) {
+
+    let { boolATON, s_id, params } = checkAtonUpdate(phase);
+    
+    if (boolATON) {
+
+        let atonFrame = document.getElementById('testerATONSceneFrame');
+        atonFrame.src = `experiment-scene.html?id=${params.id}&run=${params.run}&sid=${s_id}&r=0`; 
+
+    /*  
+    atonFrame.addEventListener('load', function onFrameLoad() {   // escape race condition with onload
+        atonFrame.removeEventListener('load', onFrameLoad);
+            loadPhaseSubjectATONScene(s_id);                         // key ancillary function (session-manager.js)
+    }); 
+    */
+
     }
     
 }
@@ -410,3 +414,18 @@ function previewAsset(assetId, assetType) {
 // ==== Timer for the panel ====
 // -- Add functions for timer --
 // =============================
+
+// To go forward in the experiment protocol
+function goToNextPhase() {
+    if (currentPhase < Object.keys(phasesObj).length - 1) {
+
+        currentPhase++;
+
+        // If necessary, update subject ATON scene
+        if (checkAtonUpdate(currentPhase).boolATON) {
+            loadPhaseSubjectATONScene(checkAtonUpdate(currentPhase).s_id);
+        }
+
+        updatePhase(currentPhase);
+    }
+}
