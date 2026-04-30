@@ -1,5 +1,6 @@
 // Extract scene ID for URL
 const params = new URLSearchParams(window.location.search);
+const subject = params.get("run").split("-")[0];
 const s_id = `check-user/${params.get("sid")}`;
 const role = params.get("r");
 
@@ -36,6 +37,10 @@ APP.setup = () => {
             );
             document.getElementById("idTopToolbar").style.backgroundColor = "rgba(209,156,107, 0.3)";
 
+            let subjectAvatar = ATON.Photon.getAvatar(0);
+            console.log("SUBJECT! -> ", subject);
+            ATON.Photon.touchAvatar(0).usernametext.set({content: subject});
+
         } else if (role === "1") { // Visitor, Participant, Patient etc (Subject)
 
             // Set first-person navigation
@@ -55,7 +60,21 @@ APP.setup = () => {
             }
         });
 
-        // 2. Show modal in tester interface when subject clicks on the main button
+        // 2. Show alert informing entrance of new participant
+        ATON.Photon.on("triggerAlert", (subject) => {
+            if (role == 0) {
+                window.parent.Swal.fire({
+                    title: `Participant ${subject} entered the scene`,
+                    text: 'Everything is set. The experiment can now begin',
+                    confirmButtonText: 'Start',
+                    target: "body",
+                    width: "50%",
+                    confirmButtonColor: "var(--bs-primary)"
+                });
+            }
+        });
+
+        // 3. Show modal in tester interface when subject clicks on the main button
         ATON.Photon.on("showModal", (testerPov) => {
             if (role == 0) {
                 let cover = ATON.Utils.takeScreenshotFromPOV(testerPov, 256);
@@ -73,7 +92,7 @@ APP.setup = () => {
             console.log("Internal debug 1");
             if (role == 1) {
                 console.log("Internal debug 2");
-                window.location.href = `experiment-scene.html?sid=${sceneId}&r=1`;
+                window.location.href = `scene.html?sid=${sceneId}&r=1`;
             }
         });
 
@@ -84,7 +103,7 @@ APP.setup = () => {
 
         ATON.Photon.on("gotoscene", (objectrecived) => {
             console.log("col coso");
-            window.location.href = `experiment-scene.html?sid=${objectrecived.sid}&r=${objectrecived.r}`;
+            window.location.href = `scene.html?sid=${objectrecived.sid}&r=${objectrecived.r}`;
         });
 
     });
@@ -99,6 +118,7 @@ APP.setup = () => {
 
 // 1. Update position of the tester according subject's POV
 function calibrateTesterPOV() {
+    if (!ATON.Nav._currPOV) return undefined;
     let subjectPov = ATON.Nav.copyCurrentPOV();
 
     let newTesterPov = {
@@ -117,7 +137,8 @@ function calibrateTesterPOV() {
 
 function updatePos() {
     if (role == 1) {
-        ATON.Photon.fireEvent("updateTesterPos", calibrateTesterPOV());
+        let pov = calibrateTesterPOV();
+        if (pov) ATON.Photon.fireEvent("updateTesterPos", pov);
     }
 }
 
@@ -125,17 +146,25 @@ setInterval(updatePos, 0.01);
 
 // ------------------------------------------------
 
-// 2. Update position of the subject
+// 2. Send alert and modals to the tester
 
-// [!] Associate to VR controller trigger [!]
+// A. Fire alert when user enters the scene
+document.addEventListener('keydown', function (e) {
+    if (e.keyCode === 32) {
+        if (role == 1) {
+            ATON.Photon.fireEvent("triggerAlert", subject);
+        }
+    }
+});
+
+// B. [!] Associate to VR controller trigger [!]
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
         triggerModal();
     }
 });
 
-// Fire modal (use ancillary function to ensure correct position)
-function triggerModal() {
+function triggerModal() {    // Fire modal (use ancillary function to ensure correct position)
     if (role == 1) {
         ATON.Photon.fireEvent("showModal", calibrateTesterPOV());
     }

@@ -1,6 +1,9 @@
 let currentPhase = 1; // 0!
+let atonFrame;
 
 window.addEventListener('DOMContentLoaded', async function() {
+
+    atonFrame = document.getElementById('testerATONSceneFrame');
 
     // Update the storage content (in client-run)
     await updateStorageObjects();
@@ -30,6 +33,7 @@ async function updatePhase(phase) {
 async function updateSessionMetadata() {
     document.getElementById("session-project").innerHTML = projectConfig["title"];
     document.getElementById("session-subject").innerHTML = getSubjectIDFromURL();
+    document.getElementById("session-project-id").innerHTML = getIdFromURL();
     document.getElementById("session-group").innerHTML = getGroupAndMeasureFromURL().split(",")[0];
     document.getElementById("session-measure").innerHTML = getGroupAndMeasureFromURL().split(",")[1];
 }
@@ -44,8 +48,11 @@ function checkAtonUpdate(phase) {
     }
 
     // Access currently uploaded scene
-    let currentATONURL =  new URL(document.getElementById('testerATONSceneFrame').src);
+    let currentATONURL =  new URL(atonFrame.src);
     let currentATONURLParams = new URLSearchParams(currentATONURL.search);
+
+    console.log(currentATONURL);
+    console.log(currentATONURLParams);
 
     // Access the scene id for the current phase
     let s_id = `${phasesObj[phaseKey]["sceneID"]}`;
@@ -69,8 +76,8 @@ function loadPhaseATONScene(phase) {
     
     if (boolATON) {
 
-        let atonFrame = document.getElementById('testerATONSceneFrame');
-        atonFrame.src = `experiment-scene.html?id=${params.id}&run=${params.run}&sid=${s_id}&r=0`; 
+        atonFrame.src = `scene.html?id=${getIdFromURL()}&run=${getRunIDFromURL()}&sid=${s_id}&r=0`; 
+        console.log("ALTRO DEBUG:", atonFrame.src);
 
     /*  
     atonFrame.addEventListener('load', function onFrameLoad() {   // escape race condition with onload

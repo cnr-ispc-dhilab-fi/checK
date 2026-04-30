@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" href="../img/logo.ico" sizes="512x512">
+
+    <!-- Add iOS meta tags and icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="checK">
+    <link rel="apple-touch-icon" href="../img/logo-full.png">
+
+    <!-- OpenGraph tags -->
+    <meta property="og:title" content="checK" />
+    <meta property="og:description" content="Cultural Heritage Experiment Configuration Kit" />
+    <meta property="og:image" content="../img/logo-full.png" />
+    <meta property="og:image:secure_url" content="../img/logo-full.png" />
+    <meta property="og:image:type" content="../img/logo-full.png" />
+    <meta property="og:image:width" content="200" />
+    <meta property="og:image:height" content="200" />
+
+    <!-- PWA manifest -->
+    <link rel="manifest" href="../app.webmanifest">
+
+    <!-- Web-app ID -->
+    <meta name="aton:appid" content="checK">
+
+    <meta name="title" content="checK">
+    <meta name="description" content="Cultural Heritage Experiment Configuration Kit">
+
+    <!-- Add meta theme-color -->
+    <meta name="theme-color" content="#000000" />
+
+    <title>checK - Participant's Form</title>
+
+    <!-- 2. Bootstrap Build with SCSS-->
+    <link rel="stylesheet" href="../css/bootstrap-check.css">
+
+    <!-- 3. Aton stylesheet -->
+    <link rel="stylesheet" href="/res/css/main.css">
+
+    <!-- 4. Customised CSS -->
+    <link rel="stylesheet" href="../css/custom.css">
+
+    <!-- 5. Bootstrap Icon CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Vendors -->
+    <script type="text/javascript" src="/vendors/vendors.min.js"></script>
+    <script type="text/javascript" src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script type="text/javascript" src="/dist/THREE.bundle.js"></script>
+    <script type="text/javascript" src="/dist/ATON.min.js"></script>
+
+    <!-- Main js entry -->
+    <script type="text/javascript" src="../js/client-root.js"></script>
+    <script type="text/javascript" src="../js/project-run/client-exprun.js"></script>
+
+    <!-- Remove ATON Canvas -->
+    <style>
+        #idView3D {
+            display: none !important;
+        }
+    </style>
+    <script>
+        const needs3D = false;
+    </script>
+
+    <!-- Add project ID -->
+    <script>
+
+        window.addEventListener('DOMContentLoaded', function () {
+            console.log("!!!!!");
+            document.getElementById("projectId").innerHTML = getIdFromURL();
+        });
+
+    </script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <!-- LEFT SIDE -->
+            <div class="d-flex align-items-center me-auto">
+                <a class="navbar-brand d-flex align-items-center">
+                    <img src="../img/logo-white.png" alt="checK" height="40" class="me-2">
+                </a>
+            </div>
+
+            <!-- TOGGLER (for small screens) -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+
+    <div class="container">
+
+        <!-- TEMPLATE SELECTION SECTION -->
+        <div class="row gx-10" style="justify-content: center; align-items: center; min-height: calc(100vh - 100px);">
+            <div class="col-12 justify-content-center" style="background-color: var(--bs-secondary-disabled); border-radius: 0.25rem; padding-bottom: 1em; max-width: 85%;">
+
+                <h3 class="mt-2">Welcome to a new experiment on checK!</h3>
+
+                <p  class="my-4">Thank you for joining this new evaluation session. Ask the tester for this information, fill in the form and start your experience</p>
+
+                <div class="row mt-4">
+                    <div class="col-3 align-self-center">
+                        <p style="font-weight: bold">Project ID</p>
+                    </div>
+                    <div class="col-9">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="projectID"
+                                aria-describedby="pseudoCodeHelp" placeholder="Enter project's identifier">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-3 align-self-center">
+                        <p style="font-weight: bold">Subject ID</p>
+                    </div>
+                    <div class="col-9">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="subjectID"
+                                aria-describedby="pseudoCodeHelp" placeholder="Enter your unique anonymous identifier">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-3 align-self-center">
+                        <p style="font-weight: bold">Group</p>
+                    </div>
+                    <div class="col-9">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="refGroup"
+                                aria-describedby="pseudoCodeHelp" placeholder="Enter the group you belong to">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-3 align-self-center">
+                        <p style="font-weight: bold">Measure</p>
+                    </div>
+                    <div class="col-9">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="refMeasure"
+                                aria-describedby="pseudoCodeHelp" placeholder="Enter the reference measure for this session">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn-primary" onclick="enterSession()">Start the
+                            experiment</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Bootstrap bundle (JS + Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+        let sceneID;
+
+        async function enterSession() {
+
+            // Input Value
+            let projectID = document.getElementById("projectID").value; // Test with: 2603171553
+            let subjectID = document.getElementById("subjectID").value;
+            let group = document.getElementById("refGroup").value;
+            let measure = document.getElementById("refMeasure").value;
+
+            // Retrieve storage
+            const protocolStorage = await ATON.App.getStorage(getProjectProtocolConfigStorageId(projectID));
+
+            // Access single parameters
+            let sessionID = `${subjectID}-G${group}-M${measure}`;
+            
+            sceneID = protocolStorage[`${group},${measure}`]["phase"][1]["sceneID"];            
+
+            const kaptoPars = "mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.nav=vr&mk.attr=pos,dir&mk.dur=900"
+
+            // Build new URL
+            const targetURL = `http://localhost:8080/a/checK/project-run/scene.html?sid=${sceneID}&id=${projectID}&run=${sessionID}&r=1&${kaptoPars}`
+
+            window.location.href=targetURL
+        };
+
+
+
+    </script>
+</body>
