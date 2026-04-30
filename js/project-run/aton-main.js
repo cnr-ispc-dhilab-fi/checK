@@ -38,13 +38,18 @@ APP.setup = () => {
             document.getElementById("idTopToolbar").style.backgroundColor = "rgba(209,156,107, 0.3)";
 
             let subjectAvatar = ATON.Photon.getAvatar(0);
-            console.log("SUBJECT! -> ", subject);
             ATON.Photon.touchAvatar(0).usernametext.set({content: subject});
 
         } else if (role === "1") { // Visitor, Participant, Patient etc (Subject)
 
             // Set first-person navigation
             ATON.Nav.setFirstPersonControl();
+
+            // Notify tester when Photon connection is established
+            ATON.Photon._onConnected = () => {
+                ATON.Photon.fireEvent("triggerAlert", subject);
+            };
+
         }
 
         // ================================
@@ -65,7 +70,7 @@ APP.setup = () => {
             if (role == 0) {
                 window.parent.Swal.fire({
                     title: `Participant ${subject} entered the scene`,
-                    text: 'Everything is set. The experiment can now begin',
+                    text: 'Everything is set! The experiment can now begin',
                     confirmButtonText: 'Start',
                     target: "body",
                     width: "50%",
@@ -88,11 +93,13 @@ APP.setup = () => {
 
         // 3. Load ATON scene in subject
 
-        ATON.Photon.on("loadScene", (sceneId) => {
+        ATON.Photon.on("loadScene", (params) => {
             console.log("Internal debug 1");
             if (role == 1) {
                 console.log("Internal debug 2");
-                window.location.href = `scene.html?sid=${sceneId}&r=1`;
+                let kaptoPars = "mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.nav=vr&mk.attr=pos,dir&mk.dur=900"
+                let appendixURLSearch = `id=${getIdFromURL()}&run=${getRunIDFromURL()}&${kaptoPars}`;
+                window.location.href = `scene.html?sid=${params.sid}&r=1&${appendixURLSearch}`;
             }
         });
 
@@ -101,10 +108,15 @@ APP.setup = () => {
         // ATON.Photon.fireEvent("nameofevent",objectsended);
         // ATON.Photon.fireEvent("gotoscene",{sid: "20260318-check-7151d5", r: 1});
 
+        /*
         ATON.Photon.on("gotoscene", (objectrecived) => {
             console.log("col coso");
-            window.location.href = `scene.html?sid=${objectrecived.sid}&r=${objectrecived.r}`;
+            let kaptoPars = "mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.nav=vr&mk.attr=pos,dir&mk.dur=900"
+            let appendixURLSearch = `id=${getIdFromURL()}&run=${getRunIDFromURL()}&${kaptoPars}`;
+            console.log(`scene.html?sid=${objectrecived.sid}&r=${objectrecived.r}${appendixURLSearch}`);
+            //window.location.href = `scene.html?sid=${objectrecived.sid}&r=${objectrecived.r}${appendixURLSearch}`;
         });
+        */
 
     });
 
@@ -174,16 +186,15 @@ function triggerModal() {    // Fire modal (use ancillary function to ensure cor
 
 // SUBJECT AS LISTENER (RECEIVES EVENTS FROM TESTER)
 
-// 3. Load ATON scene in subject
+// 3. Load ATON scene in subject (called in: loadPhaseSubjectATONScene - session-manager.js)
 
-async function subjectATONSceneLoader(sid) {
+async function subjectATONSceneLoader(params) {
     if (role == 0) {
-        window.parent.console.log("DEBUG 2");
-        await ATON.Photon.fireEvent("loadScene", sid);
+        await ATON.Photon.fireEvent("loadScene", params);
     }
 }
 
-// ----- TEMPLATE TO FIRE EVENTS FROM AND INSIDE IFRAME 
+/* ----- TEMPLATE TO FIRE EVENTS FROM AND INSIDE IFRAME 
 
 function cilecca() {
     console.log("cilecca");
@@ -193,5 +204,6 @@ function cilecca() {
 // iframediv.contentWindow.cilecca()  !!!!!!!!! 
 // iframediv.contentWindow.window.parent.subjectTrigger
 
+*/
 
 

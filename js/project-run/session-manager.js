@@ -9,9 +9,8 @@ const params = new URLSearchParams(window.location.search);
 // ===================================
 
 function loadPhaseSubjectATONScene(s_id) {
-    console.log("DEBUG 1", s_id);
     let atonFrame = document.getElementById("testerATONSceneFrame");
-    atonFrame.contentWindow.subjectATONSceneLoader(s_id);
+    atonFrame.contentWindow.subjectATONSceneLoader({ sid: s_id });
 }
 
 // Missing: SPATIAL UI
