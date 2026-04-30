@@ -195,10 +195,12 @@
             
             sceneID = protocolStorage[`${group},${measure}`]["phase"][1]["sceneID"];            
 
-            const kaptoPars = "mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.nav=vr&mk.attr=pos,dir&mk.dur=900"
+            const mkgid = "check-user-" + sceneID;
+            const kaptoPars = `mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.attr=pos,dir&mk.dur=900&mk.gid=${mkgid}`
 
             // Build new URL
-            const targetURL = `http://localhost:8080/a/checK/project-run/scene.html?sid=${sceneID}&id=${projectID}&run=${sessionID}&r=1&${kaptoPars}`
+            
+            const targetURL = `http://localhost:8080/a/checK/project-run/scene.html?sid=check-user/${sceneID}&id=${projectID}&run=${sessionID}&r=1&${kaptoPars}`
 
             window.location.href=targetURL
         };

@@ -9,7 +9,7 @@ const ATON_BASE = "http://localhost:8080";
 // ATON App setup
 let app = ATON.App.realize(false);
 
-app.requireFlares(["check-flare"]);
+app.requireFlares(["check-flare", "merkhet"]);
 
 let checkFlare = null;
 

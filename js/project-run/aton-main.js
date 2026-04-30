@@ -1,7 +1,7 @@
 // Extract scene ID for URL
 const params = new URLSearchParams(window.location.search);
 const subject = params.get("run").split("-")[0];
-const s_id = `check-user/${params.get("sid")}`;
+const s_id = `${params.get("sid")}`;
 const role = params.get("r");
 
 let currentPov = [] // initialise current pos for main button
@@ -15,7 +15,6 @@ APP.setup = () => {
 
     // Load the scene
     ATON.App.loadScene(s_id, () => {
-
 
         // Multi-user with Photon
         ATON.Photon.connect();
@@ -37,8 +36,10 @@ APP.setup = () => {
             );
             document.getElementById("idTopToolbar").style.backgroundColor = "rgba(209,156,107, 0.3)";
 
+            /*
             let subjectAvatar = ATON.Photon.getAvatar(0);
             ATON.Photon.touchAvatar(0).usernametext.set({content: subject});
+            */
 
         } else if (role === "1") { // Visitor, Participant, Patient etc (Subject)
 
@@ -97,7 +98,8 @@ APP.setup = () => {
             console.log("Internal debug 1");
             if (role == 1) {
                 console.log("Internal debug 2");
-                let kaptoPars = "mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.nav=vr&mk.attr=pos,dir&mk.dur=900"
+                let mkgid = params.sid.replace("/","-");
+                let kaptoPars = `mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.attr=pos,dir&mk.dur=900&mk.gid=${mkgid}`
                 let appendixURLSearch = `id=${getIdFromURL()}&run=${getRunIDFromURL()}&${kaptoPars}`;
                 window.location.href = `scene.html?sid=${params.sid}&r=1&${appendixURLSearch}`;
             }
@@ -111,7 +113,7 @@ APP.setup = () => {
         /*
         ATON.Photon.on("gotoscene", (objectrecived) => {
             console.log("col coso");
-            let kaptoPars = "mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.nav=vr&mk.attr=pos,dir&mk.dur=900"
+            let kaptoPars = "mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.attr=pos,dir&mk.dur=900"
             let appendixURLSearch = `id=${getIdFromURL()}&run=${getRunIDFromURL()}&${kaptoPars}`;
             console.log(`scene.html?sid=${objectrecived.sid}&r=${objectrecived.r}${appendixURLSearch}`);
             //window.location.href = `scene.html?sid=${objectrecived.sid}&r=${objectrecived.r}${appendixURLSearch}`;
@@ -207,3 +209,5 @@ function cilecca() {
 */
 
 
+// TO ADD
+// ATON.Photon.on("KaptoSessionID", (recordid) => { console.log(recordid) })

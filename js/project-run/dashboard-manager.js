@@ -55,7 +55,7 @@ function checkAtonUpdate(phase) {
     console.log(currentATONURLParams);
 
     // Access the scene id for the current phase
-    let s_id = `${phasesObj[phaseKey]["sceneID"]}`;
+    let s_id = `check-user/${phasesObj[phaseKey]["sceneID"]}`;
 
     let needsATONUpdate = false; 
 
