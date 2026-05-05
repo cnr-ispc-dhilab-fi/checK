@@ -347,3 +347,16 @@ html {
 }
 
 /**/
+
+@keyframes timer-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+#phase-timer.timer-running {
+  animation: timer-pulse 1s ease-in-out infinite;
+}
+
+#phase-timer.timer-paused {
+  color: var(--bs-warning);
+}
