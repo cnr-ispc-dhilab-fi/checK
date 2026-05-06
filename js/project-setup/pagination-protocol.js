@@ -547,6 +547,7 @@ function adaptAssetUpload() {
 }
 
 let tempAssetsList = []; // Global temporary storage for assets before final save
+let assetContentMap = {};
 
 async function saveUploadedAsset() {  
     const selectValue = document.getElementById('assetTypeSelectGroup').value;
@@ -616,7 +617,8 @@ async function saveUploadedAsset() {
         if (isEditing) {
             // UPDATE existing row in table
             updateAssetRowInTable(window.currentEditingAssetId, assetData);
-            
+            assetContentMap[window.currentEditingAssetId] = assetData.type === 'text' ? assetData.content : (assetData[assetData.type]?.filename || '');
+
             // Update in temp list
             const index = tempAssetsList.findIndex(a => a.id === window.currentEditingAssetId);
             if (index > -1) {
@@ -645,6 +647,10 @@ async function saveUploadedAsset() {
         console.error("Error:", err);
         alert("Error saving asset: " + err.message);
     }
+}
+
+function escOnclick(s) {
+    return String(s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/[\r\n]/g, ' ');
 }
 
 // Counter for table rows
@@ -727,7 +733,7 @@ function addAssetRowToTable(assetData) {
                     type="button" 
                     class="btn" 
                     data-bs-toggle="modal" data-bs-target="#modalLibraryUpload" 
-                    onclick="editAssetRowinModal('${assetData.id}', '${format}', '${fileName}', '${category}', '${modalContent}')">
+                    onclick="editAssetRowinModal('${assetData.id}', '${format}', '${escOnclick(fileName)}', '${category}')">
                     <i class="bi bi-pencil-square"></i>
                 </button>
                 <button type="button" class="btn" onclick="deleteAssetRow('${assetData.id}')">
@@ -739,7 +745,8 @@ function addAssetRowToTable(assetData) {
     
     // Append to table
     tbody.appendChild(newRow);
-    
+    assetContentMap[assetData.id] = modalContent;
+
     resetAssetModal()
 
     console.log(`Row added: #${assetRowCounter} - ${fileName} - ${badgeText}`);
@@ -821,7 +828,7 @@ async function loadAssetsToTable(assets, projectId) {
                         class="btn" 
                         data-bs-toggle="modal" 
                         data-bs-target="#modalLibraryUpload"
-                        onclick="editAssetRowinModal('${assetId}', '${fullAssetData.type}', '${displayName}', '${role}', '${pathOrContent}')"
+                        onclick="editAssetRowinModal('${assetId}', '${fullAssetData.type}', '${escOnclick(displayName)}', '${role}')"
                     >
                         <i class="bi bi-pencil-square"></i>
                     </button>
@@ -833,8 +840,9 @@ async function loadAssetsToTable(assets, projectId) {
         `;
         
         tbody.appendChild(newRow);
+        assetContentMap[assetId] = pathOrContent;
     }
-    
+
     // Show table if assets exist
     if (assetRowCounter > 0) {
         tableWrapper.style.display = 'block';
@@ -877,8 +885,8 @@ function resetAssetModal() {
 }
 
 // Edit asset row - fill modal fields with existing data
-function editAssetRowinModal(id, format, filename, role, pathOrContent) {
-    console.log("Editing asset:", id, format, filename, role, pathOrContent);
+function editAssetRowinModal(id, format, filename, role) {
+    console.log("Editing asset:", id, format, filename, role);
     
     // Store current editing asset ID
     window.currentEditingAssetId = id;
@@ -916,8 +924,7 @@ function editAssetRowinModal(id, format, filename, role, pathOrContent) {
     
     // Handle content based on format
     if (format === 'txt') {
-        // Fill textarea with text content
-        document.getElementById('AssetTextArea').value = pathOrContent;
+        document.getElementById('AssetTextArea').value = assetContentMap[id] || '';
     } else {
         // Show file preview for audio/image/video
         let iconClass = '';
@@ -935,7 +942,7 @@ function editAssetRowinModal(id, format, filename, role, pathOrContent) {
         }
         
         // Extract filename from path
-        const fileNameFromPath = pathOrContent.split('/').pop();
+        const fileNameFromPath = (assetContentMap[id] || '').split('/').pop();
         
         showFilePreview(fileNameFromPath, iconClass);
     }
