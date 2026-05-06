@@ -2,6 +2,21 @@
 // RUN-SPECIFIC URL HELPERS
 // ===============================
 
+function getSessionCodeFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("sc");
+}
+
+async function getSessionRecord(sessionCode) {
+  const records = await ATON.App.getStorage(RECORDS_STORAGE_ID) || {};
+  for (const pid of Object.keys(records)) {
+    if (records[pid][sessionCode]) {
+      return { projectId: pid, ...records[pid][sessionCode] };
+    }
+  }
+  return null;
+}
+
 function getRunIDFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("run");

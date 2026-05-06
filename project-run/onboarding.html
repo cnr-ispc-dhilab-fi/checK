@@ -253,24 +253,22 @@
             }
         });
 
-        function redirect(isForward) {
+        async function redirect(isForward) {
 
             projectId = getIdFromURL()
 
             if (isForward) {
-                // To experiment page
-
                 let subjPseudoCode = document.getElementById("subjPseudoCode").value;
                 let subjGroup = document.getElementById("refGroup").value;
                 let subjMeasure = document.getElementById("refMeasure").value;
 
                 let runID = `${subjPseudoCode}-G${subjGroup}-M${subjMeasure}`;
 
-                window.location.href = `experiment.html?id=${projectId}&run=${runID}`;
-            } else {
-                // Back to protocol summary
-                window.location.href = `../project-setup/protocol-summary.html?id=${projectId}`;
+                const sessionCode = await createSessionRecord(projectId, subjPseudoCode, subjGroup, subjMeasure);
 
+                window.location.href = `experiment.html?id=${projectId}&run=${runID}&sc=${sessionCode}`;
+            } else {
+                window.location.href = `../project-setup/protocol-summary.html?id=${projectId}`;
             }
 
         }

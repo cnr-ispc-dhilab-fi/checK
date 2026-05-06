@@ -33,7 +33,7 @@ async function updatePhase(phase) {
 async function updateSessionMetadata() {
     document.getElementById("session-project").innerHTML = projectConfig["title"];
     document.getElementById("session-subject").innerHTML = getSubjectIDFromURL();
-    document.getElementById("session-project-id").innerHTML = getIdFromURL();
+    document.getElementById("session-project-id").innerHTML = getSessionCodeFromURL();
     document.getElementById("session-group").innerHTML = getGroupAndMeasureFromURL().split(",")[0];
     document.getElementById("session-measure").innerHTML = getGroupAndMeasureFromURL().split(",")[1];
 }
