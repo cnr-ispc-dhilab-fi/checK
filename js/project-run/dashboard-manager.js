@@ -72,22 +72,13 @@ function checkAtonUpdate(phase) {
 // Update the scene visualised in ATON for the tester
 function loadPhaseATONScene(phase) {
 
-    let { boolATON, s_id, params } = checkAtonUpdate(phase);
-    
+    let { boolATON, s_id } = checkAtonUpdate(phase);
+
     if (boolATON) {
-
+        loadPhaseSubjectATONScene(s_id);
         atonFrame.src = `scene.html?id=${sessionRecord.projectId}&sc=${getSessionCodeFromURL()}&sid=${s_id}&r=0`;
-        console.log("ALTRO DEBUG:", atonFrame.src);
-
-    /*  
-    atonFrame.addEventListener('load', function onFrameLoad() {   // escape race condition with onload
-        atonFrame.removeEventListener('load', onFrameLoad);
-            loadPhaseSubjectATONScene(s_id);                         // key ancillary function (session-manager.js)
-    }); 
-    */
-
     }
-    
+
 }
 
 // ===========================================

@@ -149,14 +149,7 @@ function changePhaseModal(isCorrect) {
 // To go forward in the experiment protocol
 function goToNextPhase() {
     if (currentPhase < Object.keys(phasesObj).length - 1) {
-
         currentPhase++;
-
-        // If necessary, update subject ATON scene
-        if (checkAtonUpdate(currentPhase).boolATON) {
-            loadPhaseSubjectATONScene(checkAtonUpdate(currentPhase).s_id);
-        }
-
         updatePhase(currentPhase);
     }
 }
@@ -165,10 +158,6 @@ function goToNextPhase() {
 function goToPhase(n) {
   if (n >= 1 && n <= Object.keys(phasesObj).length - 1) {
     currentPhase = n;
-    if (checkAtonUpdate(currentPhase).boolATON) {
-      loadPhaseSubjectATONScene(checkAtonUpdate(currentPhase).s_id);
-      startTimer();
-    }
     updatePhase(currentPhase);
   } else {
     console.warn('goToPhase: invalid phase number →', n);

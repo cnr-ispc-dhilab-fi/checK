@@ -98,14 +98,14 @@ APP.setup = () => {
 
         // 3. Load ATON scene in subject
 
-        ATON.Photon.on("loadScene", (params) => {
+        ATON.Photon.on("loadScene", (evtData) => {
             console.log("Internal debug 1");
             if (role == 1) {
                 console.log("Internal debug 2");
-                let mkgid = params.sid.replace("/","-");
-                let kaptoPars = `mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.attr=pos,dir&mk.dur=900&mk.gid=${mkgid}`
-                let appendixURLSearch = `id=${getIdFromURL()}&sc=${params.get("sc")}&${kaptoPars}`;
-                window.location.href = `scene.html?sid=${params.sid}&r=1&${appendixURLSearch}`;
+                let mkgid = evtData.sid.replace("/","-");
+                let kaptoPars = `mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.attr=pos,dir&mk.dur=900&mk.gid=${mkgid}`;
+                let appendixURLSearch = `id=${getIdFromURL()}&sc=${subject}&${kaptoPars}`;
+                window.location.href = `scene.html?sid=${evtData.sid}&r=1&${appendixURLSearch}`;
             }
         });
 
