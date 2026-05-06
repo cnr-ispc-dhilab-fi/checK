@@ -71,7 +71,7 @@ APP.setup = () => {
             if (role == 0) {
                 window.parent.Swal.fire({
                     title: `Participant ${subject} entered the scene`,
-                    text: 'Everything is set! The experiment can now begin',
+                    text: 'Everything is set! The experiment can now continue',
                     confirmButtonText: 'Start',
                     target: "body",
                     width: "50%",
@@ -166,16 +166,7 @@ setInterval(updatePos, 0.01);
 
 // 2. Send alert and modals to the tester
 
-// A. Fire alert when user enters the scene
-document.addEventListener('keydown', function (e) {
-    if (e.keyCode === 32) {
-        if (role == 1) {
-            ATON.Photon.fireEvent("triggerAlert", subject);
-        }
-    }
-});
-
-// B. [!] Associate to VR controller trigger [!]
+// [!] Associate to VR controller trigger [!]
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
         triggerModal();

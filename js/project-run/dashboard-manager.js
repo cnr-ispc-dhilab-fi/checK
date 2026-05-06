@@ -416,23 +416,3 @@ function previewAsset(assetId, assetType) {
         }
 });
 }
-
-// =============================
-// ==== Timer for the panel ====
-// -- Add functions for timer --
-// =============================
-
-// To go forward in the experiment protocol
-function goToNextPhase() {
-    if (currentPhase < Object.keys(phasesObj).length - 1) {
-
-        currentPhase++;
-
-        // If necessary, update subject ATON scene
-        if (checkAtonUpdate(currentPhase).boolATON) {
-            loadPhaseSubjectATONScene(checkAtonUpdate(currentPhase).s_id);
-        }
-
-        updatePhase(currentPhase);
-    }
-}

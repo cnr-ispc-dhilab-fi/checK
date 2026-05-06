@@ -149,7 +149,7 @@
                                 </tr>
                                 <tr>
                                     <th scope="row">Repetitions</td>
-                                    <td id="phase-iter">0</td>
+                                    <td id="phase-repeat">0</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -359,7 +359,7 @@
 
                         <!-- Repeat -->
                         <div class="col-4">
-                            <div class="card h-100 border text-center p-3"
+                            <div class="card h-100 border text-center p-3" onclick="handlePhaseAction({ direction: 'same', is_repeat: true })"
                                 style="cursor:pointer; border-color: var(--bs-danger) !important; background: var(--bs-danger-bg-subtle);">
                                 <i class="bi bi-arrow-counterclockwise fs-2 mb-1"></i>
                                 <div class="fw-medium mb-1">Repeat</div>
@@ -377,7 +377,7 @@
                         <!-- Continue -->
                         <div class="col-4">
                             <div class="card h-100 border text-center p-3" style="cursor:pointer; border-color: var(--bs-dark-border-subtle) !important; background: #ffffff;"
-                                data-bs-dismiss="modal">
+                                data-bs-dismiss="modal" onclick="handlePhaseAction({ direction: 'same' })">
                                 <i class="bi bi-play-fill fs-2 mb-1"></i>
                                 <div class="fw-medium mb-1">Continue</div>
                                 <div class="text-muted small">Resume from where you left off</div>
@@ -388,7 +388,7 @@
                         <div class="col-4">
                             <div class="card h-100 border text-center p-3"
                                 style="cursor:pointer; border-color: var(--bs-primary) !important; background: var(--bs-primary-bg-subtle);"
-                                data-bs-dismiss="modal" id="nextPhaseCard">
+                                data-bs-dismiss="modal" onclick="handlePhaseAction({ direction: 'next' })" id="nextPhaseCard">
                                 <i class="bi bi-arrow-right-circle fs-2 mb-1" id="nextPhaseIcon"></i>
                                 <div class="fw-medium mb-1" id="nextPhaseLabel">Next phase</div>
                                 <div class="text-muted small" id="nextPhaseDesc">Go to Phase —</div>
@@ -404,7 +404,7 @@
                             <span class="small text-muted text-nowrap">Jump to:</span>
                             <select class="form-select form-select-sm" id="phaseJumpSelect"></select>
                             <button type="button" class="btn btn-sm btn-outline-secondary text-nowrap"
-                                data-bs-dismiss="modal" onclick="handleJump()">Go</button>
+                                data-bs-dismiss="modal" onclick="handlePhaseAction({ direction: parseInt(document.getElementById('phaseJumpSelect').value) })">Go</button>
                         </div>
                     </div>
 
