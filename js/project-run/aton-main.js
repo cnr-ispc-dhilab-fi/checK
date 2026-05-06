@@ -1,6 +1,6 @@
 // Extract scene ID for URL
 const params = new URLSearchParams(window.location.search);
-const subject = params.get("run").split("-")[0];
+const subject = params.get("sc");
 const s_id = `${params.get("sid")}`;
 const role = params.get("r");
 
@@ -104,7 +104,7 @@ APP.setup = () => {
                 console.log("Internal debug 2");
                 let mkgid = params.sid.replace("/","-");
                 let kaptoPars = `mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.attr=pos,dir&mk.dur=900&mk.gid=${mkgid}`
-                let appendixURLSearch = `id=${getIdFromURL()}&run=${getRunIDFromURL()}&${kaptoPars}`;
+                let appendixURLSearch = `id=${getIdFromURL()}&sc=${params.get("sc")}&${kaptoPars}`;
                 window.location.href = `scene.html?sid=${params.sid}&r=1&${appendixURLSearch}`;
             }
         });

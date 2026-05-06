@@ -32,10 +32,10 @@ async function updatePhase(phase) {
 // Session metadata in the header
 async function updateSessionMetadata() {
     document.getElementById("session-project").innerHTML = projectConfig["title"];
-    document.getElementById("session-subject").innerHTML = getSubjectIDFromURL();
+    document.getElementById("session-subject").innerHTML = getSubjectID();
     document.getElementById("session-project-id").innerHTML = getSessionCodeFromURL();
-    document.getElementById("session-group").innerHTML = getGroupAndMeasureFromURL().split(",")[0];
-    document.getElementById("session-measure").innerHTML = getGroupAndMeasureFromURL().split(",")[1];
+    document.getElementById("session-group").innerHTML = sessionRecord.group;
+    document.getElementById("session-measure").innerHTML = sessionRecord.measure;
 }
 
 // Do we need to update the ATON scene?
@@ -76,7 +76,7 @@ function loadPhaseATONScene(phase) {
     
     if (boolATON) {
 
-        atonFrame.src = `scene.html?id=${getIdFromURL()}&run=${getRunIDFromURL()}&sid=${s_id}&r=0`; 
+        atonFrame.src = `scene.html?id=${sessionRecord.projectId}&sc=${getSessionCodeFromURL()}&sid=${s_id}&r=0`;
         console.log("ALTRO DEBUG:", atonFrame.src);
 
     /*  

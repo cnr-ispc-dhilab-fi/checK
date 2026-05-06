@@ -50,6 +50,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
     <!-- Vendors -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="/vendors/vendors.min.js"></script>
     <script type="text/javascript" src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -140,7 +141,7 @@
 
                 <div class="row mt-2">
                     <div class="col-3 align-self-center">
-                        <p>Subject unique identifier</p>
+                        <p>Subject unique identifier <span style="color: var(--bs-danger)">*</span></p>
                     </div>
                     <div class="col-9">
                         <div class="form-group">
@@ -152,12 +153,12 @@
 
                 <div class="row mt-3">
                     <div class="col-3 align-self-center">
-                        <p>Reference Group</p>
+                        <p>Reference Group <span style="color: var(--bs-danger)">*</span></p>
                     </div>
                     <div class="col-9">
                         <div class="form-group">
                             <select id="refGroup" class="form-control">
-                                <option selected>Choose...</option>
+                                <option value="" selected disabled>Choose...</option>
                             </select>
                         </div>
                     </div>
@@ -165,12 +166,12 @@
 
                 <div class="row mt-3">
                     <div class="col-3 align-self-center">
-                        <p>Current Repeated Measure</p>
+                        <p>Current Repeated Measure <span style="color: var(--bs-danger)">*</span></p>
                     </div>
                     <div class="col-9">
                         <div class="form-group">
                             <select id="refMeasure" class="form-control">
-                                <option selected>Choose...</option>
+                                <option value="" selected disabled>Choose...</option>
                             </select>
                         </div>
                     </div>
@@ -215,7 +216,7 @@
                     </div>
                 </div>
 
-                <div class="row mt-3">
+                <div class="row mt-2">
                     <div class="d-flex justify-content-center">
                         <button type="button" class="btn btn-primary" onclick="redirect(true)">Start the
                             experiment</button>
@@ -258,15 +259,30 @@
             projectId = getIdFromURL()
 
             if (isForward) {
-                let subjPseudoCode = document.getElementById("subjPseudoCode").value;
-                let subjGroup = document.getElementById("refGroup").value;
-                let subjMeasure = document.getElementById("refMeasure").value;
+                const subjPseudoCode = document.getElementById("subjPseudoCode").value.trim();
+                const subjGroup      = document.getElementById("refGroup").value;
+                const subjMeasure    = document.getElementById("refMeasure").value;
 
-                let runID = `${subjPseudoCode}-G${subjGroup}-M${subjMeasure}`;
+                if (!subjPseudoCode || !subjGroup || !subjMeasure) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Required fields missing",
+                        text: "Please fill in Subject ID, Group and Measure before starting.",
+                        confirmButtonColor: "var(--bs-primary)"
+                    });
+                    return;
+                }
 
-                const sessionCode = await createSessionRecord(projectId, subjPseudoCode, subjGroup, subjMeasure);
+                const genderEl = document.querySelector('input[name="inlineRadioOptions"]:checked');
+                const ageVal   = document.getElementById("subjAge").value.trim();
 
-                window.location.href = `experiment.html?id=${projectId}&run=${runID}&sc=${sessionCode}`;
+                const extra = {};
+                if (genderEl) extra.gender = genderEl.value;
+                if (ageVal)   extra.age    = ageVal;
+
+                const sessionCode = await createSessionRecord(projectId, subjPseudoCode, subjGroup, subjMeasure, extra);
+
+                window.location.href = `experiment.html?id=${projectId}&sc=${sessionCode}`;
             } else {
                 window.location.href = `../project-setup/protocol-summary.html?id=${projectId}`;
             }

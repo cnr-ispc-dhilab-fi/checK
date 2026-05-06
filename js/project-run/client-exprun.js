@@ -1,11 +1,15 @@
 // ===============================
-// RUN-SPECIFIC URL HELPERS
+// SESSION CODE URL HELPER
 // ===============================
 
 function getSessionCodeFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("sc");
 }
+
+// ===============================
+// RECORDS.JSON LOOKUP (via ATON storage)
+// ===============================
 
 async function getSessionRecord(sessionCode) {
   const records = await ATON.App.getStorage(RECORDS_STORAGE_ID) || {};
@@ -17,25 +21,18 @@ async function getSessionRecord(sessionCode) {
   return null;
 }
 
-function getRunIDFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("run");
+// ===============================
+// SESSION ACCESSORS (from sessionRecord)
+// ===============================
+
+let sessionRecord = null;
+
+function getGroupAndMeasure() {
+  return `${sessionRecord.group},${sessionRecord.measure}`;
 }
 
-function getGroupAndMeasureFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  let subjStringAsArray = params.get("run").split("-");
-  console.log(subjStringAsArray)
-  let group = subjStringAsArray[1].split("G")[1];
-  console.log(group)
-  let measure = subjStringAsArray[2].split("M")[1];
-  return `${group},${measure}`;
-}
-
-function getSubjectIDFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  let subjStringAsArray = params.get("run").split("-");
-  return subjStringAsArray[0];
+function getSubjectID() {
+  return sessionRecord.subjectID;
 }
 
 // ===============================
@@ -43,22 +40,21 @@ function getSubjectIDFromURL() {
 // ===============================
 
 let projectConfig;
-
 let protocolConfigStorage;
-
 let protocolMultimediaLibraryStorage;
-
 let phasesObj;
-
-let currenTemplate;
+let currentTemplate;
 
 async function updateStorageObjects() {
+  const sc = getSessionCodeFromURL();
+  sessionRecord = await getSessionRecord(sc);
 
-  projectConfig                    = await ATON.App.getStorage(getProjectConfigStorageId(getIdFromURL()));
-  console.log("DEBUG 0", projectConfig);
-  protocolConfigStorage            = await ATON.App.getStorage(getProjectProtocolConfigStorageId(getIdFromURL()));
-  protocolMultimediaLibraryStorage = await ATON.App.getStorage(getProjectProtocolAssetLibraryStorageId(getIdFromURL()));
-  currentTemplate = projectConfig["template"];
-  phasesObj       = protocolConfigStorage[getGroupAndMeasureFromURL()]["phase"];
+  const projectId = sessionRecord.projectId;
+  const gm        = getGroupAndMeasure();
 
-};
+  projectConfig                    = await ATON.App.getStorage(getProjectConfigStorageId(projectId));
+  protocolConfigStorage            = await ATON.App.getStorage(getProjectProtocolConfigStorageId(projectId));
+  protocolMultimediaLibraryStorage = await ATON.App.getStorage(getProjectProtocolAssetLibraryStorageId(projectId));
+  currentTemplate                  = projectConfig["template"];
+  phasesObj                        = protocolConfigStorage[gm]["phase"];
+}
