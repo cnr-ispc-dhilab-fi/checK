@@ -1,6 +1,8 @@
 timeStamp,currentPhase,mkid,is_selection_correct,comment,updated_correct_count,updated_wrong_count,updated_repetition_count,next_action
-00.07.89,1,2026-05-07-12-48_9hIO1nfSqR,false,,0,1,1,Repeat phase and reset count
-00.12.01,1,2026-05-07-12-48_9hIO1nfSqR,true,,1,1,1,Go on with current phase
-00.14.26,1,2026-05-07-12-48_9hIO1nfSqR,false,,1,2,2,Repeat phase and reset count
-00.17.50,1,2026-05-07-12-48_9hIO1nfSqR,true,,1,2,Phase 2
-00.03.63,2,2026-05-07-12-48_2dILNI5q1V,true,,1,0,End session
+00.03.75,1,2026-05-07-13-07_P_N9JMpglN,true,,1,0,0,Go on with current phase
+00.07.02,1,2026-05-07-13-07_P_N9JMpglN,false,"Wrong, repeat, no reset",1,1,1,Repeat phase
+00.12.68,1,2026-05-07-13-07_P_N9JMpglN,false,"Wrong, reset, repeat",1,2,2,Repeat phase and reset count
+00.18.17,1,2026-05-07-13-07_P_N9JMpglN,true,,1,2,,Phase 2
+00.00.00,2,2026-05-07-13-08_ho4Hr2_ag5,false,"Wrong, back Phase 1",0,1,,Phase 1
+00.04.04,1,2026-05-07-13-08_SvIOGFozwr,true,,1,0,,Phase 2
+00.03.31,2,2026-05-07-13-08_VeXpmrBTVe,true,,1,0,,End session

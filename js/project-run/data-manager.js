@@ -61,8 +61,13 @@ function updateResultsDataChunk(contentObj, dataObj) {
 
 // Save data into .CSV
 function sessionDataToCSV(data) {
-    const headers = Object.keys(data[0]).join(",");
-    const rows = data.map(r => Object.values(r).join(","));
+    const escapeCSV = v => {
+        const s = String(v ?? "");
+        return /[,"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const allKeys = [...new Set(data.flatMap(r => Object.keys(r)))];
+    const headers = allKeys.join(",");
+    const rows = data.map(r => allKeys.map(k => escapeCSV(r[k])).join(","));
     return [headers, ...rows].join("\n");
 }
 

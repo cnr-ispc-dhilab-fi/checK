@@ -32,17 +32,6 @@ APP.setup = () => {
             // Set third-person navigation
             ATON.Nav.setOrbitControl();
 
-            // Add toolbar to tester interface
-            ATON.UI.get("idTopToolbar").append(
-                ATON.UI.elem(`<h4 id="atonRoleHeader">Tester mode</h4>`),
-            );
-            document.getElementById("idTopToolbar").style.backgroundColor = "rgba(209,156,107, 0.3)";
-
-            /*
-            let subjectAvatar = ATON.Photon.getAvatar(0);
-            ATON.Photon.touchAvatar(0).usernametext.set({content: subject});
-            */
-
         } else if (role === "1") { // Visitor, Participant, Patient etc (Subject)
 
             // Set first-person navigation
