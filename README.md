@@ -13,14 +13,14 @@ This repository contains the material of **checK** (Cultural Heritage Experiment
     - [check-flare](https://github.com/cnr-ispc-dhilab-fi/check-flare)
     - [merkhet](https://github.com/phoenixbf/merkhet-plugin)
     - [kapto](https://github.com/phoenixbf/kapto) 
-3. Add the following webapps in `[your main aton instance]/webapps`
+3. Add the following webapps in `[your main aton instance]/webapps/`
     - checK, cloning this repository
     - [merkhet](https://github.com/phoenixbf/merkhet-app) (*)
 4. Create the following subfolders to host models and scenes 
     - `[your main aton instance]/data/collections/check-user`
     - `[your main aton instance]/data/scenes/check-user`
 
-(*) To properly set-up the Kapto Hub in Merkhet, add at `[your main aton instance]/webapps/merkhet` the file `config.json`:
+(*) To properly set-up the Kapto Hub in Merkhet, add at `[your main aton instance]/webapps/merkhet/` the file `config.json`:
 
 ```
 {
