@@ -59,7 +59,8 @@
 
 	<!-- Main js entry -->
     <script type="text/javascript" src="../js/client-root.js"></script>
-    <script type="text/javascript" src="../js/project-setup/client-setup.js"></script>
+
+    <script type="text/javascript" src="../js/project-data/data-viz.js"></script>
 </head>
 
 <body>
@@ -99,8 +100,8 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">My projects</li>
                         <li class="breadcrumb-item"><span id="summary-project-template">Taks 'n Test Template</span></li>
+                        <li class="breadcrumb-item active" aria-current="page">Session Data Visuailisation</li>
                         <li class="breadcrumb-item" id="summary-project-title-bread">New Project Summary</li>
-                        <li class="breadcrumb-item active" aria-current="page">Project Overview</li>
                     </ol>
                 </nav>
                 <h1 id="summary-project-title"></h1>
@@ -111,28 +112,39 @@
             <div class="row mx-3 py-4 align-items-center">
 
                 <!-- LEFT: banner text -->
-                <div class="col-md-6 col-sm-12">
-                    <h3 class="mb-2">Your project is ready for a new testing session!</h3>
+                <div class="col-md-5 col-sm-12">
+                    <h3 class="mb-2">Visualise data of testing sessions!</h3>
                     <p class="mb-0 text-muted">
-                        Start a new experimental session or review the data already collected.
+                        Visualise the data already collected.
                     </p>
                 </div>
 
                 <!-- RIGHT: buttons -->
-                <div class="col-md-6 col-sm-12 d-flex justify-content-md-end justify-content-start mt-3 mt-md-0">
-                    <div class="d-flex flex-row gap-2 w-md-auto">
+                <div class="col-md-7 col-sm-12 d-flex justify-content-md-end justify-content-start mt-3 mt-md-0">
+                    <form class="mt-1">
+                        <div class="form row align-items-center">
+                            <div class="col-5 my-1 d-flex flex-row justify-content-around">
+                                <select class="form-select mr-sm-2 w-100" id="selectSession">
+                                    <option value="">--Please choose an option--</option>
+                                    <!-- Populated via JS in check-client-->
+                                </select>
+                                
+                            </div>
 
-                        <a onclick="goToOnboarding()"
-                        class="btn btn-primary">
-                            <i class="bi bi-play-fill"></i> Start a new session
-                        </a>
+                            <div class="col-5 my-1 d-flex flex-row justify-content-around">
+                                <select class="form-select mr-sm-2 w-100" id="selectSubject">
+                                    <option value="">--Please choose an option--</option>
+                                    <!-- Populated via JS in check-client-->
+                                </select>
+                            </div>
 
-                        <a onclick="goToSessionData()"
-                        class="btn btn-secondary">
-                            <i class="bi bi-clipboard-data-fill"></i> View collected data
-                        </a>
+                            <div class="col-2 my-1 d-flex flex-row justify-content-end">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="btn-set-tm" onclick="">Go</button>
+                            </div>
 
-                    </div>
+                        </div>
+                    </form>
+
                 </div>
 
             </div>
@@ -142,24 +154,12 @@
         <div class="row mt-2 gx-12">
 
             <div class="col-md-4 col-sm-12 justify-content-center">     
-                <div id="summary-carousel" class="carousel slide">
-                    <div class="carousel-inner" id="summary-carousel-inner" data-bs-ride="carousel" style="max-height: 50vh">
-                        <!-- Will be dynamically populated with thumbs-->
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#summary-carousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#summary-carousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
+                <!-- IFRAME -->
             </div>
 
             <div class="col-md-8 col-sm-12 d-flex flex-column">
                 <div class="d-flex flex-column h-100 justify-content-between py-2" style="width: 100%;">
-                    <h4 >Your project at a glance</h4>
+                    <h4 >Phase 1</h4>
 
                     <table class="table mt-2">
                         <tbody>
@@ -175,40 +175,9 @@
                             <th scope="row">Uploaded environment(s)</th>
                             <td><span id="summary-project-no-3Dassets"></span></td>
                             </tr>
-                            <tr>
-                            <th scope="row"></th>
-                            <td class="text-end"><a id="summaryLink" style="font-style: italic; color: var(--bs-secondary-text-emphasis)">See all project data »</a></td>
-                            </tr>
                         </tbody>
                     </table>
 
-                    
-
-                    <form class="mt-1">
-                        <div class="form row align-items-center">
-                            <div class="col-sm-12 my-1">
-                                <h5>Check protocol for:</h5>
-                            </div>
-                            
-                            <div class="col-sm-5 my-1 d-flex flex-row justify-content-around">
-                                <select class="form-select mr-sm-2 w-100" id="selectGroup">
-                                    <!-- Populated via JS in check-client-->
-                                </select>
-                                
-                            </div>
-
-                            <div class="col-sm-5 my-1 d-flex flex-row justify-content-around">
-                                <select class="form-select mr-sm-2 w-100" id="selectMeasure">
-                                    <!-- Populated via JS in check-client-->
-                                </select>
-                            </div>
-
-                            <div class="col-sm-2 my-1 d-flex flex-row justify-content-end">
-                                <button type="button" class="btn btn-outline-primary btn-sm mx-2" id="btn-set-tm" onclick="protocolForRefMeasureGroup()">Go</button>
-                            </div>
-                            
-                        </div>
-                    </form>
 
                 </div>
 
@@ -232,78 +201,21 @@
     </script>
 
     <script>
-    window.addEventListener("load", () => {
+
+
+    window.addEventListener("load", async () => {
         const projectId = getIdFromURL();
         if (projectId) {
-            renderProjectSummaryFromStorage();
-        }
 
-        updateGMSelect()
+            // Update storage variables
+            await updateStorage();
+
+            // Updates UI
+            $("#summary-project-template").html(configStorage["template"]);
+            $("#summary-project-title-bread").html(configStorage["title"]);
+        }
     });
 
-    document.getElementById("summaryLink").href =`project-summary.html?id=${getIdFromURL()}`;
-
-    const carouselContainer = document.getElementById("summary-carousel-inner");
-
-    async function createCarousel(id, counter) {
-        const uploadJSON = await readUploadJson();
-
-        if (!uploadJSON[id]) {
-            console.error("ID non trovato in upload.json:", id, uploadJSON);
-            return;
-        }
-
-        if (!uploadJSON[id].thumb) {
-            console.error("Nessuna thumb per ID:", id, uploadJSON[id]);
-            return;
-        }
-
-        // Costruisco la URL assoluta della thumbnail
-        const thumbUrl = "http://localhost:3001" + uploadJSON[id].thumb.url;
-        console.log("Thumbnail URL per ID", id, ":", thumbUrl);
-
-        if (counter === 0) {
-            const carousitem_html = `
-                <div class="carousel-item active">
-                <img src="${thumbUrl}" class="d-block w-100" alt="thumbnail ambiente ${id}">
-                </div>`;
-        } else {
-            const carousitem_html = `
-                <div class="carousel-item">
-                <img src="${thumbUrl}" class="d-block w-100" alt="thumbnail ambiente ${id}">
-                </div>`;
-        }
-
-        // insertAdjacentHTML si aspetta una stringa
-        carouselContainer.insertAdjacentHTML("beforeend", carousitem_html);
-    }
-
-    async function protocolForRefMeasureGroup() {
-
-        const configStorage = await ATON.App.getStorage(getProjectConfigStorageId(projectId));
-        let tPar;
-
-        if (configStorage["template"]=== "Task 'n Test") {
-            tPar = 1;
-        } else {
-            tPar = 0
-        }
-       
-        let selectGroupVal = document.getElementById("selectGroup").value;
-        let selectMeasureVal = document.getElementById("selectMeasure").value;
-
-        window.location = `protocol-setup.html?id=${projectId}&p=1&s=1&g=${selectGroupVal}&m=${selectMeasureVal}&t=${tPar}&v=true`
-
-    }
-
-    async function goToOnboarding() {
-        const projectId = getIdFromURL();
-        window.location = `../project-run/onboarding.html?id=${projectId}`;
-    }
-
-    async function goToSessionData() {
-        window.location = `../project-data/index.html?id=${getIdFromURL()}`;
-    }
     </script>
 
 
