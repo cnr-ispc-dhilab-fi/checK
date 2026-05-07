@@ -1,5 +1,8 @@
 const RECORDS_STORAGE_ID = "session/records";
 
+let sessionData = [];
+let dataChunk = {};
+
 // Create session ID
 
 function generateSessionCode() {
@@ -32,8 +35,37 @@ window.addEventListener('DOMContentLoaded', async function() {
 });
 
 // Capture data chunks
+function startCaptureDataChunk(obj) {    
+    dataChunk = {}; // Intialise data chunks
+    dataChunk.timeStamp = getTimerCentiseconds();
+    dataChunk.currentPhase = currentPhase;
+    dataChunk.mkid = obj.mkid;
+    return dataChunk
+}
+
+function updateResultsDataChunk(contentObj, dataObj) {
+    if (contentObj.content == "outcome") {
+        console.log(`=== Updating datachunk: ${contentObj.content} ===`);
+        dataChunk = Object.assign(dataChunk, dataObj);
+        console.log(dataChunk);
+    } else if (contentObj.content == "next_action") {
+        console.log(`=== Updating datachunk: ${contentObj.content} ===`);
+        dataChunk = Object.assign(dataChunk, dataObj);
+        console.log(dataChunk);
+
+        sessionData.push(dataChunk)
+
+        console.log(`Saving datachunk:\n${dataChunk}`);
+    }
+}
 
 // Save data into .CSV
+function sessionDataToCSV(data) {
+    const headers = Object.keys(data[0]).join(",");
+    const rows = data.map(r => Object.values(r).join(","));
+    return [headers, ...rows].join("\n");
+}
+
 async function saveSessionCSV(csvContent) {
     const sc        = getSessionCodeFromURL();
     const projectId = sessionRecord.projectId;

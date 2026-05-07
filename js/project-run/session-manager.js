@@ -1,5 +1,3 @@
-const params = new URLSearchParams(window.location.search);
-
 // ===================================
 // == TRIGGER FUNCTIONS FOR SUBJECT ==
 // These functions call events through
@@ -10,7 +8,9 @@ const params = new URLSearchParams(window.location.search);
 
 function loadPhaseSubjectATONScene(s_id) {
     let atonFrame = document.getElementById("testerATONSceneFrame");
-    atonFrame.contentWindow.subjectATONSceneLoader({ sid: s_id });
+    if (typeof atonFrame.contentWindow?.subjectATONSceneLoader === 'function') {
+        atonFrame.contentWindow.subjectATONSceneLoader({ sid: s_id });
+    }
 }
 
 // Missing: SPATIAL UI
@@ -59,7 +59,11 @@ function startTimer() {
 }
 
 function getTimerCentiseconds() {
-    return _timerCentiseconds;
+    const cs = _timerCentiseconds;
+    const m  = Math.floor(cs / 6000);
+    const s  = Math.floor((cs % 6000) / 100);
+    const c  = cs % 100;
+    return String(m).padStart(2, '0') + '.' + String(s).padStart(2, '0') + '.' + String(c).padStart(2, '0');
 }
 
 function pauseTimer() {
@@ -95,6 +99,13 @@ function changePhaseModal(isCorrect) {
   let countCorrect = parseInt($('#phase-correct').text());
   let countWrong   = parseInt($('#phase-wrong').text());
 
+  // Discard: record data chunk but skip modal 2 and restart timer
+  if (isCorrect === "discarded") {
+    $('#modalSelectionViewer').modal('hide');
+    startTimer();
+    return;
+  }
+
   if (isCorrect) {
     $('#taskCorrectBoolSpan').text("completed");
     countCorrect++;
@@ -104,6 +115,10 @@ function changePhaseModal(isCorrect) {
     countWrong++;
     $('#phase-wrong').text(countWrong);
   }
+
+  updateResultsDataChunk({content: "outcome"}, {is_selection_correct: isCorrect, comment: $('#selectionComment').val(), updated_correct_count: countCorrect, updated_wrong_count: countWrong});
+
+  $('#selectionComment').val("");
 
   $('#taskRepeatCountSpan').text($('#phase-repeat').text());
   $('#taskMistakeCountSpan').text(countWrong);
@@ -150,6 +165,7 @@ function changePhaseModal(isCorrect) {
 function goToNextPhase() {
     if (currentPhase < Object.keys(phasesObj).length - 1) {
         currentPhase++;
+        updateResultsDataChunk({content: "next_action"}, {next_action: `Phase ${currentPhase}`});
         updatePhase(currentPhase);
     }
 }
@@ -158,6 +174,7 @@ function goToNextPhase() {
 function goToPhase(n) {
   if (n >= 1 && n <= Object.keys(phasesObj).length - 1) {
     currentPhase = n;
+    updateResultsDataChunk({content: "next_action"}, {next_action: `Phase ${currentPhase}`});
     updatePhase(currentPhase);
   } else {
     console.warn('goToPhase: invalid phase number →', n);
@@ -165,7 +182,8 @@ function goToPhase(n) {
 }
 
 // To end the session
-function endSession() {
+async function endSession() {
+  await saveSessionCSV(sessionDataToCSV(sessionData));
   console.log("Sessione terminata")
   // To implement
 }
@@ -191,16 +209,25 @@ function handlePhaseAction(params) {
   switch (direction) {
     case 'same':
 
-      case 'same':
-      if (restart_count && is_repeat) {
-        $('#phase-correct').text('0');
-      }
+      let countRepeat = parseInt($('#phase-repeat').text()) || 0;
+      let next_step; 
        
       if (is_repeat) {
-        let countRepeat = parseInt($('#phase-repeat').text()) || 0;
+
         countRepeat++;
         $('#phase-repeat').text(countRepeat);
+        next_step = "Repeat phase";
+
+        // case 'same':
+        if (restart_count) {
+          $('#phase-correct').text('0');
+          next_step = "Repeat phase and reset count";
+        }
+      } else {
+        next_step = "Go on with current phase"
       }
+
+      updateResultsDataChunk({content: "next_action"}, {updated_repetition_count: countRepeat, next_action: next_step});
 
       startTimer();
       break;
@@ -210,6 +237,7 @@ function handlePhaseAction(params) {
       break;
 
     case 'end':
+      updateResultsDataChunk({content: "next_action"}, {next_action: "End session"});
       endSession();
       break;
 

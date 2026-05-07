@@ -282,7 +282,7 @@
 
                 const sessionCode = await createSessionRecord(projectId, subjPseudoCode, subjGroup, subjMeasure, extra);
 
-                window.location.href = `experiment.html?id=${projectId}&sc=${sessionCode}`;
+                window.location.href = `experiment.html?id=${projectId}&sc=${sessionCode}&r=0`;
             } else {
                 window.location.href = `../project-setup/protocol-summary.html?id=${projectId}`;
             }

@@ -6,6 +6,8 @@ const role = params.get("r");
 
 let currentPov = [] // initialise current pos for main button
 
+let mkId;
+
 let APP = ATON.App.realize();
 
 APP.setup = () => {
@@ -53,6 +55,9 @@ APP.setup = () => {
 
         }
 
+        // Update the Merkhet ID once Kapto establishes its session asynchronously
+        ATON.Photon.on("KaptoSessionID", (sesid) => { mkId = sesid; });
+        
         // ================================
         // == LISTENER FOR PHOTON EVENTS ==
         // ================================
@@ -85,8 +90,10 @@ APP.setup = () => {
         });
 
         // 3. Show modal in tester interface when subject clicks on the main button
+        //    This also initialise the dataChunk, relying on getMerkhetID()
         ATON.Photon.on("showModal", (testerPov) => {
             if (role == 0) {
+                window.parent.console.log(window.parent.startCaptureDataChunk({mkid : mkId}));
                 let cover = ATON.Utils.takeScreenshotFromPOV(testerPov, 256);
                 window.parent.subjectTrigger(cover);
                 window.parent.console.log(cover.src);
@@ -173,6 +180,7 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+
 function triggerModal() {    // Fire modal (use ancillary function to ensure correct position)
     if (role == 1) {
         ATON.Photon.fireEvent("showModal", calibrateTesterPOV());
@@ -202,7 +210,3 @@ function cilecca() {
 // iframediv.contentWindow.window.parent.subjectTrigger
 
 */
-
-
-// TO ADD
-// ATON.Photon.on("KaptoSessionID", (recordid) => { console.log(recordid) })

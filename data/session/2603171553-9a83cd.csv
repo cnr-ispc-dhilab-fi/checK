@@ -1,0 +1,6 @@
+timeStamp,currentPhase,mkid,is_selection_correct,comment,updated_correct_count,updated_wrong_count,updated_repetition_count,next_action
+00.07.89,1,2026-05-07-12-48_9hIO1nfSqR,false,,0,1,1,Repeat phase and reset count
+00.12.01,1,2026-05-07-12-48_9hIO1nfSqR,true,,1,1,1,Go on with current phase
+00.14.26,1,2026-05-07-12-48_9hIO1nfSqR,false,,1,2,2,Repeat phase and reset count
+00.17.50,1,2026-05-07-12-48_9hIO1nfSqR,true,,1,2,Phase 2
+00.03.63,2,2026-05-07-12-48_2dILNI5q1V,true,,1,0,End session

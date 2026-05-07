@@ -1,16 +1,10 @@
 {
-    "2603171553": {
-        "2bfeb9": {
-            "subjectID": "260506A01",
-            "group": "1",
-            "measure": "1",
-            "age": "27",
-            "gender": "m"
-        },
-        "1c9745": {
-            "subjectID": "20260506-A002",
-            "group": "1",
-            "measure": "1"
-        }
+  "2603171553": {
+    "9a83cd": {
+      "subjectID": "20260507-A001",
+      "group": "1",
+      "measure": "1",
+      "path": "session/2603171553-9a83cd.csv"
     }
+  }
 }
