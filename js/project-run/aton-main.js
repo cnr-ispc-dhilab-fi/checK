@@ -106,6 +106,28 @@ APP.setup = () => {
             }
         });
 
+        // 4. Request Home POV
+
+         ATON.Photon.on("homePOV", () => {
+            if (role == 1) {
+                ATON.Nav.requestHomePOV();
+            }
+        });
+
+
+        // 3. End experiment session, showing final modal [! TO ADAPT TO VR !]
+
+        ATON.Photon.on("closeSession", () => {
+            if (role == 1) {
+                ATON.UI.showModal({
+                    header: "The session is concluded",
+                    body: ATON.UI.createContainer({
+                    items: [ATON.UI.elem(`<p>Thank you for participating in the experiment. You can now give the material back to the tester</p>`)]
+                    })
+                });
+            }
+        })
+
 
         // Chi manda messaggio
         // ATON.Photon.fireEvent("nameofevent",objectsended);
@@ -189,11 +211,28 @@ async function subjectATONSceneLoader(params) {
     }
 }
 
+// 4. Request Home POV
+
+function requestHomePOV() {
+    if (role == 0) {
+        ATON.Photon.fireEvent("homePOV", {});
+    }
+}
+
+// 5. End-of-session modal for the tester
+
+function endSessionModal() {
+    if (role == 0) {
+        ATON.Photon.fireEvent("closeSession", {});
+    }
+}
+
+
 /* ----- TEMPLATE TO FIRE EVENTS FROM AND INSIDE IFRAME 
 
 function cilecca() {
     console.log("cilecca");
-    ATON.Photon.fireEvent("gotoscene", { sid: "20260318-check-7151d5", r: 1 })
+    //ATON.Photon.fireEvent("gotoscene", { sid: "20260318-check-7151d5", r: 1 })
 }
 
 // iframediv.contentWindow.cilecca()  !!!!!!!!! 

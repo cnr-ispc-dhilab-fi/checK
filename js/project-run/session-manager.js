@@ -181,11 +181,16 @@ function goToPhase(n) {
   }
 }
 
+function redirectHome() {
+  atonFrame.contentWindow.endSessionModal();
+  window.location.href = window.location.origin + "/a/checK/project-setup/protocol-summary.html?id=" + getIdFromURL();
+}
+
 // To end the session
 async function endSession() {
   await saveSessionCSV(sessionDataToCSV(sessionData));
-  console.log("Sessione terminata")
-  // To implement
+  console.log("Sessione terminata");
+  redirectHome();
 }
 
 
@@ -210,6 +215,7 @@ function handlePhaseAction(params) {
     case 'same':
 
       let countRepeat = parseInt($('#phase-repeat').text()) || 0;
+      let countCorrect = parseInt($('#phase-correct').text());
       let next_step; 
        
       if (is_repeat) {
@@ -221,15 +227,19 @@ function handlePhaseAction(params) {
         // case 'same':
         if (restart_count) {
           $('#phase-correct').text('0');
+          countCorrect = 0;
           next_step = "Repeat phase and reset count";
         }
       } else {
         next_step = "Go on with current phase"
       }
 
-      updateResultsDataChunk({content: "next_action"}, {updated_repetition_count: countRepeat, next_action: next_step});
+      updateResultsDataChunk({content: "next_action"}, {updated_correct_count: countCorrect, updated_repetition_count: countRepeat, next_action: next_step});
 
+      atonFrame.contentWindow.requestHomePOV();
+      
       startTimer();
+      
       break;
 
     case 'next':
@@ -250,3 +260,5 @@ function handlePhaseAction(params) {
       break;
   }
 }
+
+$(document).on('click', '#left-save-session-btn', () => endSession());

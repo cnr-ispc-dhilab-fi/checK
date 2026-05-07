@@ -38,43 +38,16 @@ async function updateSessionMetadata() {
     document.getElementById("session-measure").innerHTML = sessionRecord.measure;
 }
 
-// Do we need to update the ATON scene?
-function checkAtonUpdate(phase) {
-
-    // For training phase, show the environment of the first phase
-    let phaseKey = phase;
-    if (phase === 0) {
-        phaseKey += 1
-    }
-
-    // Access currently uploaded scene
-    let currentATONURL =  new URL(atonFrame.src);
-    let currentATONURLParams = new URLSearchParams(currentATONURL.search);
-
-    console.log(currentATONURL);
-    console.log(currentATONURLParams);
-
-    // Access the scene id for the current phase
-    let s_id = `check-user/${phasesObj[phaseKey]["sceneID"]}`;
-
-    let needsATONUpdate = false; 
-
-    // Update the iFrame containing the ATON Scene if necessary
-    if (currentATONURLParams.get("sid") !== s_id) {
-        needsATONUpdate = true;
-    } else {
-        needsATONUpdate = false;
-    }
-
-    return { boolATON: needsATONUpdate, s_id, params: currentATONURLParams}
-}
-
 // Update the scene visualised in ATON for the tester
 function loadPhaseATONScene(phase) {
 
-    let { boolATON, s_id } = checkAtonUpdate(phase);
+    // For training phase, show the environment of the first phase
+    let phaseKey = (phase === 0) ? 1 : phase;
 
-    if (boolATON) {
+    let currentATONURLParams = new URLSearchParams(new URL(atonFrame.src).search);
+    let s_id = `check-user/${phasesObj[phaseKey]["sceneID"]}`;
+
+    if (currentATONURLParams.get("sid") !== s_id) {
         loadPhaseSubjectATONScene(s_id);
         atonFrame.src = `scene.html?id=${sessionRecord.projectId}&sc=${getSessionCodeFromURL()}&sid=${s_id}&r=0`;
     }
