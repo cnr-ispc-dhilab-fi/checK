@@ -81,11 +81,12 @@ APP.setup = () => {
                     target: "body",
                     width: "50%",
                     confirmButtonColor: "var(--bs-primary)"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (window.parent._timerCentiseconds > 0 || window.parent._timerRunning) window.parent.initTimer();
+                        window.parent.startTimer();
+                    }
                 });
-
-                // Timer starts when the tested subject enters the room
-                if (window.parent._timerCentiseconds > 0 || window.parent._timerRunning) window.parent.initTimer();
-                window.parent.startTimer();
             }
         });
 
