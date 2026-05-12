@@ -5,6 +5,18 @@
       "group": "1",
       "measure": "1",
       "path": "session/2603171553-9a83cd.csv"
+    },
+    "9a83ce": {
+      "subjectID": "20260507-A001",
+      "group": "1",
+      "measure": "2",
+      "path": "session/2603171553-9a83ce.csv"
+    },
+    "9a83cf": {
+      "subjectID": "20260507-A002",
+      "group": "1",
+      "measure": "1",
+      "path": "session/2603171553-9a83cf.csv"
     }
   }
 }

@@ -51,5 +51,24 @@
                 }
             }
         }
+    },
+    "1,2": {
+        "phase": {
+            "0": true,
+            "1": {
+                "name": "Altroaldro",
+                "sceneID": "20260317-check-5382f1",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "",
+                "taskInst": "",
+                "playsAnimation": true,
+                "assets": {}
+            }
+        }
     }
 }

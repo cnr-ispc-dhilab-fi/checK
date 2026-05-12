@@ -4,6 +4,7 @@ const RECORDS_STORAGE_ID = "session/records";
 let configStorage;
 let protocolConfigStorage;
 let sessionStorage;
+let currentData = [];
 
 async function getProjectSessions(projectId) {
   const records = await ATON.App.getStorage(RECORDS_STORAGE_ID) || {};
@@ -11,9 +12,9 @@ async function getProjectSessions(projectId) {
 }
 
 async function updateStorage() {
-    configStorage = await ATON.App.getStorage(getProjectConfigStorageId(getIdFromURL()));
-    protocolConfigStorage = await ATON.App.getStorage(getProjectProtocolConfigStorageId(getIdFromURL()));
-    sessionStorage = await getProjectSessions(getIdFromURL());
+  configStorage = await ATON.App.getStorage(getProjectConfigStorageId(getIdFromURL()));
+  protocolConfigStorage = await ATON.App.getStorage(getProjectProtocolConfigStorageId(getIdFromURL()));
+  sessionStorage = await getProjectSessions(getIdFromURL());
 }
 
 // Remove ATON 3D elements
@@ -32,6 +33,346 @@ app.setup = () => {
   });
 };
 
+// ===============================
+// SELECT INPUT UPDATES
+// ===============================
+
+function retrieveDataForSelect(field, value = null) {
+
+  switch (field) {
+
+    case "subject":
+
+      let subjects = new Set();
+      for (const sessionId in sessionStorage) {
+        if (sessionStorage[sessionId].subjectID) {
+          subjects.add(sessionStorage[sessionId].subjectID);
+        }
+      }
+
+      return Array.from(subjects);
+
+    case "session":
+
+      let sessions = new Set();
+      for (const sessionId in sessionStorage) {
+        if (sessionStorage[sessionId].subjectID === value) {
+          sessions.add({ "id": sessionId, "measure": sessionStorage[sessionId].measure });
+        }
+      }
+
+      return Array.from(sessions);
 
 
+  }
 
+
+}
+
+function updateSelect(field) {
+
+  switch (field) {
+
+    case "subject":
+
+      // Retrieve all the subjects involved in the 
+      // experimental sessions of the project
+      let subjects = retrieveDataForSelect("subject");
+
+      // Populate the select with the subjects
+      SubjectSelect.innerHTML = '<option value="default">Choose a subject</option>';
+
+      for (const subject of subjects) {
+        const option = document.createElement("option");
+        option.value = subject;
+        option.textContent = subject;
+        SubjectSelect.appendChild(option);
+      }
+
+      setStateSelect(field);
+
+      break;
+
+    case "session":
+
+      let Subjvalue = SubjectSelect.value;
+
+      // Retrieve all the sessions in which the 
+      // current subject is involved
+      let sessions = retrieveDataForSelect("session", Subjvalue);
+
+      // Populate the select with the sessions
+      SessionSelect.innerHTML = '<option value="default">Choose a session</option>';
+
+      for (const session of sessions) {
+        const option = document.createElement("option");
+        option.value = session.id;
+        option.textContent = `${session.id} (measure: ${session.measure})`;
+        SessionSelect.appendChild(option);
+      }
+
+      setStateSelect(field);
+
+      break;
+
+    case "phase":
+
+      if (SessionSelect.value != "default") {
+        let referenceProtocol = protocolConfigStorage[`${sessionStorage[SessionSelect.value].group},${sessionStorage[SessionSelect.value].measure}`]["phase"];
+
+        // Populate the select with the phases
+        PhaseSelect.innerHTML = '<option value="default">Choose a phase</option>';
+
+        for (const phase of Object.keys(referenceProtocol)) {
+          if (phase != 0) {
+            const option = document.createElement("option");
+            option.value = phase;
+            option.textContent = `Phase ${phase}: ${referenceProtocol[phase].name}`;
+            PhaseSelect.appendChild(option);
+          }
+        }
+      }
+
+      setStateSelect(field);
+
+      break;
+
+    default:
+      break;
+  }
+}
+
+function updateGoButton() {
+  const GoBtn = document.getElementById("btn-set-tm");
+  if (!GoBtn) return;
+  const allSelected = SubjectSelect.value !== "" && SubjectSelect.value !== "default"
+    && SessionSelect.value !== "" && SessionSelect.value !== "default"
+    && PhaseSelect.value !== "" && PhaseSelect.value !== "default";
+  GoBtn.disabled = !allSelected;
+}
+
+function setStateSelect(field) {
+
+  switch (field) {
+
+    case "session":
+      if (SubjectSelect.value == "default" || SubjectSelect.value == "") {
+        SessionSelect.disabled = true;
+        SessionSelect.value = "";
+
+        PhaseSelect.disabled = true;
+        PhaseSelect.value = "";
+      } else {
+        SessionSelect.disabled = false;
+      }
+      break;
+
+    case "phase":
+      if (SessionSelect.value == "default" || SessionSelect.value == "") {
+        PhaseSelect.disabled = true;
+        PhaseSelect.value = "";
+      } else {
+        PhaseSelect.disabled = false;
+      }
+      break;
+
+  }
+
+  updateGoButton();
+}
+
+function getFullCSVPath() {
+  let csvURL = `${ATON_BASE}/a/checK/data/${sessionStorage[SessionSelect.value].path}`;
+  return csvURL;
+}
+
+async function updateCurrentData(sessionId, phaseId) {
+
+  // Retrieve CSV
+  let csvURL = getFullCSVPath();
+
+  try {
+    const response = await fetch(csvURL);
+
+    if (!response.ok) {
+      console.error(`No record for this data: ${csvURL} (HTTP ${response.status})`);
+      currentData = [];
+      return;
+    }
+
+    const csvText = await response.text();
+
+    // Guard against HTML error pages returned with 200 status
+    if (csvText.trimStart().startsWith("<")) {
+      console.error(`No record for this data: ${csvURL} (received HTML instead of CSV)`);
+      currentData = [];
+      return;
+    }
+
+    // Parse CSV (handles commas inside quoted fields)
+    const parseCSVRow = (row) => {
+      const values = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < row.length; i++) {
+        const ch = row[i];
+        if (ch === '"') {
+          if (inQuotes && row[i + 1] === '"') { current += '"'; i++; }
+          else { inQuotes = !inQuotes; }
+        } else if (ch === "," && !inQuotes) {
+          values.push(current);
+          current = "";
+        } else {
+          current += ch;
+        }
+      }
+      values.push(current);
+      return values;
+    };
+
+    const rows = csvText.trim().split("\n");
+    const headers = parseCSVRow(rows[0]);
+    const data = rows.slice(1).map(row => {
+      const values = parseCSVRow(row);
+      let obj = {};
+      headers.forEach((header, index) => { obj[header] = values[index]; });
+      return obj;
+    });
+
+    currentData = data;
+
+  } catch (error) {
+    console.error("No record for this data:", error);
+    currentData = [];
+  }
+}
+
+async function displayCurrentData(sessionId, phaseId) {
+
+  console.log(`Displaying data for session ${sessionId}, phase ${phaseId}`);
+
+  await updateCurrentData(sessionId, phaseId);
+
+  if (currentData && currentData.length != 0) {
+    document.getElementById("alertContainer").style.display = "none";
+    document.getElementById("dataContainer").style.display = "flex";
+
+    // Filter data for the selected phase
+    if (phaseId) currentData = currentData.filter(row => row.currentPhase === String(phaseId));
+
+    // Update Merkhet immersive visualization
+    updateMerkhetFrame(sessionId, phaseId);
+
+    // Update other UI elements with the current data
+    updateUI(phaseId);
+
+    console.log(currentData);
+  } else {
+    document.getElementById("alertContainer").style.display = "flex";
+    document.getElementById("dataContainer").style.display = "none";
+    console.log("No record for this data");
+  }
+
+  // let lastRecord = currentData.at(-1)
+
+  // console.log(`Data for session ${sessionId}, phase ${phaseId}:`, currentData);
+
+
+}
+
+function updateMerkhetFrame(sessionId, phaseId) {
+  let phaseSceneId = protocolConfigStorage[`${sessionStorage[sessionId].group},${sessionStorage[sessionId].measure}`]["phase"][phaseId].sceneID;
+  let recordId = currentData[0].mkid;
+
+  let merkhetIFrame = document.getElementById("MerkhetContainer");
+  merkhetIFrame.onload = () => {
+    const win = merkhetIFrame.contentWindow;
+    const doc = win.document;
+    if (doc.getElementById("userToolbar")) doc.getElementById("userToolbar").style.display = "none";
+    if (doc.getElementById("sideToolbar")) doc.getElementById("sideToolbar").style.display = "none";
+    const observer = new win.MutationObserver(() => {
+      const infoTimeLine = doc.getElementsByClassName("merkhet-timeline-info")[0];
+      if (infoTimeLine) {
+        infoTimeLine.style.display = "none";
+        observer.disconnect();
+      }
+    });
+    observer.observe(doc.body, { childList: true, subtree: true });
+  };
+  merkhetIFrame.src = `${ATON_BASE}/a/merkhet/index.html?s=check-user%2F${phaseSceneId}&r=${recordId}`;
+}
+
+function updateUI(phaseId) {
+  console.log(`Updating UI for phase ${phaseId}`);
+
+  // Stats
+  let count_correct = currentData.filter(row => row.is_selection_correct === "true").length;
+  let count_incorrect = currentData.filter(row => row.is_selection_correct === "false").length;
+  let count_observations = currentData.length;
+  let count_repetitions = 0;
+
+  currentData.forEach(row => {
+    console.log("Row:", row, row["next_action"], row["next_action"].includes("Repeat phase"));
+    if (row["next_action"] && row["next_action"].includes("Repeat phase")) {
+      count_repetitions += 1;
+    }
+  });
+
+  // Update main info text
+  $("#ref-subject").text(SubjectSelect.value);
+  $("#ref-group").text(sessionStorage[SessionSelect.value].group);
+  $("#ref-phase").text(phaseId);
+  $("#ref-duration").text(currentData.at(-1).timeStamp);
+  $("#ref-correct").text(count_correct);
+  $("#ref-incorrect").text(count_incorrect);
+  $("#ref-repetitions").text(count_repetitions);
+
+  $("#download-data-btn-session").attr("href", getFullCSVPath());
+
+  // Update timeline
+  renderTimeline();
+}
+
+function renderTimeline() {
+  const container = document.getElementById("timeline");
+  if (!container) return;
+
+  let repCount = 0, corrCount = 0, wrongCount = 0;
+  container.innerHTML = "";
+
+  currentData.forEach((row, i) => {
+    const correct = row.is_selection_correct === "true";
+    const last    = i === currentData.length - 1;
+
+    if (correct) corrCount++; else wrongCount++;
+    if (row.next_action && row.next_action.includes("Repeat phase")) repCount++;
+
+    const cls     = correct ? "correct" : "wrong";
+    const icon    = correct ? "bi-check-circle-fill" : "bi-x-circle-fill";
+    const label   = correct ? "Correct" : "Wrong";
+    const comment = row.comment || "";
+
+    container.innerHTML += `
+      <div class="tl-ts">${row.timeStamp || ""}</div>
+      <div class="tl-spine">
+        <div class="tl-dot ${cls}"></div>
+        <div class="tl-line${last ? " last" : ""}"></div>
+      </div>
+      <div>
+        <div class="tl-card ${cls}">
+          <div class="tl-row1">
+            <i class="bi ${icon} tl-icon ${cls}"></i>
+            <span class="tl-status ${cls}">${label}</span>
+            ${comment ? `<span class="tl-comment">${comment}</span>` : ""}
+          </div>
+          <div class="tl-row2">
+            <span class="tl-counter tl-counter-rep">Repetitions <b>${repCount}</b></span>
+            <span class="tl-counter tl-counter-corr">Correct <b>${corrCount}</b></span>
+            <span class="tl-counter tl-counter-wrong">Wrong <b>${wrongCount}</b></span>
+            <span class="tl-spacer"></span>
+            <span class="tl-next">→ <b>${row.next_action || ""}</b></span>
+          </div>
+        </div>
+      </div>`;
+  });
+}
