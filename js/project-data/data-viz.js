@@ -321,6 +321,7 @@ function updateUI(phaseId) {
   // Update main info text
   $("#ref-subject").text(SubjectSelect.value);
   $("#ref-group").text(sessionStorage[SessionSelect.value].group);
+  $("#ref-measure").text(sessionStorage[SessionSelect.value].measure);
   $("#ref-phase").text(phaseId);
   $("#ref-duration").text(currentData.at(-1).timeStamp);
   $("#ref-correct").text(count_correct);
