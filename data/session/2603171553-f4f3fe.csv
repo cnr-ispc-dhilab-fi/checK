@@ -1,0 +1,12 @@
+timeStamp,currentPhase,mkid,is_selection_correct,comment,updated_correct_count,updated_wrong_count,updated_repetition_count,next_action
+00.37.40,1,2026-05-18-15-45_2-1YSHFG1b,true,Tutto bravo,1,0,0,Go on with current phase
+00.46.11,1,2026-05-18-15-45_2-1YSHFG1b,true,,2,0,0,Go on with current phase
+00.52.63,1,2026-05-18-15-45_2-1YSHFG1b,false,,0,1,1,Repeat phase and reset count
+01.37.40,1,2026-05-18-15-45_2-1YSHFG1b,true,Tutto bravo,1,0,0,Go on with current phase
+01.46.11,1,2026-05-18-15-45_2-1YSHFG1b,true,,2,0,0,Go on with current phase
+01.52.63,1,2026-05-18-15-45_2-1YSHFG1b,false,,0,1,1,Repeat phase and reset count
+02.37.40,1,2026-05-18-15-45_2-1YSHFG1b,true,Tutto bravo,1,0,0,Go on with current phase
+02.46.11,1,2026-05-18-15-45_2-1YSHFG1b,true,,2,0,0,Go on with current phase
+02.52.63,1,2026-05-18-15-45_2-1YSHFG1b,false,,0,1,1,Repeat phase and reset count
+03.16.50,1,2026-05-18-15-45_2-1YSHFG1b,true,,1,1,,Phase 2
+00.00.00,2,2026-05-18-15-50_JFMcsu9f8h,true,,1,0,,End session

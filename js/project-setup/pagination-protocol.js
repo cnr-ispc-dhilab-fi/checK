@@ -358,13 +358,6 @@ async function realizeATONSceneConfig(projectId, envId, envPath) {
         scenegraph: {
             nodes: { main: { urls: [`http://localhost:8080${envPath}`] } },
             edges: { ".": ["main"] }
-        },
-        viewpoints: {
-            home: {
-                position: [0.08861357090474999, 1.7210880003869535, 4.35850649630467],
-                target:   [0.04188403263111715, 1.3615881117363315, 3.426532150996322],
-                fov: 50
-            }
         }
     };
 

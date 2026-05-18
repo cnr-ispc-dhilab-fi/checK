@@ -373,77 +373,114 @@ html {
   display: none;
 }
 
+#ref-subject {
+    font-family: "Crimson Pro", serif !important;
+}
+/* -------- Session Header Badges -------- */
+
+.badge-meta {
+  display: inline-block;
+  padding: .3rem .75rem;
+  border-radius: 100px;
+  border: 1px solid var(--bs-secondary-border-subtle);
+  background: var(--bs-secondary-disabled);
+  color: var(--bs-gray-800);
+  font-size: .8rem;
+  font-weight: 500;
+}
+
 /* -------- Session Timeline -------- */
 
 .tl {
+  --tl-gap: .25rem; /* unico parametro per il gap tra card */
+
   display: grid;
-  grid-template-columns: 3.5rem 1.5rem 1fr;
+  grid-template-columns: 1.75rem minmax(0, 1fr);
+  align-content: start; /* impedisce che le righe si gonfino per riempire il container */
   row-gap: 0;
   column-gap: 0;
 }
-.tl-ts {
-  font-size: .7rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--bs-gray-600);
-  text-align: right;
-  padding-right: .6rem;
-  padding-top: .6rem;
-  line-height: 1;
+.tl-cell {
+  min-width: 0;
 }
 .tl-spine {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.tl-dot {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  border: 2px solid var(--bs-white);
+.tl-marker {
+  font-size: 1.2rem;
+  line-height: 1;
   flex-shrink: 0;
-  margin-top: .55rem;
-  z-index: 1;
+  margin-top: .3rem;
 }
-.tl-dot.correct { background: var(--bs-success-text-emphasis); box-shadow: 0 0 0 3px var(--bs-success-bg-subtle); }
-.tl-dot.wrong   { background: var(--bs-danger-text-emphasis);  box-shadow: 0 0 0 3px var(--bs-danger-bg-subtle); }
+.tl-marker.correct { color: var(--bs-success-text-emphasis); }
+.tl-marker.wrong   { color: var(--bs-danger-text-emphasis); }
 .tl-line {
   width: 2px;
   background: var(--bs-gray-300);
   flex: 1;
-  min-height: .75rem;
+  min-height: 0;   /* lascia che --tl-gap sia l'unica sorgente di spazio */
 }
 .tl-line.last { background: transparent; }
 .tl-card {
   margin-left: .75rem;
-  margin-bottom: .85rem;
+  margin-bottom: var(--tl-gap);
   border: 1px solid var(--bs-gray-300);
   border-radius: .5rem;
   background: #ffffff;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 .tl-card.correct { border-left: 3px solid var(--bs-success-text-emphasis); }
 .tl-card.wrong   { border-left: 3px solid var(--bs-danger-text-emphasis); }
 .tl-row1 {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: .5rem;
-  padding: .5rem .75rem .4rem;
-  border-bottom: 1px solid var(--bs-gray-200);
+  padding: .4rem .75rem .3rem; 
 }
-.tl-icon { font-size: 1rem; line-height: 1; }
-.tl-icon.correct { color: var(--bs-success-text-emphasis); }
-.tl-icon.wrong   { color: var(--bs-danger-text-emphasis); }
 .tl-status { font-size: .75rem; font-weight: 600; white-space: nowrap; }
 .tl-status.correct { color: var(--bs-success-text-emphasis); }
 .tl-status.wrong   { color: var(--bs-danger-text-emphasis); }
-.tl-comment { font-size: .72rem; color: var(--bs-gray-600); font-style: italic; }
-.tl-comment::before { content: "· "; }
+.tl-row-comment {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: .3rem;
+}
+.tl-comment {
+  flex: 1;
+  min-width: 0;
+  font-size: .72rem;
+  color: var(--bs-gray-600);
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+.tl-row-comment.expanded .tl-comment {
+  white-space: normal;
+  overflow: visible;
+}
+.tl-toggle-comment {
+  font-size: .68rem;
+  color: var(--bs-primary);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-style: normal;
+  line-height: 1.5;
+}
 .tl-row2 {
   display: flex;
   align-items: center;
-  gap: .5rem;
-  padding: .35rem .75rem .45rem;
-  flex-wrap: wrap;
+  gap: .4rem;
+  padding: .15rem .75rem .35rem;  /* ← spazio interno sopra/sotto badge contatori */
 }
 .tl-counter {
   font-size: .68rem;
@@ -462,4 +499,9 @@ html {
 .tl-counter-wrong b { color: var(--bs-danger-text-emphasis); }
 .tl-spacer { flex: 1; }
 .tl-next { font-size: .7rem; color: var(--bs-gray-600); white-space: nowrap; }
-.tl-next b { color: var(--bs-gray-dark); font-weight: 500; }
+.tl-ts-inline {
+  font-size: .7rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--bs-gray-500);
+  white-space: nowrap;
+}

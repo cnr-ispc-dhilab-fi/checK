@@ -112,16 +112,17 @@
                         <li class="breadcrumb-item">My projects</li>
                         <li class="breadcrumb-item"><span id="summary-project-template">Taks 'n Test Template</span>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Session Data Visuailisation</li>
                         <li class="breadcrumb-item" id="summary-project-title-bread" onclick="goToHomeProject()">New
                             Project Summary</li>
+                        <li class="breadcrumb-item active" aria-current="page">Session Data Visuailisation</li>
+
                     </ol>
                 </nav>
                 <h1 id="summary-project-title"></h1>
             </div>
         </div>
 
-        <div class="my-1 gx-12" style="background-color: var(--bs-secondary-disabled); border-radius: 0.25rem;">
+        <div class="my-1 gx-12" id="selectContainer" style="background-color: var(--bs-secondary-disabled); border-radius: 0.25rem;">
             <div class="row mx-3 py-3 align-items-center">
 
                 <!-- banner text 
@@ -188,34 +189,45 @@
 
         <div class="row mt-2 gx-12 data-viz-container" id="dataContainer">
 
-            <!-- Stats strip -->
-            <div class="d-flex flex-wrap gap-3 px-3 py-2 mb-3 rounded-2 bg-light small text-primary col-12">
-                <span>Subject: <strong id="ref-subject" class="text-dark"></strong></span>
-                <span class="text-muted">|</span>
-                <span>Group: <strong id="ref-group" class="text-dark"></strong></span>
-                <span class="text-muted">|</span>
-                <span>Measure: <strong id="ref-measure" class="text-dark"></strong></span>
-                <span class="text-muted">|</span>
-                <span>Phase <strong id="ref-phase" class="text-dark"></strong></span>
-                <span class="text-muted">|</span>
-                <span>Duration: <strong id="ref-duration" class="text-dark"></strong></span>
-                <span class="text-muted">|</span>
-                <span>Tot. Correct: <strong id="ref-correct" class="text-dark"></strong></span>
-                <span class="text-muted">|</span>
-                <span>Tot. Wrong: <strong id="ref-incorrect" class="text-dark"></strong></span>
-                <span class="text-muted">|</span>
-                <span>Ripetitions: <strong id="ref-repetitions" class="text-dark"></strong></span>
+            <!-- Session header -->
+            <div class="col-12 mb-3">
+                <div class="row align-items-start gy-2">
+                    <!-- Left: subject ID + meta badges -->
+                    <div class="col-md-7">
+                        <h2 class="fw-bold mb-2">ID: <span id="ref-subject"></span></h2>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge-meta">Group <span id="ref-group"></span></span>
+                            <span class="badge-meta">Measure <span id="ref-measure"></span></span>
+                            <span class="badge-meta">Phase <span id="ref-phase"></span></span>
+                        </div>
+                    </div>
+                    <!-- Right: phase name + summary stats box -->
+                    <div class="col-md-5">
+                        <h4 class="fw-bold mb-2" id="ref-phase-name"></h4>
+                        <div class="d-flex flex-column gap-1 px-3 py-2 rounded-2 small" style="background-color: var(--bs-primary-disabled);">
+                            <div class="d-flex justify-content-between">
+                                <span><i class="bi bi-hourglass-split"></i> Duration: <strong id="ref-duration"></strong></span>
+                                <span><i class="bi bi-check-lg"></i> Tot. Correct: <strong id="ref-correct"></strong></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span><i class="bi bi-arrow-repeat"></i> Repeated <strong id="ref-repetitions"></strong> times</span>
+                                <span><i class="bi bi-x-lg"></i> Tot. Mistakes: <strong id="ref-incorrect"></strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Merketh iFrame -->
-            <div class="col-md-6 col-sm-12 justify-content-center">
+            <div class="col-md-7 col-sm-12 justify-content-center">
                 <iframe id="MerkhetContainer" style="width: 100% !important; height: 50vh" title="Inline Frame Example"
                     src="" allowfullscreen>
                 </iframe>
+                <small class="fst-italic text-muted">Analytics visualization powered by <a href="https://github.com/phoenixbf/merkhet-app" target="_blank">Merkhet <i class="bi bi-box-arrow-up-right"></i></a></small>
             </div>
 
             <!-- Stats and logs -->
-            <div class="col-md-6 col-sm-12 d-flex flex-column" style="height: 50vh;">
+            <div class="col-md-5 col-sm-12 d-flex flex-column" style="height: 60vh;">
                 <div class="d-flex flex-column h-100 justify-content-start py-2" style="width: 100%;">
 
                     <div class="tl" id="timeline" style="flex: 1; min-height: 0; overflow-y: auto;"></div>
@@ -225,10 +237,15 @@
             </div>
 
             <div class="d-flex justify-content-between mt-2 col-12">
-                <button class="btn btn btn-outline-secondary" id="download-data-btn-project">Download All Records of the
-                    Project</button>
-                <a class="btn btn-secondary" id="download-data-btn-session" download>Download Record for this
-                    Session</a>
+                <div class="col-7 d-flex justify-content-between">
+                    <button class="btn btn-outline-secondary" onclick="resetDataView()">
+                        <i class="bi bi-search"></i> View New Record
+                    </button>
+                    <a class="btn btn-secondary" id="download-data-btn-session" download>
+                        <i class="bi bi-download"></i> Download Current Record
+                    </a>
+                </div>
+                <button class="btn btn-primary" id="next-phase-btn" onclick="goToNextPhase()">Next Phase</button>
             </div>
         </div>
 

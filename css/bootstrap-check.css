@@ -54,6 +54,7 @@
   --bs-danger-text-emphasis: rgb(80.4, 30.4, 30.4);
   --bs-light-text-emphasis: #495057;
   --bs-dark-text-emphasis: #495057;
+  --bs-primary-disabled: #CACAD9;
   --bs-primary-bg-subtle: #dadae3;
   --bs-secondary-bg-subtle: rgb(245.8, 235.2, 225.4);
   --bs-success-bg-subtle: rgb(228.6, 239, 228.6);

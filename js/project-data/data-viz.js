@@ -255,6 +255,7 @@ async function displayCurrentData(sessionId, phaseId) {
 
   if (currentData && currentData.length != 0) {
     document.getElementById("alertContainer").style.display = "none";
+    document.getElementById("selectContainer").style.display = "none";
     document.getElementById("dataContainer").style.display = "flex";
 
     // Filter data for the selected phase
@@ -308,27 +309,37 @@ function updateUI(phaseId) {
   // Stats
   let count_correct = currentData.filter(row => row.is_selection_correct === "true").length;
   let count_incorrect = currentData.filter(row => row.is_selection_correct === "false").length;
-  let count_observations = currentData.length;
   let count_repetitions = 0;
 
   currentData.forEach(row => {
-    console.log("Row:", row, row["next_action"], row["next_action"].includes("Repeat phase"));
     if (row["next_action"] && row["next_action"].includes("Repeat phase")) {
       count_repetitions += 1;
     }
   });
 
+  // Phase name + total phases
+  let referenceProtocol = protocolConfigStorage[`${sessionStorage[SessionSelect.value].group},${sessionStorage[SessionSelect.value].measure}`]["phase"];
+  let totalPhases = Object.keys(referenceProtocol).filter(k => k != "0").length;
+  let phaseName = referenceProtocol[phaseId]?.name || "";
+
   // Update main info text
   $("#ref-subject").text(SubjectSelect.value);
   $("#ref-group").text(sessionStorage[SessionSelect.value].group);
   $("#ref-measure").text(sessionStorage[SessionSelect.value].measure);
-  $("#ref-phase").text(phaseId);
+  $("#ref-phase").text(`${phaseId}/${totalPhases}`);
+  $("#ref-phase-name").text(`Phase ${phaseId}: ${phaseName}`);
   $("#ref-duration").text(currentData.at(-1).timeStamp);
   $("#ref-correct").text(count_correct);
   $("#ref-incorrect").text(count_incorrect);
   $("#ref-repetitions").text(count_repetitions);
 
   $("#download-data-btn-session").attr("href", getFullCSVPath());
+
+  // Next Phase button state
+  const nextPhaseBtn = document.getElementById("next-phase-btn");
+  if (nextPhaseBtn) {
+    nextPhaseBtn.disabled = (PhaseSelect.selectedIndex >= PhaseSelect.options.length - 1);
+  }
 
   // Update timeline
   renderTimeline();
@@ -354,26 +365,58 @@ function renderTimeline() {
     const comment = row.comment || "";
 
     container.innerHTML += `
-      <div class="tl-ts">${row.timeStamp || ""}</div>
       <div class="tl-spine">
-        <div class="tl-dot ${cls}"></div>
+        <i class="bi ${icon} tl-marker ${cls}"></i>
         <div class="tl-line${last ? " last" : ""}"></div>
       </div>
-      <div>
+      <div class="tl-cell">
         <div class="tl-card ${cls}">
           <div class="tl-row1">
-            <i class="bi ${icon} tl-icon ${cls}"></i>
             <span class="tl-status ${cls}">${label}</span>
-            ${comment ? `<span class="tl-comment">${comment}</span>` : ""}
+            <span class="tl-row-comment">${comment ? `<span class="tl-comment">${comment}</span>` : ""}</span>
           </div>
           <div class="tl-row2">
-            <span class="tl-counter tl-counter-rep">Repetitions <b>${repCount}</b></span>
-            <span class="tl-counter tl-counter-corr">Correct <b>${corrCount}</b></span>
-            <span class="tl-counter tl-counter-wrong">Wrong <b>${wrongCount}</b></span>
+            <span class="tl-counter tl-counter-rep"><i class="bi bi-arrow-repeat"></i> <b>${repCount}</b></span>
+            <span class="tl-counter tl-counter-corr"><i class="bi bi-check-lg"></i> <b>${corrCount}</b></span>
+            <span class="tl-counter tl-counter-wrong"><i class="bi bi-x-lg"></i> <b>${wrongCount}</b></span>
             <span class="tl-spacer"></span>
-            <span class="tl-next">→ <b>${row.next_action || ""}</b></span>
+            <span class="tl-ts-inline">${row.timeStamp || ""}</span>
+            <span class="tl-next">→ ${row.next_action || ""}</span>
           </div>
         </div>
       </div>`;
   });
+
+  requestAnimationFrame(initCommentExpanders);
+}
+
+function initCommentExpanders() {
+  document.querySelectorAll('#timeline .tl-comment').forEach(el => {
+    if (el.scrollWidth > el.offsetWidth) {
+      const row = el.closest('.tl-row-comment');
+      const btn = document.createElement('button');
+      btn.className = 'tl-toggle-comment';
+      btn.textContent = '[...]';
+      btn.addEventListener('click', () => {
+        const isExpanded = row.classList.toggle('expanded');
+        btn.textContent = isExpanded ? '[↑ chiudi]' : '[...]';
+      });
+      row.appendChild(btn);
+    }
+  });
+}
+
+function resetDataView() {
+  document.getElementById("dataContainer").style.display = "none";
+  document.getElementById("alertContainer").style.display = "none";
+  document.getElementById("selectContainer").style.display = "";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function goToNextPhase() {
+  if (PhaseSelect.selectedIndex < PhaseSelect.options.length - 1) {
+    PhaseSelect.selectedIndex = PhaseSelect.selectedIndex + 1;
+    updateGoButton();
+    displayCurrentData(SessionSelect.value, PhaseSelect.value);
+  }
 }

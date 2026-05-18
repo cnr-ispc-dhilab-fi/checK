@@ -53,7 +53,7 @@ function updateResultsDataChunk(contentObj, dataObj) {
         dataChunk = Object.assign(dataChunk, dataObj);
         console.log(dataChunk);
 
-        sessionData.push(dataChunk)
+        sessionData.push({ ...dataChunk })
 
         console.log(`Saving datachunk:\n${dataChunk}`);
     }

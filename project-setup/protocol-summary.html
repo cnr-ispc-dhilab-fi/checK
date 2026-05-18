@@ -94,17 +94,32 @@
 
     <div class="container my-3">
         <div class="row">
-            <div class="col-md-12 col-sm-12">
+            <div class="col-12">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">My projects</li>
                         <li class="breadcrumb-item"><span id="summary-project-template">Taks 'n Test Template</span></li>
                         <li class="breadcrumb-item" id="summary-project-title-bread">New Project Summary</li>
-                        <li class="breadcrumb-item active" aria-current="page">Project Overview</li>
+                        <li class="breadcrumb-item active" aria-current="page">Overview</li>
                     </ol>
                 </nav>
-                <h1 id="summary-project-title"></h1>
             </div>
+
+
+            <div class="col-md-6 col-sm-12 mt-2">
+                <h1 id="summary-project-title">New Project Summary</h1>
+            </div>
+
+            <!-- Project data buttons -->
+            <div class="col-md-6 col-sm-12 d-flex justify-content-md-end justify-content-start mt-2">
+                <div class="d-flex flex-row gap-2 w-md-auto align-items-center">
+
+                    <a onclick="goToSessionData()" class="btn btn-secondary"><i class="bi bi-search"></i> View session data</a>
+
+                    <a onclick="" class="btn btn-outline-secondary"><i class="bi bi-database-down"></i> Download all records</a>
+                </div>
+            </div>
+
         </div>
 
         <div class="my-3 gx-12" style="background-color: var(--bs-secondary-disabled); border-radius: 0.25rem;">
@@ -118,18 +133,13 @@
                     </p>
                 </div>
 
-                <!-- RIGHT: buttons -->
+                <!-- RIGHT: button -->
                 <div class="col-md-6 col-sm-12 d-flex justify-content-md-end justify-content-start mt-3 mt-md-0">
                     <div class="d-flex flex-row gap-2 w-md-auto">
 
                         <a onclick="goToOnboarding()"
                         class="btn btn-primary">
                             <i class="bi bi-play-fill"></i> Start a new session
-                        </a>
-
-                        <a onclick="goToSessionData()"
-                        class="btn btn-secondary">
-                            <i class="bi bi-clipboard-data-fill"></i> View collected data
                         </a>
 
                     </div>
@@ -177,7 +187,7 @@
                             </tr>
                             <tr>
                             <th scope="row"></th>
-                            <td class="text-end"><a id="summaryLink" style="font-style: italic; color: var(--bs-secondary-text-emphasis)">See all project data »</a></td>
+                            <td class="text-end"><a id="summaryLink" style="font-style: italic; color: var(--bs-secondary-text-emphasis)">See all project details »</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -204,7 +214,7 @@
                             </div>
 
                             <div class="col-sm-2 my-1 d-flex flex-row justify-content-end">
-                                <button type="button" class="btn btn-outline-primary btn-sm mx-2" id="btn-set-tm" onclick="protocolForRefMeasureGroup()">Go</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm mx-2" id="btn-set-tm" onclick="protocolForRefMeasureGroup()">Check</button>
                             </div>
                             
                         </div>
