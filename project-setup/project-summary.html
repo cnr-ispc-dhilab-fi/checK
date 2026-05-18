@@ -83,7 +83,6 @@
             <!-- RIGHT SIDE -->
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link text-white" href="index.html">My Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="https://github.com/dhilab-fi/checK">Documentation</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="credits.html">Credits</a></li>
                 </ul>
@@ -106,7 +105,33 @@
             </div>
         </div>
 
-        <div class="row gx-12">
+        <!-- if missing data -->
+        <div class="my-3 gx-12" style="background-color: var(--bs-danger-border-subtle); border-radius: 0.25rem; display: none;" id="banner-error">
+            <div class="row mx-3 py-4 align-items-center">
+
+                <!-- LEFT: banner text -->
+                <div class="col-md-6 col-sm-12">
+                    <h3 class="mb-2">Some important information is missing</h3>
+                    <p class="mb-0 text-muted">
+                        Go back to the previous page to complete the project details and its protocol.
+                    </p>
+                </div>
+
+                <!-- RIGHT: button -->
+                <div class="col-md-6 col-sm-12 d-flex justify-content-md-end justify-content-start mt-3 mt-md-0">
+                    <div class="d-flex flex-row gap-2 w-md-auto">
+
+                        <a onclick="" class="btn btn-danger" id="errorButton" style="color: var(--bs-white)">
+                            <i class="bi bi-pencil-square"></i> Fill in the missing details
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row gx-12" id="summary-content">
 
             <div class="col-12  justify-content-start">
                 <p>Subjects are divided in <span style="font-weight: bold;" id="summary-project-group">6</span> <span style="font-weight: bold;">groups</span> and tested in <span style="font-weight: bold;" id="summary-project-rep-measures">6</span> <span style="font-weight: bold;">repeated measures</span>. You uploaded <span style="font-weight: bold;" id="summary-project-no-3Dassets">6</span> <span style="font-weight: bold;">environments</span></p>
@@ -199,10 +224,43 @@
     </script>
 
     <script>
-    window.addEventListener("load", () => {
+    let configData;
+    let envmntData;
+
+    window.addEventListener("load", async () => {
         const projectId = getIdFromURL();
-        if (projectId) {
+
+        configData = await ATON.App.getStorage(getProjectConfigStorageId(projectId));
+        envmntData = await ATON.App.getStorage(getProject3DAssetsStorageId(projectId));
+
+        let boolTitle = (configData["title"] != "" && configData["title"] != undefined);
+        let boolGroup = (configData["groups"] != "" && configData["groups"] != undefined);
+        let boolMeasure = (configData["repeatedMeasures"] != "" && configData["repeatedMeasures"] != undefined);
+
+        if (Object.keys(envmntData).length!= 0 && boolTitle && boolGroup && boolMeasure) {
             renderProjectSummaryFromStorage();
+        } else {
+
+            document.getElementById("summary-content").style.display = "none";
+            document.getElementById("banner-error").style.display = "block";
+
+            document.getElementById("errorButton").href =`http://localhost:8080/a/checK/project-setup/project-form.html?id=${getIdFromURL()}&n=0`;
+
+            if (configData["title"] != "" && configData["title"] != undefined) {
+                document.getElementById("summary-project-title-bread").innerText = configData["title"];
+                document.getElementById("summary-project-title").innerText = configData["title"];
+            } else {
+                document.getElementById("summary-project-title-bread").innerText = `Project #${getIdFromURL()}`;
+                document.getElementById("summary-project-title").innerText = `Project #${getIdFromURL()}`;
+            }
+
+            const btnEdit = document.getElementById("form-button-0");
+            btnEdit.classList.add("disabled");
+            btnEdit.removeAttribute("onclick");
+
+            const btnProtocol = document.getElementById("form-button-1");
+            btnProtocol.classList.add("disabled");
+            btnProtocol.removeAttribute("onclick");
         }
     });
 
@@ -222,7 +280,7 @@
         }
 
         // Costruisco la URL assoluta della thumbnail
-        const thumbUrl = "http://localhost:3001" + uploadJSON[id].thumb.url;
+        const thumbUrl = SERVER_BASE + uploadJSON[id].thumb.url;
         console.log("Thumbnail URL per ID", id, ":", thumbUrl);
 
         if (counter === 0) {

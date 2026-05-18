@@ -83,7 +83,6 @@
             <!-- RIGHT SIDE -->
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link text-white" href="index.html">My Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="https://github.com/dhilab-fi/checK">Documentation</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="credits.html">Credits</a></li>
                 </ul>
@@ -114,15 +113,15 @@
             <div class="col-md-6 col-sm-12 d-flex justify-content-md-end justify-content-start mt-2">
                 <div class="d-flex flex-row gap-2 w-md-auto align-items-center">
 
-                    <a onclick="goToSessionData()" class="btn btn-secondary"><i class="bi bi-search"></i> View session data</a>
+                    <a onclick="goToSessionData()" class="btn btn-secondary" id="btn-session"><i class="bi bi-search"></i> View session data</a>
 
-                    <a onclick="" class="btn btn-outline-secondary"><i class="bi bi-database-down"></i> Download all records</a>
+                    <a onclick="" class="btn btn-outline-secondary" id="btn-bulk-download"><i class="bi bi-database-down"></i> Download all records</a>
                 </div>
             </div>
 
         </div>
 
-        <div class="my-3 gx-12" style="background-color: var(--bs-secondary-disabled); border-radius: 0.25rem;">
+        <div class="my-3 gx-12" style="background-color: var(--bs-secondary-disabled); border-radius: 0.25rem;" id="banner-success">
             <div class="row mx-3 py-4 align-items-center">
 
                 <!-- LEFT: banner text -->
@@ -148,8 +147,33 @@
             </div>
         </div>
 
+        <!-- if missing data -->
+        <div class="my-3 gx-12" style="background-color: var(--bs-danger-border-subtle); border-radius: 0.25rem; display: none;" id="banner-error">
+            <div class="row mx-3 py-4 align-items-center">
+
+                <!-- LEFT: banner text -->
+                <div class="col-md-6 col-sm-12">
+                    <h3 class="mb-2">Some important information is missing</h3>
+                    <p class="mb-0 text-muted">
+                        Go back to the previous page to complete the project details and its protocol.
+                    </p>
+                </div>
+
+                <!-- RIGHT: button -->
+                <div class="col-md-6 col-sm-12 d-flex justify-content-md-end justify-content-start mt-3 mt-md-0">
+                    <div class="d-flex flex-row gap-2 w-md-auto">
+
+                        <a onclick="" class="btn btn-danger" id="errorButton" style="color: var(--bs-white)">
+                            <i class="bi bi-pencil-square"></i> Fill in the missing details
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
         
-        <div class="row mt-2 gx-12">
+        <div class="row mt-2 gx-12" id="project-info">
 
             <div class="col-md-4 col-sm-12 justify-content-center">     
                 <div id="summary-carousel" class="carousel slide">
@@ -242,16 +266,54 @@
     </script>
 
     <script>
-    window.addEventListener("load", () => {
-        const projectId = getIdFromURL();
-        if (projectId) {
-            renderProjectSummaryFromStorage();
-        }
+    let protocolData;
+    let configData;
 
-        updateGMSelect()
+    window.addEventListener("load", async () => {
+
+        document.getElementById("banner-error").style.display = "none";
+
+        const projectId = getIdFromURL();
+
+        protocolData = await ATON.App.getStorage(getProjectProtocolConfigStorageId(projectId));
+        configData = await ATON.App.getStorage(getProjectConfigStorageId(projectId));
+
+        const hasScene = protocolData?.["1,1"]?.phase?.["1"]?.sceneID;
+
+        if (hasScene) {
+            if (projectId) {
+                renderProjectSummaryFromStorage();
+            }
+
+            console.log(protocolData);
+
+            updateGMSelect();
+        } else {
+            document.getElementById("project-info").style.display = "none";
+            document.getElementById("banner-success").style.display = "none";
+
+            if (configData["title"] != "" && configData["title"] != undefined) {
+                document.getElementById("summary-project-title-bread").innerText = configData["title"];
+                document.getElementById("summary-project-title").innerText = configData["title"];
+            } else {
+                document.getElementById("summary-project-title-bread").innerText = `Project #${getIdFromURL()}`;
+                document.getElementById("summary-project-title").innerText = `Project #${getIdFromURL()}`;
+            }
+
+            const btnSession = document.getElementById("btn-session");
+            btnSession.classList.add("disabled");
+            btnSession.removeAttribute("onclick");
+
+            const btnBulk = document.getElementById("btn-bulk-download");
+            btnBulk.classList.add("disabled");
+            btnBulk.removeAttribute("onclick");
+
+            document.getElementById("banner-error").style.display = "block";
+        }
     });
 
     document.getElementById("summaryLink").href =`project-summary.html?id=${getIdFromURL()}`;
+    document.getElementById("errorButton").href =`project-summary.html?id=${getIdFromURL()}`;
 
     const carouselContainer = document.getElementById("summary-carousel-inner");
 
