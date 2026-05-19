@@ -29,7 +29,7 @@
                         "role": "Variable"
                     }
                 },
-                "playsAnimation": true
+                "playsAnimation": false
             },
             "2": {
                 "name": "Explore Aldrovandi 2",

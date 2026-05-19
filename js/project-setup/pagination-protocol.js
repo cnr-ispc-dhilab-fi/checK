@@ -201,6 +201,8 @@ async function uploadContentInPhase(paramsObject) {
 
 }
 
+let hasAnim = false;
+
 async function updateContentInStep(currentPhaseIndex, currentStepIndex, currentMeasureIndex, currentGroupIndex) {
 
     const currentProtocol = await importProjectProtocolConfig();
@@ -261,13 +263,38 @@ async function updateContentInStep(currentPhaseIndex, currentStepIndex, currentM
             console.log(currentPhaseProtocol["taskDes"], currentPhaseProtocol["taskInst"]);
             break;
 
-        case 3:
+        case 3: {
+            const envCatalog3 = await get3DEnvLibrary(getIdFromURL());
+            const sceneID3 = currentPhaseProtocol["sceneID"];
+
+            if (sceneID3) {
+                const envEntry = Object.values(envCatalog3).find(e => e.sceneID === sceneID3);
+                hasAnim = !!(envEntry && envEntry.hasAnimation === true);
+            }
+
+            const animCheck = document.getElementById("animationCheck");
+            const animMsg = document.getElementById("animation-status-msg");
+
+            if (hasAnim) {
+                animCheck.disabled = false;
+                if (currentPhaseProtocol["playsAnimation"] !== undefined) {
+                    animCheck.checked = currentPhaseProtocol["playsAnimation"];
+                }
+                animMsg.className = "text-success-emphasis";
+                animMsg.textContent = "Your scene contains an animation";
+            } else {
+                animCheck.disabled = true;
+                animCheck.checked = false;
+                animMsg.className = "text-secondary";
+                animMsg.textContent = "Your scene does not contain an animation";
+            }
 
             if (currentPhaseProtocol["assets"] !== undefined && currentPhaseProtocol["assets"] !== "") {
                 await loadAssetsToTable(currentPhaseProtocol["assets"], projectId);
             }
             console.log(currentPhaseProtocol["assets"]);
             break;
+        }
     }
 }
 

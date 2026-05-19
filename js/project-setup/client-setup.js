@@ -501,12 +501,20 @@ async function saveProtocolStep(bolVal = null) {
 
       case 3:
         let uploadedAssetArray = Array.from(document.getElementsByClassName("row-asset"));
+        
+        let animBool;
+
+        if (hasAnim) {
+          animBool = document.getElementById("animationCheck").checked;
+        } else {
+          animBool = false;
+        } 
 
         patch = {
           [referenceGM]: {
             phase: {
               [phaseNo]: {
-                playsAnimation: document.getElementById("animationCheck").checked,
+                playsAnimation: animBool,
                 assets: {}
               }
             }

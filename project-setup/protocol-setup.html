@@ -97,7 +97,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">My projects</li>
                 <li class="breadcrumb-item" id="breadcrumb-template">Project Template</li>
-                <li class="breadcrumb-item" id="breadcrumb-title">Project Title</li>
+                <li class="breadcrumb-item"><a id="breadcrumb-title" href="">Project Title</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Protocol set-up</li>
             </ol>
         </nav>
@@ -255,25 +255,25 @@
                             <h4>Analytics</h4>
                             <p class="text-body-secondary">Which analytics should be registered?</p>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="trackTime">
+                                <input class="form-check-input" type="checkbox" value="" id="trackTime" checked>
                                 <label class="form-check-label" for="defaultCheck1">
                                     Time
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="trackPos">
+                                <input class="form-check-input" type="checkbox" value="" id="trackPos"checked>
                                 <label class="form-check-label" for="defaultCheck1">
                                     Position
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="trackDir">
+                                <input class="form-check-input" type="checkbox" value="" id="trackDir" checked>
                                 <label class="form-check-label" for="defaultCheck1">
                                     Direction
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="trackFov">
+                                <input class="form-check-input" type="checkbox" value="" id="trackFov" checked>
                                 <label class="form-check-label" for="defaultCheck1">
                                     Field of view
                                 </label>
@@ -403,7 +403,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <p><i class="text-success-emphasis">Your scene contains an animation</i></p>
+                            <p><i id="animation-status-msg" class="text-success-emphasis">Your scene contains an animation</i></p>
                         </div>
                     </div>
                 </div>
@@ -577,6 +577,12 @@
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script>
+        window.addEventListener("load", () => {
+            document.getElementById('breadcrumb-title').href = `protocol-summary.html?id=${getIdFromURL()}`;
         })
     </script>
     

@@ -5,7 +5,18 @@
         "phase": {
             "0": true,
             "1": {
-                "name": "Phase 1"
+                "name": "Phase 1",
+                "sceneID": "20260519-check-864a0e",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "",
+                "taskInst": "",
+                "playsAnimation": false,
+                "assets": {}
             }
         }
     }
