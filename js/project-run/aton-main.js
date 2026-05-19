@@ -8,6 +8,8 @@ let currentPov = [] // initialise current pos for main button
 
 let mkId;
 
+let aton_actions = {};
+
 let APP = ATON.App.realize();
 
 APP.setup = () => {
@@ -126,7 +128,7 @@ APP.setup = () => {
                     })
                 });
             }
-        })
+        });
 
 
         // Chi manda messaggio
@@ -143,6 +145,14 @@ APP.setup = () => {
         });
         */
 
+        // 4. Play animation
+        ATON.Photon.on("requestAnimation", () => {
+            mainAnimationRoutine();    
+        });
+
+        window.parent.dispatchEvent(new CustomEvent('atonSceneReady'));
+
+        stopMainAnimation();
     });
 
 }
@@ -239,3 +249,40 @@ function cilecca() {
 // iframediv.contentWindow.window.parent.subjectTrigger
 
 */
+
+/* Animation control */
+
+function _waitForAnimations(callback) {
+    let sNode = ATON.getSceneNode("main");
+    if (!sNode || !sNode._aniMixers || sNode._aniMixers.length === 0) {
+        setTimeout(() => _waitForAnimations(callback), 300);
+        return;
+    }
+    sNode._aniMixers[0]._actions.forEach(action => {
+        aton_actions[action._clip.name] = action;
+    });
+    callback();
+}
+
+function stopMainAnimation() {
+    _waitForAnimations(() => {
+        Object.values(aton_actions).forEach(a => a.stop());
+    });
+}
+
+function mainAnimationRoutine() {
+    _waitForAnimations(() => {
+        Object.values(aton_actions).forEach(a => a.play());
+    });
+}
+
+function playMainAnimation() {
+
+    // Fire animation in the subject
+    if (role == 0) {
+        ATON.Photon.fireEvent("requestAnimation", {});
+    }
+
+    // Reproduce also for the tester
+    mainAnimationRoutine();
+}

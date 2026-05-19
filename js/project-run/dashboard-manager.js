@@ -1,6 +1,8 @@
 let currentPhase = 1; // 0!
 let atonFrame;
 
+let mainAnimation;
+
 window.addEventListener('DOMContentLoaded', async function() {
 
     atonFrame = document.getElementById('testerATONSceneFrame');
@@ -51,7 +53,6 @@ function loadPhaseATONScene(phase) {
         loadPhaseSubjectATONScene(s_id);
         atonFrame.src = `scene.html?id=${sessionRecord.projectId}&sc=${getSessionCodeFromURL()}&sid=${s_id}&r=0`;
     }
-
 }
 
 // ===========================================
@@ -168,7 +169,7 @@ function addMultimediaTable(isInstruction, phase) {
         .filter(asset => phasesObj[phase]["assets"][asset].role.toLowerCase() === 'variable');
     }
 
-    if (assets.length === 0) {
+    if (assets.length === 0 && !phasesObj[phase]["playsAnimation"]) {
         // If no asset is provided, hide the table
         tableContainer.style.display = "none";
         return;
@@ -233,7 +234,7 @@ function addMultimediaTable(isInstruction, phase) {
                             <button 
                                 type="button" 
                                 class="btn" 
-                                onclick="playMedia('3D Animation')">
+                                onclick="play3DAnimation()">
                                 <i class="bi bi-play-circle"></i>
                             </button>
                         </div>
@@ -379,4 +380,8 @@ function previewAsset(assetId, assetType) {
             previewContainer.innerHTML = '';
         }
 });
+}
+
+function play3DAnimation() {
+    atonFrame.contentWindow.playMainAnimation();
 }

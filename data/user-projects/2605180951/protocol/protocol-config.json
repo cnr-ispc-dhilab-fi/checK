@@ -13,9 +13,9 @@
                     "dir": true,
                     "fov": true
                 },
-                "taskDes": "",
-                "taskInst": "",
-                "playsAnimation": false,
+                "taskDes": "Customised task description",
+                "taskInst": "Customised task instruction",
+                "playsAnimation": true,
                 "assets": {}
             }
         }
