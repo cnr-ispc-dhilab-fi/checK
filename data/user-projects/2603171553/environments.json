@@ -12,7 +12,8 @@
             "originalname": "A1773759241381_thumb.png",
             "url": "/collections/check-user/models/2603171553/thumb/1773759241433_A1773759241381_thumb.png"
         },
-        "sceneID": "20260317-check-5382f1"
+        "sceneID": "20260317-check-5382f1",
+        "hasAnimation": false
     },
     "A1773841475857": {
         "id": "A1773841475857",
@@ -27,6 +28,7 @@
             "originalname": "A1773841475857_thumb.png",
             "url": "/collections/check-user/models/2603171553/thumb/1773841475900_A1773841475857_thumb.png"
         },
-        "sceneID": "20260318-check-7151d5"
+        "sceneID": "20260318-check-7151d5",
+        "hasAnimation": false
     }
 }

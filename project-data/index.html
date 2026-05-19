@@ -201,14 +201,14 @@
                         </div>
                     </div>
                     <!-- Right: phase name + summary stats box -->
-                    <div class="col-md-5">
+                    <div class="col-md-5" id="phase-info-col">
                         <h4 class="fw-bold mb-2" id="ref-phase-name"></h4>
                         <div class="d-flex flex-column gap-1 px-3 py-2 rounded-2 small" style="background-color: var(--bs-primary-disabled);">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex" id="duration-row">
                                 <span><i class="bi bi-hourglass-split"></i> Duration: <strong id="ref-duration"></strong></span>
-                                <span><i class="bi bi-check-lg"></i> Tot. Correct: <strong id="ref-correct"></strong></span>
+                                <span id="task-stat-correct" class="ms-auto"><i class="bi bi-check-lg"></i> Tot. Correct: <strong id="ref-correct"></strong></span>
                             </div>
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between" id="task-stat-rep-row">
                                 <span><i class="bi bi-arrow-repeat"></i> Repeated <strong id="ref-repetitions"></strong> times</span>
                                 <span><i class="bi bi-x-lg"></i> Tot. Mistakes: <strong id="ref-incorrect"></strong></span>
                             </div>
@@ -217,25 +217,29 @@
                 </div>
             </div>
 
-            <!-- Merketh iFrame -->
-            <div class="col-md-7 col-sm-12 justify-content-center">
-                <iframe id="MerkhetContainer" style="width: 100% !important; height: 50vh" title="Inline Frame Example"
-                    src="" allowfullscreen>
-                </iframe>
-                <small class="fst-italic text-muted">Analytics visualization powered by <a href="https://github.com/phoenixbf/merkhet-app" target="_blank">Merkhet <i class="bi bi-box-arrow-up-right"></i></a></small>
-            </div>
+            <!-- Merkhet + Timeline row -->
+            <div class="col-12 px-0">
+                <div class="row mt-4" id="merkhet-timeline-row">
 
-            <!-- Stats and logs -->
-            <div class="col-md-5 col-sm-12 d-flex flex-column" style="height: 60vh;">
-                <div class="d-flex flex-column h-100 justify-content-start py-2" style="width: 100%;">
+                    <!-- Merketh iFrame -->
+                    <div id="merkhet-col" class="col-md-7 col-sm-12">
+                        <iframe id="MerkhetContainer" style="width: 100% !important; height: 50vh" title="Inline Frame Example"
+                            src="" allowfullscreen>
+                        </iframe>
+                        <small class="fst-italic text-muted">Analytics visualization powered by <a href="https://github.com/phoenixbf/merkhet-app" target="_blank">Merkhet <i class="bi bi-box-arrow-up-right"></i></a></small>
+                    </div>
 
-                    <div class="tl" id="timeline" style="flex: 1; min-height: 0; overflow-y: auto;"></div>
-
+                    <!-- Stats and logs -->
+                    <div id="timeline-col" class="col-md-5 col-sm-12 d-flex flex-column" style="height: 60vh;">
+                        <div class="d-flex flex-column h-100 justify-content-start py-2" style="width: 100%;">
+                            <div class="tl" id="timeline" style="flex: 1; min-height: 0; overflow-y: auto;"></div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between mt-2 col-12">
+            <div class="d-flex justify-content-between mt-4 col-12" id="btn-row">
                 <div class="col-7 d-flex justify-content-between">
                     <button class="btn btn-outline-secondary" onclick="resetDataView()">
                         <i class="bi bi-search"></i> View New Record

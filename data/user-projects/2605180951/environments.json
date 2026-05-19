@@ -1,31 +1,34 @@
 {
-    "A1779090711963": {
-        "id": "A1779090711963",
-        "createdAt": "2026-05-18T07:51:52.272Z",
+    "A1779181502996": {
+        "id": "A1779181502996",
+        "createdAt": "2026-05-19T09:05:03.129Z",
         "glb": {
-            "filename": "1779090711978_CC_v01_green.glb",
-            "originalname": "CC_v01_green.glb",
-            "url": "/collections/check-user/models/2605180951/1779090711978_CC_v01_green.glb"
-        },
-        "thumb": {
-            "filename": "1779090712269_A1779090711963_thumb.png",
-            "originalname": "A1779090711963_thumb.png",
-            "url": "/collections/check-user/models/2605180951/thumb/1779090712269_A1779090711963_thumb.png"
-        },
-        "sceneID": "20260518-check-79dd2f"
-    },
-    "A1779090723261": {
-        "id": "A1779090723261",
-        "createdAt": "2026-05-18T07:52:03.357Z",
-        "glb": {
-            "filename": "1779090723269_CC_neutra_anim.glb",
+            "filename": "1779181503007_CC_neutra_anim.glb",
             "originalname": "CC_neutra_anim.glb",
-            "url": "/collections/check-user/models/2605180951/1779090723269_CC_neutra_anim.glb"
+            "url": "/collections/check-user/models/2605180951/1779181503007_CC_neutra_anim.glb"
         },
         "thumb": {
-            "filename": "1779090723355_A1779090723261_thumb.png",
-            "originalname": "A1779090723261_thumb.png",
-            "url": "/collections/check-user/models/2605180951/thumb/1779090723355_A1779090723261_thumb.png"
-        }
+            "filename": "1779181503124_A1779181502996_thumb.png",
+            "originalname": "A1779181502996_thumb.png",
+            "url": "/collections/check-user/models/2605180951/thumb/1779181503124_A1779181502996_thumb.png"
+        },
+        "hasAnimation": true,
+        "sceneID": "20260519-check-864a0e"
+    },
+    "A1779181508057": {
+        "id": "A1779181508057",
+        "createdAt": "2026-05-19T09:05:08.390Z",
+        "glb": {
+            "filename": "1779181508063_CC_v01_green.glb",
+            "originalname": "CC_v01_green.glb",
+            "url": "/collections/check-user/models/2605180951/1779181508063_CC_v01_green.glb"
+        },
+        "thumb": {
+            "filename": "1779181508387_A1779181508057_thumb.png",
+            "originalname": "A1779181508057_thumb.png",
+            "url": "/collections/check-user/models/2605180951/thumb/1779181508387_A1779181508057_thumb.png"
+        },
+        "hasAnimation": true,
+        "sceneID": "20260519-check-195262"
     }
 }

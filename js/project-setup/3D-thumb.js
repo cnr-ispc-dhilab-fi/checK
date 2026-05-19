@@ -62,13 +62,17 @@
     document.body.appendChild(renderer.domElement);
 
     // Luci base
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x888888, 1.0);
     hemiLight.position.set(0, 1, 0);
     scene.add(hemiLight);
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
     dirLight.position.set(5, 10, 7.5);
     scene.add(dirLight);
+
+    const floorLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    floorLight.position.set(2, -1, 4);
+    scene.add(floorLight);
 
     loader = new THREE.GLTFLoader();
 
@@ -82,32 +86,28 @@
   // -----------------------
   // Inquadrare automaticamente il modello
   // -----------------------
-  function frameObject(object, camera, renderer) {
+  function frameObject(object, camera) {
     const box = new THREE.Box3().setFromObject(object);
     const size = new THREE.Vector3();
     const center = new THREE.Vector3();
     box.getSize(size);
     box.getCenter(center);
 
+    // Center the model at origin first, then build everything around (0,0,0)
+    object.position.sub(center);
+
     const maxDim = Math.max(size.x, size.y, size.z);
     const fov = (camera.fov * Math.PI) / 180;
+    const dist = (maxDim / 2 / Math.tan(fov / 2)) * 1.05;
 
-    let cameraZ = maxDim / (2 * Math.tan(fov / 2));
-    cameraZ *= 1.4;
-
-    camera.position.set(
-      center.x + cameraZ,
-      center.y + cameraZ * 0.2,
-      center.z + cameraZ
-    );
-    camera.lookAt(center);
+    // Slightly above and behind so the floor is visible and lit
+    camera.position.set(0, dist, dist * 0.35);
+    camera.up.set(0, 1, 0);
+    camera.lookAt(0, 0, 0);
 
     camera.near = maxDim / 100;
     camera.far = maxDim * 100;
     camera.updateProjectionMatrix();
-
-    const offset = center.clone().multiplyScalar(-1);
-    object.position.add(offset);
   }
 
   // -----------------------
@@ -150,7 +150,9 @@
           currentModel = gltf.scene;
           scene.add(currentModel);
 
-          frameObject(currentModel, camera, renderer);
+          const hasAnimation = Array.isArray(gltf.animations) && gltf.animations.length > 0;
+
+          frameObject(currentModel, camera);
           renderer.render(scene, camera);
 
           renderer.domElement.toBlob(
@@ -163,6 +165,7 @@
                 blob,
                 width: THUMB_WIDTH,
                 height: THUMB_HEIGHT,
+                hasAnimation,
               });
             },
             "image/png",

@@ -47,6 +47,14 @@ window.addEventListener('DOMContentLoaded', function() {
     createEnvThumbModal();
 });
 
+// When restored from bfcache (history.back()), DOMContentLoaded does not re-fire.
+// Re-check homePOV status so the alert reflects any changes made in the scene editor.
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted && currentPhaseSceneID) {
+        updateHomePovAlert(getIdFromURL(), currentPhaseSceneID);
+    }
+});
+
 function goToCurrentPage(paramsObject) {
 
 
@@ -271,8 +279,10 @@ function addNewPhase(noExistingPhases) {
 
 function deletePhase() {
 
-    deletePhaseFromConfig().then(success => {
-        if (success) {
+    deletePhaseFromConfig().then(result => {
+        if (result === "reset") {
+            updatePage({'p': 1, 's': 1});
+        } else if (result) {
             updatePage({'p': parseInt(globalCurrentPhaseIndex) - 1, 's': 1});
         } else {
             console.error("Failed to delete phase");
@@ -427,9 +437,12 @@ async function updateHomePovAlert(projectId, sceneID) {
     if (linkWarn) linkWarn.href = editorUrl;
     if (linkSuccess) linkSuccess.href = editorUrl;
 
+    console.log("TEST 1");
     try {
         const res = await fetch(`${SERVER_BASE}/projects/${projectId}/upload/scenes/${sceneID}`);
         const scene = await res.json();
+        console.log("TEST 2");
+        console.log(scene);
         const hasHome = !!(scene?.viewpoints?.home);
         alertWarn.style.display = hasHome ? "none" : "";
         alertSuccess.style.display = hasHome ? "" : "none";

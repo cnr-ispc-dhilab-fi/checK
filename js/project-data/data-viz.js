@@ -306,43 +306,76 @@ function updateMerkhetFrame(sessionId, phaseId) {
 function updateUI(phaseId) {
   console.log(`Updating UI for phase ${phaseId}`);
 
-  // Stats
-  let count_correct = currentData.filter(row => row.is_selection_correct === "true").length;
-  let count_incorrect = currentData.filter(row => row.is_selection_correct === "false").length;
-  let count_repetitions = 0;
+  const isTaskNTest = configStorage["template"] === "Task 'n Test";
 
-  currentData.forEach(row => {
-    if (row["next_action"] && row["next_action"].includes("Repeat phase")) {
-      count_repetitions += 1;
-    }
-  });
-
-  // Phase name + total phases
+  // Phase name + total phases (always shown)
   let referenceProtocol = protocolConfigStorage[`${sessionStorage[SessionSelect.value].group},${sessionStorage[SessionSelect.value].measure}`]["phase"];
   let totalPhases = Object.keys(referenceProtocol).filter(k => k != "0").length;
-  let phaseName = referenceProtocol[phaseId]?.name || "";
+  let phaseName   = referenceProtocol[phaseId]?.name || "";
 
-  // Update main info text
   $("#ref-subject").text(SubjectSelect.value);
   $("#ref-group").text(sessionStorage[SessionSelect.value].group);
   $("#ref-measure").text(sessionStorage[SessionSelect.value].measure);
   $("#ref-phase").text(`${phaseId}/${totalPhases}`);
   $("#ref-phase-name").text(`Phase ${phaseId}: ${phaseName}`);
   $("#ref-duration").text(currentData.at(-1).timeStamp);
-  $("#ref-correct").text(count_correct);
-  $("#ref-incorrect").text(count_incorrect);
-  $("#ref-repetitions").text(count_repetitions);
-
   $("#download-data-btn-session").attr("href", getFullCSVPath());
 
-  // Next Phase button state
   const nextPhaseBtn = document.getElementById("next-phase-btn");
   if (nextPhaseBtn) {
     nextPhaseBtn.disabled = (PhaseSelect.selectedIndex >= PhaseSelect.options.length - 1);
   }
 
-  // Update timeline
-  renderTimeline();
+  const merkhetCol = document.getElementById("merkhet-col");
+  const iframe     = document.getElementById("MerkhetContainer");
+
+  if (isTaskNTest) {
+
+    // Task-specific stats
+    let count_correct     = currentData.filter(row => row.is_selection_correct === "true").length;
+    let count_incorrect   = currentData.filter(row => row.is_selection_correct === "false").length;
+    let count_repetitions = 0;
+    currentData.forEach(row => {
+      if (row["next_action"] && row["next_action"].includes("Repeat phase")) count_repetitions += 1;
+    });
+    $("#ref-correct").text(count_correct);
+    $("#ref-incorrect").text(count_incorrect);
+    $("#ref-repetitions").text(count_repetitions);
+
+    document.getElementById("task-stat-correct").style.removeProperty("display");
+    document.getElementById("task-stat-rep-row").style.removeProperty("display");
+    document.getElementById("duration-row").className = "d-flex";
+
+    // Merkhet col-7 left, timeline visible
+    merkhetCol.className = "col-md-7 col-sm-12";
+    merkhetCol.style.cssText = "";
+    iframe.style.cssText = "height: 50vh;";
+    iframe.style.setProperty("width", "100%", "important");
+    document.getElementById("timeline-col").style.removeProperty("display");
+
+    
+    document.getElementById("merkhet-timeline-row").classList.remove("mt-4");
+    document.getElementById("btn-row").classList.remove("mt-4");
+
+    renderTimeline();
+
+  } else {
+
+    // Only duration, centered in the stats box
+    // Use setProperty("important") to override Bootstrap d-flex !important on these elements
+    document.getElementById("task-stat-correct").style.setProperty("display", "none", "important");
+    document.getElementById("task-stat-rep-row").style.setProperty("display", "none", "important");
+    document.getElementById("duration-row").className = "d-flex justify-content-center";
+
+    // Merkhet full-width col, iframe centered via margin:auto at 58.33% width
+    merkhetCol.className = "col-12 text-center";
+    merkhetCol.style.cssText = "";
+    iframe.style.cssText = "display: block; margin: 0 auto; height: 50vh;";
+    iframe.style.setProperty("width", "58.33%", "important");
+    document.getElementById("timeline-col").style.setProperty("display", "none", "important");
+    document.getElementById("btn-row").style.marginTop = "1.5rem";
+
+  }
 }
 
 function renderTimeline() {

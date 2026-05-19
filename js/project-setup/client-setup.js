@@ -251,7 +251,7 @@ async function upload3DAssetForCurrentProject() {
   const glbFile = fileInput.files[0];
 
   try {
-    const { blob: thumbBlob } = await generateGlbThumbnail(glbFile);
+    const { blob: thumbBlob, hasAnimation } = await generateGlbThumbnail(glbFile);
 
     const assetId = "A" + Date.now();
     const formData = new FormData();
@@ -269,7 +269,7 @@ async function upload3DAssetForCurrentProject() {
     }
 
     const data = await res.json();
-    const assetEntry = data.asset;
+    const assetEntry = { ...data.asset, hasAnimation };
     console.log("3D asset uploaded:", assetEntry);
 
     const storageId = getProject3DAssetsStorageId(projectId);
@@ -629,6 +629,17 @@ async function deletePhaseFromConfig() {
     if (phases[phaseNo] === undefined) {
       console.error(`Phase ${phaseNo} not found`);
       return false;
+    }
+
+    if (phaseNo === 1) {
+      await ATON.App.deleteFromStorage(storageId, {
+        [referenceGM]: { phase: { 1: {} } }
+      });
+      await ATON.App.addToStorage(storageId, {
+        [referenceGM]: { phase: { 1: { name: "Phase 1" } } }
+      });
+      console.log("Phase 1 reset to default");
+      return "reset";
     }
 
     await ATON.App.deleteFromStorage(storageId, {
