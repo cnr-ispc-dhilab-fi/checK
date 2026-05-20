@@ -20,7 +20,11 @@ body {
   font-family: "DM Sans", sans-serif !important;
   /*height: 100vh;
   overscroll-behavior: none;*/
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
+
 
 @media (max-width: 768px) {
   body {
