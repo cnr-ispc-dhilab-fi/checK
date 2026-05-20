@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', async function() {
 
 async function updatePhase(phase) {
 
-    loadPhaseATONScene(phase);
+    await loadPhaseATONScene(phase);
 
     await updateRightPanel(phase);
 
@@ -41,7 +41,7 @@ async function updateSessionMetadata() {
 }
 
 // Update the scene visualised in ATON for the tester
-function loadPhaseATONScene(phase) {
+async function loadPhaseATONScene(phase) {
 
     // For training phase, show the environment of the first phase
     let phaseKey = (phase === 0) ? 1 : phase;
@@ -50,7 +50,7 @@ function loadPhaseATONScene(phase) {
     let s_id = `check-user/${phasesObj[phaseKey]["sceneID"]}`;
 
     if (currentATONURLParams.get("sid") !== s_id) {
-        loadPhaseSubjectATONScene(s_id);
+        await loadPhaseSubjectATONScene(s_id);
         atonFrame.src = `scene.html?id=${sessionRecord.projectId}&sc=${getSessionCodeFromURL()}&sid=${s_id}&r=0`;
     }
 }

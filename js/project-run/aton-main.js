@@ -71,7 +71,9 @@ APP.setup = () => {
                     confirmButtonText: 'Start',
                     target: "body",
                     width: "50%",
-                    confirmButtonColor: "var(--bs-primary)"
+                    confirmButtonColor: "var(--bs-primary)",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
                 }).then((result) => {
                     if (result.isConfirmed) {
                         if (window.parent._timerCentiseconds > 0 || window.parent._timerRunning) window.parent.initTimer();

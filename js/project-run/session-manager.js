@@ -6,10 +6,10 @@
 // for listeners & ancillary funtions
 // ===================================
 
-function loadPhaseSubjectATONScene(s_id) {
+async function loadPhaseSubjectATONScene(s_id) {
     let atonFrame = document.getElementById("testerATONSceneFrame");
     if (typeof atonFrame.contentWindow?.subjectATONSceneLoader === 'function') {
-        atonFrame.contentWindow.subjectATONSceneLoader({ sid: s_id });
+        await atonFrame.contentWindow.subjectATONSceneLoader({ sid: s_id });
     }
 }
 
@@ -236,8 +236,9 @@ function handlePhaseAction(params) {
 
       updateResultsDataChunk({content: "next_action"}, {updated_correct_count: countCorrect, updated_repetition_count: countRepeat, next_action: next_step});
 
-      atonFrame.contentWindow.requestHomePOV();
-      
+      if (is_repeat) {
+        atonFrame.contentWindow.requestHomePOV();
+      }
       startTimer();
       
       break;
