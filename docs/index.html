@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>checK — Main site</title>
+  <meta name="description" content="checK is an open-source ATON-based web app for designing and running controlled perceptual experiments on 3D Cultural Heritage environments.">
+  <meta property="og:title" content="checK — Main site">
+  <meta property="og:description" content="checK is an open-source ATON-based web app for designing and running controlled perceptual experiments on 3D Cultural Heritage environments.">
+  <meta property="og:image" content="../img/logo-full.png">
+  <link rel="icon" href="../img/logo.ico">
+
+  <!-- Bootstrap 5 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <!-- checK portfolio styles -->
+  <link rel="stylesheet" href="css/portfolio.css">
+</head>
+<body>
+
+<!-- ==============================
+     NAVBAR
+============================== -->
+<nav class="ck-navbar">
+  <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <a class="navbar-brand" href="#">
+      <img src="webpage-asset/logo-ispc.png" alt="CNR ISPC" class="navbar-logo-ispc">
+      <div class="vr"></div>
+      <img src="../img/logo-white.png" alt="checK logo">
+    </a>
+    <div class="d-flex align-items-center flex-wrap gap-1">
+      <a class="nav-link" href="#about">About</a>
+      <a class="nav-link" href="#features">User Flow</a>
+      <a class="nav-link" href="#install">Get Started</a>
+      <a class="nav-link" href="#resources">Resources</a>
+      <a class="nav-link btn-gh ms-2" href="https://github.com/cnr-ispc-dhilab-fi/checK" target="_blank" rel="noopener">
+        <i class="bi bi-github"></i> checK
+      </a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ==============================
+     HERO
+============================== -->
+<section class="ck-hero" id="top">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <h1>Cultural Heritage<br>Experiment Configuration Kit</h1>
+
+        <p class="hero-abstract mt-3">
+          checK is an open-source web application for designing, configuring, and running
+          controlled experiments on immersive Cultural Heritage environments.
+        </p>
+
+        <div class="hero-cta">
+          <a href="https://github.com/cnr-ispc-dhilab-fi/checK" target="_blank" rel="noopener" class="btn-primary-ck">
+            <i class="bi bi-github"></i> View checK on GitHub
+          </a>
+          <a class="btn-outline-ck" onclick="swalAlert()">
+            <i class="bi bi-file-text"></i> Learn more
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-4 hero-logo-col">
+        <img src="webpage-asset/logo-white.png" alt="checK logo full">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ==============================
+     ABOUT
+============================== -->
+<section id="about">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <p class="section-label">What is checK?</p>
+        <h2 class="section-title">A Web3D Experiment Generator</h2>
+        <p class="about-body">
+          Developed at <strong>CNR ISPC DHILab</strong> (Florence), checK is an open-source web
+          application for designing and running controlled perceptual experiments in immersive 3D
+          Cultural Heritage environments. It is structured around two roles: the
+          <strong>tester</strong>, who authors the protocol and monitors subjects in real time
+          from a split-screen dashboard, and the <strong>subject</strong>, who navigates or
+          responds to tasks within the 3D environment on a separate device.
+        </p>
+        <p class="about-body">
+          Based on a previous experiment-planner prototype by the same team, checK is built on
+          the <a href="https://osiris.itabc.cnr.it/aton/" target="_blank" rel="noopener">ATON</a>
+          Framework and integrates
+          <a href="https://interlumo.ispc.cnr.it/" target="_blank" rel="noopener">Interlumo</a>
+          services (Kapto and Merkhet) to capture and visualise immersive analytics.
+        </p>
+        <div class="about-ext-links justify-content-center mt-4">
+          <a href="https://osiris.itabc.cnr.it/aton/" target="_blank" rel="noopener" class="about-ext-btn">
+            <i class="bi bi-layers"></i>
+            <span>
+              <strong>ATON Framework</strong>
+              <small>A liquid 3D web framework</small>
+            </span>
+            <i class="bi bi-box-arrow-up-right"></i>
+          </a>
+          <a href="https://interlumo.ispc.cnr.it/" target="_blank" rel="noopener" class="about-ext-btn">
+            <i class="bi bi-lightbulb"></i>
+            <span>
+              <strong>Interlumo</strong>
+              <small>Spatial analytics platform</small>
+            </span>
+            <i class="bi bi-box-arrow-up-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ==============================
+     FEATURES
+============================== -->
+<section id="features">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-label">User Flow</p>
+      <h2 class="section-title">From protocol design<br>to session data</h2>
+      <p class="section-lead mx-auto">
+        checK follows a natural experiment lifecycle: author, configure, onboard, run, and analyse.
+      </p>
+    </div>
+
+    <div class="ck-htimeline-wrap">
+    <div class="ck-htimeline">
+
+      <div class="ck-ht-step">
+        <div class="ck-ht-dot">1</div>
+        <i class="bi bi-layout-split ck-ht-icon"></i>
+        <h6>Template</h6>
+        <p>Choose between two templates for simple explorations or more complex protocols.</p>
+      </div>
+
+      <div class="ck-ht-step">
+        <div class="ck-ht-dot">2</div>
+        <i class="bi bi-list-check ck-ht-icon"></i>
+        <h6>Design</h6>
+        <p>Upload the enviroment and define the experimental protocol of the project.</p>
+      </div>
+
+      <div class="ck-ht-step">
+        <div class="ck-ht-dot">3</div>
+        <i class="bi bi-person-lines-fill ck-ht-icon"></i>
+        <h6>Onboard</h6>
+        <p>Manage your sessions with a simple interface and onboard subjects with a single click.</p>
+      </div>
+
+      <div class="ck-ht-step">
+        <div class="ck-ht-dot">4</div>
+        <i class="bi bi-broadcast ck-ht-icon"></i>
+        <h6>Run Session</h6>
+        <p>Manage experimental variables and monitor subjects' behavior at each phase of the protocol.</p>
+
+      </div>
+
+      <div class="ck-ht-step">
+        <div class="ck-ht-dot">5</div>
+        <i class="bi bi-bar-chart-line ck-ht-icon"></i>
+        <h6>Analyse</h6>
+        <p>Visualise logs and immersive analytics of each subject throughout your experiment.</p>
+      </div>
+
+      <div class="ck-ht-step">
+        <div class="ck-ht-dot">6</div>
+        <i class="bi bi-cloud-arrow-down ck-ht-icon"></i>
+        <h6>Export</h6>
+        <p>Export all your experiment data as a *.csv file and get new insights with further analyses.</p>
+      </div>
+
+    </div>
+    </div><!-- /.ck-htimeline-wrap -->
+  </div>
+</section>
+
+
+<!-- ==============================
+     INSTALLATION
+============================== -->
+<section id="install">
+  <div class="container">
+    <div class="row g-5 align-items-start">
+      <div class="col-lg-5">
+        <p class="section-label">Get Started</p>
+        <h2 class="section-title">Installation &amp; Deployment</h2>
+        <p style="color:var(--ck-muted); line-height:1.8;">
+          checK requires Node.js and consists of:
+          <ul style="color:var(--ck-muted); line-height:1.8;">
+            <li><a href="https://github.com/cnr-ispc-dhilab-fi/checK" target="_blank">checK web app</a></li>
+            <li><a href="https://github.com/cnr-ispc-dhilab-fi/check-flare" target="_blank">checK-flare plugin (server)</a></li>
+          </ul>
+          <span style="color:var(--ck-muted); line-height:1.8;">The integration with Interlumo services relies on:</span>
+          <ul style="color:var(--ck-muted); line-height:1.8;">
+            <li><a href="https://github.com/phoenixbf/merkhet-app" target="_blank">Merkhet web app</a></li>
+            <li><a href="https://github.com/phoenixbf/merkhet-plugin" target="_blank">Merkhet plugin</a></li>
+            <li><a href="https://github.com/phoenixbf/kapto" target="_blank">Kapto plugin</a></li>
+          </ul>
+        <p style="color:var(--ck-muted); line-height:1.8;">
+          They are all available as GitHub repositories and can be cloned within your main ATON instance.</p> 
+        <p style="color:var(--ck-muted); line-height:1.8;">
+          The installation process is straightforward and can be completed in a few steps.
+        </p>
+        <p style="color:var(--ck-muted); line-height:1.8;">
+          Once running, the tester dashboard is at
+          <code style="background:var(--ck-cream); padding:.1rem .35rem; border-radius:.25rem; font-size:.82rem;">
+            /a/checK
+          </code>
+          and the subject onboarding page at
+          <code style="background:var(--ck-cream); padding:.1rem .35rem; border-radius:.25rem; font-size:.82rem;">
+            /a/checK/welcome/
+          </code>.
+        </p>
+      </div>
+
+      <div class="col-lg-7">
+
+        <div class="step-block">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h6>Set up an ATON instance</h6>
+            <p>Clone the ATON framework and install its dependencies.</p>
+            <div class="code-block mb-2">
+              <code>git clone https://github.com/phoenixbf/aton</code>
+              <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
+            </div>
+            <div class="code-block">
+              <code>npm install</code>
+              <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h6>Add required flares</h6>
+            <p>Inside <code>config/flares/</code>, clone check-flare and the Merkhet plugin.</p>
+            <div class="code-block mb-2">
+              <code>git clone https://github.com/cnr-ispc-dhilab-fi/check-flare</code>
+              <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
+            </div>
+            <div class="code-block">
+              <code>git clone https://github.com/phoenixbf/merkhet-plugin</code>
+              <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h6>Add the checK &amp; Merkhet wapps</h6>
+            <p>Inside <code>wapps/</code>, clone the two web-applications.</p>
+            <div class="code-block mb-2">
+              <code>git clone https://github.com/cnr-ispc-dhilab-fi/checK</code>
+              <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
+            </div>
+            <div class="code-block">
+              <code>git clone https://github.com/phoenixbf/merkhet-app</code>
+              <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h6>Create data folders</h6>
+            <p>checK stores 3D models and scenes under dedicated sub-folders.</p>
+            <div class="code-block mb-2">
+              <code>mkdir -p data/collections/check-user</code>
+              <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
+            </div>
+            <div class="code-block">
+              <code>mkdir -p data/scenes/check-user</code>
+              <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h6>Start the server</h6>
+            <p>Launch ATON with PM2 for persistent deployment, or use <code>npm start</code> for local testing.</p>
+            <div class="code-block">
+              <code>npm run deploy-pm2</code>
+              <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
+            </div>
+            <p style="font-size:.82rem; color:var(--ck-muted); margin-top:.6rem;">
+              Tester dashboard → <strong>https://localhost:8080/a/checK</strong><br>
+              Subject onboarding → <strong>https://localhost:8080/a/checK/welcome/</strong>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ==============================
+     RESOURCES
+============================== -->
+<section id="resources">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-label">Learn more</p>
+      <h2 class="section-title">Publications &amp; Resources</h2>
+    </div>
+
+    <div class="row g-2 justify-content-center">
+
+      <div class="col-md-6">
+        <a href="https://diglib.eg.org/items/6058f5fd-f02c-4bf9-8891-0ea40700a99f" target="_blank" rel="noopener" class="resource-card-sm">
+          <span class="resource-type-sm">Paper</span>
+          <div class="resource-text-sm">
+            <strong>Towards an Experiment Planner for Cognitive Studies in Virtual Heritage Environments</strong>
+            <small>EG Digital Library</small>
+          </div>
+          <i class="bi bi-box-arrow-up-right resource-ext-icon"></i>
+        </a>
+      </div>
+
+      <div class="col-md-6">
+        <a href="https://link.springer.com/chapter/10.1007/978-3-032-17700-1_3" target="_blank" rel="noopener" class="resource-card-sm">
+          <span class="resource-type-sm">Chapter</span>
+          <div class="resource-text-sm">
+            <strong>Design Resources to Enhance Access to Coloured Collections Through Interactive Experiences</strong>
+            <small>Chromatic Visions, Part II · Springer</small>
+          </div>
+          <i class="bi bi-box-arrow-up-right resource-ext-icon"></i>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ==============================
+     ACKNOWLEDGMENTS
+============================== -->
+<section id="acknowledgments" class="ck-ack-section">
+  <div class="container text-center">
+    <p class="ck-ack-label">Acknowledgments</p>
+    <h2 class="section-title">About us</h2>
+    <p style="color:var(--ck-muted); line-height:1.8;">checK is developed by the Digital Heritage Innovation Lab (DHILab) at National Research Council (CNR) Institute of Heritage Science (ISPC) in Florence.</p>
+    <div class="ck-ack-row">
+      <div class="ck-ack-item">
+        <img src="webpage-asset/logo-h2iosc.png" alt="H2IOSC logo" class="ck-ack-logo">
+        <a href="https://www.h2iosc.cnr.it/" class="ck-ack-link">H2IOSC</a>
+        <span>NextGenEU · B63C22000730005</span>
+      </div>
+      <div class="ck-ack-item">
+        <img src="webpage-asset/logo-perceive.jpg" alt="PERCEIVE logo" class="ck-ack-logo">
+        <a href="https://cordis.europa.eu/project/id/101061157/it" class="ck-ack-link">PERCEIVE</a>
+        <span>Horizon Europe · GA 101061157</span>
+      </div>
+      <div class="ck-ack-item">
+        <img src="webpage-asset/logo-colours.png" alt="COLOURS logo" class="ck-ack-logo">
+        <a href="https://cordis.europa.eu/project/id/101233413" class="ck-ack-link">COLOURS</a>
+        <span>Horizon Europe · GA 101233413</span>
+      </div>
+      <div class="ck-ack-item">
+        <img src="webpage-asset/logo-changes.png" alt="CHANGES logo" class="ck-ack-logo">
+        <a href="https://www.fondazionechanges.org/" class="ck-ack-link">CHANGES</a>
+        <span>NextGenEU · B83D22001210006</span>
+      </div>
+    </div>
+    <p class="ck-ack-collab">
+      Realised with the support of the <a style="font-weight: bold;" href="https://www.epfl.ch/labs/emplus/" target="_blank" rel="noopener">Laboratory of Experimental Museology</a> (EPFL - eM+) in the framework of the Swiss Government Excellence Scholarship, and with the collaboration of the Psychology departments of <strong>Sapienza University of Rome</strong> and <strong>University of Bologna</strong>.
+    </p>
+  </div>
+</section>
+
+
+<!-- ==============================
+     FOOTER
+============================== -->
+<footer class="ck-footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <h6>checK</h6>
+        <p style="line-height:1.7;">
+          Cultural Heritage Experiment Configuration Kit.<br>
+          Developed at <strong style="color:rgba(255,255,255,.8);">CNR ISPC · DHILab</strong>, Florence.
+        </p>
+      </div>
+      <div class="col-md-4">
+        <h6>Repositories</h6>
+        <ul class="list-unstyled" style="line-height:2.1;">
+          <li><a href="https://github.com/cnr-ispc-dhilab-fi/checK" target="_blank" rel="noopener"><i class="bi bi-github me-1"></i>checK</a></li>
+          <li><a href="https://github.com/cnr-ispc-dhilab-fi/check-flare" target="_blank" rel="noopener"><i class="bi bi-github me-1"></i>check-flare</a></li>
+          <li><a href="https://github.com/phoenixbf/aton" target="_blank" rel="noopener"><i class="bi bi-github me-1"></i>ATON Framework</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h6>Links</h6>
+        <ul class="list-unstyled" style="line-height:2.1;">
+          <li><a href="https://osiris.itabc.cnr.it/aton/" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>ATON Website</a></li>
+          <li><a href="https://interlumo.ispc.cnr.it/" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>Interlumo</a></li>
+          <li><a href="#" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>checK Documentation</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="footer-divider">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2" style="font-size:.78rem;">
+      <span>© CNR ISPC DHILab – Florence. Released under GNU General Public License v3.0.</span>
+      <span>Built on <a href="https://getbootstrap.com" target="_blank" rel="noopener">Bootstrap 5</a> · <a href="https://osiris.itabc.cnr.it/aton/" target="_blank" rel="noopener">ATON Framework</a></span>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Portfolio JS -->
+<script src="js/portfolio.js"></script>
+<!-- SWAL -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function swalAlert() {
+    Swal.fire({
+    title: "Stay tuned",
+    text: "The official documentation of checK will soon be available.",
+    icon: "info",
+});
+  }
+</script>
+</body>
+</html>
