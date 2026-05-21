@@ -233,8 +233,8 @@ function addMultimediaTable(isInstruction, phase) {
                         <div class="btn-group btn-group-sm" role="group">
                             <button 
                                 type="button" 
-                                class="btn" 
-                                onclick="play3DAnimation()">
+                                class="btn" id="animationBtn"
+                                onclick="toggle3DAnimation()">
                                 <i class="bi bi-play-circle"></i>
                             </button>
                         </div>
@@ -292,7 +292,6 @@ function addMultimediaTable(isInstruction, phase) {
         }
     }
 
-    // <i class="bi ${iconClass}">...</i> NOW IT WORKS TILL HERE: TO DO] ADD ASSETS AS ROWS. NB FOR MULTIMEDIA YOU ALSO HAVE THE ANIMATION
 }
 
 // Ancillary function to select the correct icon
@@ -382,6 +381,22 @@ function previewAsset(assetId, assetType) {
 });
 }
 
-function play3DAnimation() {
-    atonFrame.contentWindow.playMainAnimation();
+let isPlayAnimation = false;
+
+function toggle3DAnimation() {
+    if (!isPlayAnimation) {
+        atonFrame.contentWindow.playMainAnimation();
+        document.getElementById("animationBtn").innerHTML = `<i class="bi bi-pause-circle"></i>`;
+        isPlayAnimation = true;
+
+        window.addEventListener('animationFinished', function onFinished() {
+            window.removeEventListener('animationFinished', onFinished);
+            document.getElementById("animationBtn").innerHTML = `<i class="bi bi-play-circle"></i>`;
+            isPlayAnimation = false;
+        });
+    } else {
+        atonFrame.contentWindow.stopMainAnimation();
+        document.getElementById("animationBtn").innerHTML = `<i class="bi bi-play-circle"></i>`;
+        isPlayAnimation = false;
+    }
 }

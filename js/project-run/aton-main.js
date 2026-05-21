@@ -147,9 +147,14 @@ APP.setup = () => {
         });
         */
 
-        // 4. Play animation
-        ATON.Photon.on("requestAnimation", () => {
-            mainAnimationRoutine();    
+        // 4A. Play animation
+        ATON.Photon.on("requestPlayAnimation", () => {
+            mainAnimationPlayRoutine();    
+        });
+
+         // 4B. Stop animation
+        ATON.Photon.on("requestStopAnimation", () => {
+            mainAnimationStopRoutine();    
         });
 
         window.parent.dispatchEvent(new CustomEvent('atonSceneReady'));
@@ -272,9 +277,31 @@ function stopMainAnimation() {
     });
 }
 
-function mainAnimationRoutine() {
+function mainAnimationPlayRoutine() {
     _waitForAnimations(() => {
-        Object.values(aton_actions).forEach(a => a.play());
+        Object.values(aton_actions).forEach(a => {
+            a.setLoop(THREE.LoopOnce, 1);
+            a.clampWhenFinished = true;
+            a.reset();
+            a.play();
+        });
+
+        let sNode = ATON.getSceneNode("main");
+        if (sNode && sNode._aniMixers && sNode._aniMixers.length > 0) {
+            const mixer = sNode._aniMixers[0];
+            mixer.addEventListener('finished', function onFinished() {
+                mixer.removeEventListener('finished', onFinished);
+                if (window.parent !== window) {
+                    window.parent.dispatchEvent(new CustomEvent('animationFinished'));
+                }
+            });
+        }
+    });
+}
+
+function mainAnimationStopRoutine() {
+    _waitForAnimations(() => {
+        Object.values(aton_actions).forEach(a => a.stop());
     });
 }
 
@@ -282,9 +309,20 @@ function playMainAnimation() {
 
     // Fire animation in the subject
     if (role == 0) {
-        ATON.Photon.fireEvent("requestAnimation", {});
+        ATON.Photon.fireEvent("requestPlayAnimation", {});
     }
 
     // Reproduce also for the tester
-    mainAnimationRoutine();
+    mainAnimationPlayRoutine();
+}
+
+function stopMainAnimation() {
+
+    // Fire animation in the subject
+    if (role == 0) {
+        ATON.Photon.fireEvent("requestStopAnimation", {});
+    }
+
+    // Reproduce also for the tester
+    mainAnimationStopRoutine();
 }
