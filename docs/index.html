@@ -29,7 +29,7 @@
     <a class="navbar-brand" href="#">
       <img src="webpage-asset/logo-ispc.png" alt="CNR ISPC" class="navbar-logo-ispc">
       <div class="vr"></div>
-      <img src="../img/logo-white.png" alt="checK logo">
+      <img src="https://raw.githubusercontent.com/cnr-ispc-dhilab-fi/checK/afc357cf64cf5a5ed07cfad165220ac6037f4824/img/logo-white.png" alt="checK logo">
     </a>
     <div class="d-flex align-items-center flex-wrap gap-1">
       <a class="nav-link" href="#about">About</a>
@@ -97,20 +97,20 @@
         </p>
         <div class="about-ext-links justify-content-center mt-4">
           <a href="https://osiris.itabc.cnr.it/aton/" target="_blank" rel="noopener" class="about-ext-btn">
-            <i class="bi bi-layers"></i>
+            <img src="webpage-asset/aton.svg" alt="ATON" style="width:2.5em;height:2.5em;vertical-align:middle;">
             <span>
               <strong>ATON Framework</strong>
               <small>A liquid 3D web framework</small>
             </span>
-            <i class="bi bi-box-arrow-up-right"></i>
+            <i class="bi bi-box-arrow-up-right" style="color:var(--ck-muted);"></i>
           </a>
           <a href="https://interlumo.ispc.cnr.it/" target="_blank" rel="noopener" class="about-ext-btn">
-            <i class="bi bi-lightbulb"></i>
+            <img src="webpage-asset/interlumo.svg" alt="Interlumo" style="width:2.5em;height:2.5em;vertical-align:middle;">
             <span>
               <strong>Interlumo</strong>
               <small>Spatial analytics platform</small>
             </span>
-            <i class="bi bi-box-arrow-up-right"></i>
+            <i class="bi bi-box-arrow-up-right" style="color:var(--ck-muted);"></i>
           </a>
         </div>
       </div>
@@ -137,28 +137,28 @@
 
       <div class="ck-ht-step">
         <div class="ck-ht-dot">1</div>
-        <i class="bi bi-layout-split ck-ht-icon"></i>
+        <i class="bi bi-layout-split ck-ht-icon" style="color:#6e6eaa;"></i>
         <h6>Template</h6>
         <p>Choose between two templates for simple explorations or more complex protocols.</p>
       </div>
 
       <div class="ck-ht-step">
         <div class="ck-ht-dot">2</div>
-        <i class="bi bi-list-check ck-ht-icon"></i>
+        <i class="bi bi-list-check ck-ht-icon" style="color:#6aaa8e;"></i>
         <h6>Design</h6>
         <p>Upload the enviroment and define the experimental protocol of the project.</p>
       </div>
 
       <div class="ck-ht-step">
         <div class="ck-ht-dot">3</div>
-        <i class="bi bi-person-lines-fill ck-ht-icon"></i>
+        <i class="bi bi-person-lines-fill ck-ht-icon" style="color:#8e6aaa;"></i>
         <h6>Onboard</h6>
         <p>Manage your sessions with a simple interface and onboard subjects with a single click.</p>
       </div>
 
       <div class="ck-ht-step">
         <div class="ck-ht-dot">4</div>
-        <i class="bi bi-broadcast ck-ht-icon"></i>
+        <i class="bi bi-broadcast ck-ht-icon" style="color:#D19C6B;"></i>
         <h6>Run Session</h6>
         <p>Manage experimental variables and monitor subjects' behavior at each phase of the protocol.</p>
 
@@ -166,14 +166,14 @@
 
       <div class="ck-ht-step">
         <div class="ck-ht-dot">5</div>
-        <i class="bi bi-bar-chart-line ck-ht-icon"></i>
+        <i class="bi bi-bar-chart-line ck-ht-icon" style="color:#6a9aaa;"></i>
         <h6>Analyse</h6>
         <p>Visualise logs and immersive analytics of each subject throughout your experiment.</p>
       </div>
 
       <div class="ck-ht-step">
         <div class="ck-ht-dot">6</div>
-        <i class="bi bi-cloud-arrow-down ck-ht-icon"></i>
+        <i class="bi bi-cloud-arrow-down ck-ht-icon" style="color:#aa8e6a;"></i>
         <h6>Export</h6>
         <p>Export all your experiment data as a *.csv file and get new insights with further analyses.</p>
       </div>
@@ -297,10 +297,6 @@
               <code>npm run deploy-pm2</code>
               <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
             </div>
-            <p style="font-size:.82rem; color:var(--ck-muted); margin-top:.6rem;">
-              Tester dashboard → <strong>https://localhost:8080/a/checK</strong><br>
-              Subject onboarding → <strong>https://localhost:8080/a/checK/welcome/</strong>
-            </p>
           </div>
         </div>
 
@@ -356,7 +352,7 @@
   <div class="container text-center">
     <p class="ck-ack-label">Acknowledgments</p>
     <h2 class="section-title">About us</h2>
-    <p style="color:var(--ck-muted); line-height:1.8;">checK is developed by the Digital Heritage Innovation Lab (DHILab) at National Research Council (CNR) Institute of Heritage Science (ISPC) in Florence.</p>
+    <p style="color:var(--ck-muted); line-height:1.8;">checK is developed by the Digital Heritage Innovation Lab at National Research Council - Institute of Heritage Science (<a href="https://www.ispc.cnr.it/it_it/2021/06/16/dhilab-digital-heritage-innovation-lab/">DHILab - CNR ISPC</a>) in Florence.</p>
     <div class="ck-ack-row">
       <div class="ck-ack-item">
         <img src="webpage-asset/logo-h2iosc.png" alt="H2IOSC logo" class="ck-ack-logo">
@@ -380,7 +376,7 @@
       </div>
     </div>
     <p class="ck-ack-collab">
-      Realised with the support of the <a style="font-weight: bold;" href="https://www.epfl.ch/labs/emplus/" target="_blank" rel="noopener">Laboratory of Experimental Museology</a> (EPFL - eM+) in the framework of the Swiss Government Excellence Scholarship, and with the collaboration of the Psychology departments of <strong>Sapienza University of Rome</strong> and <strong>University of Bologna</strong>.
+      Realised with the support of the <a style="font-weight: bold;" href="https://www.epfl.ch/labs/emplus/" target="_blank" rel="noopener">Laboratory of Experimental Museology</a> (EPFL - eM+, Switzerland) and funding by the Swiss Government Excellence Scholarship (2025.0089), and with the collaboration of the Psychology departments of Sapienza University of Rome and University of Bologna.
     </p>
   </div>
 </section>
