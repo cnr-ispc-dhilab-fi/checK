@@ -524,7 +524,6 @@ section:nth-child(even) { background-color: var(--ck-cream); }
   margin-bottom: .85rem;
   flex-shrink: 0;
 }
-.ck-ht-step:last-child .ck-ht-dot { background: var(--ck-secondary); }
 
 .ck-ht-icon {
   font-size: 1.3rem;
