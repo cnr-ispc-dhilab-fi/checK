@@ -13,8 +13,8 @@
                     "dir": true,
                     "fov": false
                 },
-                "taskDes": "This is Laura's task description",
-                "taskInst": "This is the task instruction",
+                "taskDes": "This is a custom task description",
+                "taskInst": "This is the task instruction that the subject will receive",
                 "assets": {
                     "1773763285054": {
                         "customName": "Monster Turtle",

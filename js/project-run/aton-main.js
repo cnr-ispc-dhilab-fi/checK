@@ -18,10 +18,12 @@ APP.setup = () => {
     ATON.UI.addBasicEvents();
 
     // Load the scene
-    ATON.App.loadScene(s_id, () => {
+    ATON.App.loadScene(s_id, async () => {
 
         // Multi-user with Photon
         ATON.Photon.connect();
+
+        console.log(protocolConfigStorage);
 
         // Set tester as invisible according to Role
         var isTester = role == 0;                   // Tester (Psycologist, Curator etc): r = 0
@@ -39,16 +41,33 @@ APP.setup = () => {
             // Set first-person navigation
             ATON.Nav.setFirstPersonControl();
 
-            // Notify tester when Photon connection is established
+            // Register _onConnected before any await so it is never missed
             ATON.Photon._onConnected = () => {
                 ATON.Photon.fireEvent("triggerAlert", subject);
             };
+
+            // Show welcome modal: fetch protocol config to check if training phase exists
+            await updateStorageObjects();
+            const hasIntro = phasesObj[0] !== false;
+            ATON.UI.showModal({
+                header: "Welcome!",
+                body: ATON.UI.createContainer({
+                    items: hasIntro ? [
+                        ATON.UI.elem(`<p>Thank you for participating in this project.</p>`),
+                        ATON.UI.elem(`<p>You can move in the space via <i style="font-weight: bold">teleport</i>: point with the controller on the floor and a white disk will appear. Confirm your destination with the trigger of the controller to move</p>`),
+                        ATON.UI.elem(`<img class="img-fluid" src="../img/navigation.png"/>`)
+                    ] : [
+                        ATON.UI.elem(`<p>Thank you for participating in this project.</p>`),
+                        ATON.UI.elem(`<p>The tester will now provide you with the instructions to begin the experiment.</p>`)
+                    ]
+                })
+            });
 
         }
 
         // Update the Merkhet ID once Kapto establishes its session asynchronously
         ATON.Photon.on("KaptoSessionID", (sesid) => { mkId = sesid; });
-        
+
         // ================================
         // == LISTENER FOR PHOTON EVENTS ==
         // ================================
@@ -87,7 +106,7 @@ APP.setup = () => {
         //    This also initialise the dataChunk, relying on getMerkhetID()
         ATON.Photon.on("showModal", (testerPov) => {
             if (role == 0) {
-                window.parent.console.log(window.parent.startCaptureDataChunk({mkid : mkId}));
+                window.parent.console.log(window.parent.startCaptureDataChunk({ mkid: mkId }));
                 let cover = ATON.Utils.takeScreenshotFromPOV(testerPov, 256);
                 window.parent.subjectTrigger(cover);
                 window.parent.console.log(cover.src);
@@ -103,16 +122,44 @@ APP.setup = () => {
             console.log("Internal debug 1");
             if (role == 1) {
                 console.log("Internal debug 2");
-                let mkgid = evtData.sid.replace("/","-");
+                let mkgid = evtData.sid.replace("/", "-");
                 let kaptoPars = `mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.attr=pos,dir&mk.dur=900&mk.gid=${mkgid}`;
                 let appendixURLSearch = `id=${getIdFromURL()}&sc=${subject}&${kaptoPars}`;
                 window.location.href = `scene.html?sid=${evtData.sid}&r=1&${appendixURLSearch}`;
             }
         });
 
+        ATON.Photon.on("showIntroModal", (boolParams) => {
+            if (role != 1) return;
+
+            if (boolParams.hasIntro) {
+                ATON.UI.showModal({
+                    header: "Welcome!",
+
+                    body: ATON.UI.createContainer({
+                        items: [
+                        ATON.UI.elem(`<p>Thank you for participating in this project.</p>`),
+                        ATON.UI.elem(`<p>You can move in the space via <i style="font-weight: bold">teleport</i>: point with the controller on the floor and a white disk will appear. Confirm your destination with the trigger of the controller to move</p>`)
+            ]
+        })
+    });
+            } else {
+                ATON.UI.showModal({
+                    header: "Welcome!",
+
+                    body: ATON.UI.createContainer({
+                        items: [
+                        ATON.UI.elem(`<p>Thank you for participating in this project. Wait for your tester's instructions.</p>`),
+            ]
+        })
+    });
+            }
+            
+        });
+
         // 4. Request Home POV
 
-         ATON.Photon.on("homePOV", () => {
+        ATON.Photon.on("homePOV", () => {
             if (role == 1) {
                 ATON.Nav.requestHomePOV();
             }
@@ -126,7 +173,7 @@ APP.setup = () => {
                 ATON.UI.showModal({
                     header: "The session is concluded",
                     body: ATON.UI.createContainer({
-                    items: [ATON.UI.elem(`<p>Thank you for participating in the experiment. You can now give the material back to the tester</p>`)]
+                        items: [ATON.UI.elem(`<p>Thank you for participating in the experiment. You can now give the material back to the tester</p>`)]
                     })
                 });
             }
@@ -149,12 +196,12 @@ APP.setup = () => {
 
         // 4A. Play animation
         ATON.Photon.on("requestPlayAnimation", () => {
-            mainAnimationPlayRoutine();    
+            mainAnimationPlayRoutine();
         });
 
-         // 4B. Stop animation
+        // 4B. Stop animation
         ATON.Photon.on("requestStopAnimation", () => {
-            mainAnimationStopRoutine();    
+            mainAnimationStopRoutine();
         });
 
         window.parent.dispatchEvent(new CustomEvent('atonSceneReady'));
@@ -202,10 +249,25 @@ setInterval(updatePos, 0.01);
 
 // 2. Send alert and modals to the tester
 
+function modalStopNavigation() {
+    ATON.UI.showModal({
+        header: "Wait! A selection was made",
+
+        body: ATON.UI.createContainer({
+            items: [
+                ATON.UI.elem(`<p>Your selection has been sent to the tester, who will comment and register your progress.</p>`),
+                ATON.UI.elem(`<div class="alert alert-danger" role="alert"> <b>Do not move until you are told to!</b> </div>`),
+                ATON.UI.elem(`<p>The tester will inform you when you can proceed with your exploration</p>`)
+            ]
+        })
+    });
+}
+
 // [!] Associate to VR controller trigger [!]
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
         triggerModal();
+        modalStopNavigation()
     }
 });
 
@@ -225,6 +287,14 @@ function triggerModal() {    // Fire modal (use ancillary function to ensure cor
 async function subjectATONSceneLoader(params) {
     if (role == 0) {
         await ATON.Photon.fireEvent("loadScene", params);
+    }
+}
+
+// 3 BIS Show customised modal for training
+
+async function subjectWelcomeModal(params) {
+    if (role == 0) {
+        await ATON.Photon.fireEvent("showIntroModal", params);
     }
 }
 

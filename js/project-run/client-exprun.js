@@ -1,3 +1,5 @@
+const RECORDS_STORAGE_ID = "session/records";
+
 // ===============================
 // SESSION CODE URL HELPER
 // ===============================

@@ -1,5 +1,3 @@
-const RECORDS_STORAGE_ID = "session/records";
-
 let sessionData = [];
 let dataChunk = {};
 

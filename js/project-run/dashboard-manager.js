@@ -1,4 +1,4 @@
-let currentPhase = 1; // 0!
+let currentPhase = 0; // 0!
 let atonFrame;
 
 let mainAnimation;
