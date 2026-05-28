@@ -1,4 +1,4 @@
-// thumbnail-server.js
+/* thumbnail-server.js
 const express = require('express');
 const multer  = require('multer');
 const cors    = require('cors');
@@ -49,3 +49,4 @@ app.post('/api/thumbnails', upload.single('thumbnail'), (req, res) => {
 app.listen(PORT, () => {
     console.log('Thumbnail server in ascolto su http://localhost:' + PORT);
 });
+*/
