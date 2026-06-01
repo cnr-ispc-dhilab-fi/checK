@@ -175,12 +175,9 @@ async function goToNextPhase() {
     if (currentPhase < Object.keys(phasesObj).length - 1) {
         currentPhase++;
         updateResultsDataChunk({content: "next_action"}, {next_action: `Phase ${currentPhase}`});
+        initTimer();
         const sceneChanged = await updatePhase(currentPhase);
-        // If scene didn't change the subject is already connected — act immediately.
-        // If scene changed, timer and homePOV are handled inside triggerAlert once
-        // the subject reconnects after navigating to the new scene.
         if (!sceneChanged) {
-            initTimer();
             startTimer();
             atonFrame.contentWindow.requestHomePOV();
         }

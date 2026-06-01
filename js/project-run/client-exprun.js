@@ -1,4 +1,5 @@
-let currentPhase = 0; // 0!
+const _phaseParam = new URLSearchParams(window.location.search).get("phase");
+let currentPhase = _phaseParam !== null ? parseInt(_phaseParam) : 0;
 
 const RECORDS_STORAGE_ID = "session/records";
 

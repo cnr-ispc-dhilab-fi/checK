@@ -97,15 +97,11 @@ APP.setup = () => {
                     allowEscapeKey: false
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        var phase = window.parent.currentPhase;
-                        if (phase !== 0) {
-                            if (window.parent._timerCentiseconds > 0 || window.parent._timerRunning) window.parent.initTimer();
+                        if (currentPhase !== 0) {
                             window.parent.startTimer();
                             requestHomePOV();
                         }
-                        if (phase === 0) {
-                            ATON.Photon.fireEvent("showPhaseInstructions", { phase });
-                        }
+                        ATON.Photon.fireEvent("showPhaseInstructions", { phase: currentPhase });
                     }
                 });
             }

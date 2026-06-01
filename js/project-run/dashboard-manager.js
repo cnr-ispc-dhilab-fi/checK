@@ -54,7 +54,7 @@ async function loadPhaseATONScene(phase) {
 
     if (currentATONURLParams.get("sid") !== s_id) {
         await loadPhaseSubjectATONScene(s_id);
-        atonFrame.src = `scene.html?id=${sessionRecord.projectId}&sc=${getSessionCodeFromURL()}&sid=${s_id}&r=0`;
+        atonFrame.src = `scene.html?id=${sessionRecord.projectId}&sc=${getSessionCodeFromURL()}&sid=${s_id}&r=0&phase=${phase}`;
         return true;
     }
     return false;
