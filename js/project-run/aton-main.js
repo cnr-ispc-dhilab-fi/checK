@@ -46,22 +46,24 @@ APP.setup = () => {
                 ATON.Photon.fireEvent("triggerAlert", subject);
             };
 
-            // Show welcome modal: fetch protocol config to check if training phase exists
+            // Show welcome modal only on first load (phase 0)
             await updateStorageObjects();
-            const hasIntro = phasesObj[0] !== false;
-            ATON.UI.showModal({
-                header: "Welcome!",
-                body: ATON.UI.createContainer({
-                    items: hasIntro ? [
-                        ATON.UI.elem(`<p>Thank you for participating in this project.</p>`),
-                        ATON.UI.elem(`<p>You can move in the space via <i style="font-weight: bold">teleport</i>: point with the controller on the floor and a white disk will appear. Confirm your destination with the trigger of the controller to move</p>`),
-                        ATON.UI.elem(`<img class="img-fluid" src="../img/navigation.png"/>`)
-                    ] : [
-                        ATON.UI.elem(`<p>Thank you for participating in this project.</p>`),
-                        ATON.UI.elem(`<p>The tester will now provide you with the instructions to begin the experiment.</p>`)
-                    ]
-                })
-            });
+            if (parseInt(params.get("phase") || "0") === 0) {
+                const hasIntro = phasesObj[0] !== false;
+                ATON.UI.showModal({
+                    header: "Welcome!",
+                    body: ATON.UI.createContainer({
+                        items: hasIntro ? [
+                            ATON.UI.elem(`<p>Thank you for participating in this project.</p>`),
+                            ATON.UI.elem(`<p>You can move in the space via <i style="font-weight: bold">teleport</i>: point with the controller on the floor and a white disk will appear. Confirm your destination with the trigger of the controller to move</p>`),
+                            ATON.UI.elem(`<img class="img-fluid" src="../img/navigation.png"/>`)
+                        ] : [
+                            ATON.UI.elem(`<p>Thank you for participating in this project.</p>`),
+                            ATON.UI.elem(`<p>The tester will now provide you with the instructions to begin the experiment.</p>`)
+                        ]
+                    })
+                });
+            }
 
         }
 
@@ -95,8 +97,15 @@ APP.setup = () => {
                     allowEscapeKey: false
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        if (window.parent._timerCentiseconds > 0 || window.parent._timerRunning) window.parent.initTimer();
-                        window.parent.startTimer();
+                        var phase = window.parent.currentPhase;
+                        if (phase !== 0) {
+                            if (window.parent._timerCentiseconds > 0 || window.parent._timerRunning) window.parent.initTimer();
+                            window.parent.startTimer();
+                            requestHomePOV();
+                        }
+                        if (phase === 0) {
+                            ATON.Photon.fireEvent("showPhaseInstructions", { phase });
+                        }
                     }
                 });
             }
@@ -125,14 +134,15 @@ APP.setup = () => {
                 let mkgid = evtData.sid.replace("/", "-");
                 let kaptoPars = `mk.hub=https://interlumo.ispc.cnr.it/kapto/&mk.freq=200&mk.attr=pos,dir&mk.dur=900&mk.gid=${mkgid}`;
                 let appendixURLSearch = `id=${getIdFromURL()}&sc=${subject}&${kaptoPars}`;
-                window.location.href = `scene.html?sid=${evtData.sid}&r=1&${appendixURLSearch}`;
+                window.location.href = `scene.html?sid=${evtData.sid}&r=1&phase=${evtData.phase ?? 0}&${appendixURLSearch}`;
             }
         });
 
         ATON.Photon.on("showIntroModal", (boolParams) => {
             if (role != 1) return;
 
-            if (boolParams.hasIntro) {
+            if (currentPhase == 0) {
+                if (boolParams.hasIntro) {
                 ATON.UI.showModal({
                     header: "Welcome!",
 
@@ -140,22 +150,23 @@ APP.setup = () => {
                         items: [
                         ATON.UI.elem(`<p>Thank you for participating in this project.</p>`),
                         ATON.UI.elem(`<p>You can move in the space via <i style="font-weight: bold">teleport</i>: point with the controller on the floor and a white disk will appear. Confirm your destination with the trigger of the controller to move</p>`)
-            ]
-        })
-    });
-            } else {
-                ATON.UI.showModal({
-                    header: "Welcome!",
+                        ]
+                    })
+                });
+                } else {
+                    ATON.UI.showModal({
+                        header: "Welcome!",
 
-                    body: ATON.UI.createContainer({
-                        items: [
-                        ATON.UI.elem(`<p>Thank you for participating in this project. Wait for your tester's instructions.</p>`),
-            ]
-        })
-    });
+                        body: ATON.UI.createContainer({
+                            items: [
+                            ATON.UI.elem(`<p>Thank you for participating in this project. Wait for your tester's instructions.</p>`),
+                            ]
+                        })
+                    });
+                }
             }
-            
         });
+        
 
         // 4. Request Home POV
 
@@ -199,6 +210,48 @@ APP.setup = () => {
             if (role == 1) {
                 window.playMedia(assetName);
             }
+        });
+
+        // 4C. Show phase instructions on subject
+        ATON.Photon.on("showPhaseInstructions", (data) => {
+            if (role != 1 || !data || data.phase == null) return;
+
+            var phaseData = phasesObj[data.phase];
+            if (!phaseData) return;
+
+            var items = [];
+
+            var taskInst = phaseData["taskInst"];
+            if (taskInst && taskInst.trim().length > 0) {
+                items.push(ATON.UI.elem(`<p>${taskInst}</p>`));
+            }
+
+            var phaseAssets = phaseData["assets"] || {};
+            Object.keys(phaseAssets).forEach(function (assetKey) {
+                var ref = phaseAssets[assetKey];
+                if (!ref || !ref.role || ref.role.toLowerCase() !== "instruction") return;
+                var asset = protocolMultimediaLibraryStorage[assetKey];
+                if (!asset) return;
+
+                if (asset.image && asset.image.url) {
+                    var raw = asset.image.url;
+                    var base = window.location.protocol === 'https:'
+                        ? window.location.origin
+                        : (typeof SERVER_BASE !== 'undefined' && SERVER_BASE ? SERVER_BASE : window.location.origin);
+                    var url = /^https?:\/\//i.test(raw) ? raw : base + (raw.charAt(0) === '/' ? '' : '/') + raw;
+                    items.push(ATON.UI.elem(`<img class="img-fluid" src="${url}" style="max-height:40vh;object-fit:contain;" />`));
+                }
+                if (asset.content && asset.content.trim().length > 0) {
+                    items.push(ATON.UI.elem(`<p>${asset.content}</p>`));
+                }
+            });
+
+            if (items.length === 0) return;
+
+            ATON.UI.showModal({
+                header: "Task Instructions",
+                body: ATON.UI.createContainer({ items })
+            });
         });
 
         // 4B. Play animation
@@ -326,6 +379,14 @@ function endSessionModal() {
 function requestPlayMedia(assetName) {
     if (role == 0) {
         ATON.Photon.fireEvent("playMedia", assetName);
+    }
+}
+
+// 7. Show phase instructions on subject
+
+function fireShowPhaseInstructions(phase) {
+    if (role == 0) {
+        ATON.Photon.fireEvent("showPhaseInstructions", { phase });
     }
 }
 

@@ -1,4 +1,3 @@
-let currentPhase = 0; // 0!
 let atonFrame;
 
 let mainAnimation;
@@ -20,11 +19,15 @@ window.addEventListener('DOMContentLoaded', async function() {
 
 async function updatePhase(phase) {
 
-    await loadPhaseATONScene(phase);
+    const sceneChanged = await loadPhaseATONScene(phase);
 
     await updateRightPanel(phase);
 
-    // Call here function to start the timer
+    if (phase >= 1 && !sceneChanged) {
+        requestShowPhaseInstructions(phase);
+    }
+
+    return sceneChanged;
 }
 
 // ==========================================
@@ -52,7 +55,9 @@ async function loadPhaseATONScene(phase) {
     if (currentATONURLParams.get("sid") !== s_id) {
         await loadPhaseSubjectATONScene(s_id);
         atonFrame.src = `scene.html?id=${sessionRecord.projectId}&sc=${getSessionCodeFromURL()}&sid=${s_id}&r=0`;
+        return true;
     }
+    return false;
 }
 
 // ===========================================

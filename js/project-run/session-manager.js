@@ -9,7 +9,7 @@
 async function loadPhaseSubjectATONScene(s_id) {
     let atonFrame = document.getElementById("testerATONSceneFrame");
     if (typeof atonFrame.contentWindow?.subjectATONSceneLoader === 'function') {
-        await atonFrame.contentWindow.subjectATONSceneLoader({ sid: s_id });
+        await atonFrame.contentWindow.subjectATONSceneLoader({ sid: s_id, phase: currentPhase });
     }
 }
 
@@ -17,6 +17,13 @@ function playMedia(assetName) {
     const iframe = document.getElementById('testerATONSceneFrame');
     if (iframe && typeof iframe.contentWindow?.requestPlayMedia === 'function') {
         iframe.contentWindow.requestPlayMedia(assetName);
+    }
+}
+
+function requestShowPhaseInstructions(phase) {
+    const iframe = document.getElementById('testerATONSceneFrame');
+    if (iframe && typeof iframe.contentWindow?.fireShowPhaseInstructions === 'function') {
+        iframe.contentWindow.fireShowPhaseInstructions(phase);
     }
 }
 
@@ -164,11 +171,19 @@ function changePhaseModal(isCorrect) {
 // ========================
 
 // To go forward in the experiment protocol
-function goToNextPhase() {
+async function goToNextPhase() {
     if (currentPhase < Object.keys(phasesObj).length - 1) {
         currentPhase++;
         updateResultsDataChunk({content: "next_action"}, {next_action: `Phase ${currentPhase}`});
-        updatePhase(currentPhase);
+        const sceneChanged = await updatePhase(currentPhase);
+        // If scene didn't change the subject is already connected — act immediately.
+        // If scene changed, timer and homePOV are handled inside triggerAlert once
+        // the subject reconnects after navigating to the new scene.
+        if (!sceneChanged) {
+            initTimer();
+            startTimer();
+            atonFrame.contentWindow.requestHomePOV();
+        }
     }
 }
 

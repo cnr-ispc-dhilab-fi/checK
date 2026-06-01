@@ -1,3 +1,5 @@
+let currentPhase = 0; // 0!
+
 const RECORDS_STORAGE_ID = "session/records";
 
 // ===============================
