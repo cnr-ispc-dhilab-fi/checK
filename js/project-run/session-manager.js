@@ -13,9 +13,11 @@ async function loadPhaseSubjectATONScene(s_id) {
     }
 }
 
-// Missing: SPATIAL UI
 function playMedia(assetName) {
-    alert("The subject is viewing: " + assetName);
+    const iframe = document.getElementById('testerATONSceneFrame');
+    if (iframe && typeof iframe.contentWindow?.requestPlayMedia === 'function') {
+        iframe.contentWindow.requestPlayMedia(assetName);
+    }
 }
 
 // ==================================

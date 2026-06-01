@@ -194,7 +194,14 @@ APP.setup = () => {
         });
         */
 
-        // 4A. Play animation
+        // 4A. Play media asset on subject
+        ATON.Photon.on("playMedia", (assetName) => {
+            if (role == 1) {
+                window.playMedia(assetName);
+            }
+        });
+
+        // 4B. Play animation
         ATON.Photon.on("requestPlayAnimation", () => {
             mainAnimationPlayRoutine();
         });
@@ -311,6 +318,14 @@ function requestHomePOV() {
 function endSessionModal() {
     if (role == 0) {
         ATON.Photon.fireEvent("closeSession", {});
+    }
+}
+
+// 6. Play media asset on subject
+
+function requestPlayMedia(assetName) {
+    if (role == 0) {
+        ATON.Photon.fireEvent("playMedia", assetName);
     }
 }
 
