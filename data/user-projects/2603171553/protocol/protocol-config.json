@@ -42,7 +42,7 @@
                 },
                 "taskDes": "Task description 2",
                 "taskInst": "Task instruction 1",
-                "playsAnimation": true,
+                "playsAnimation": false,
                 "assets": {
                     "1773841535044": {
                         "customName": "Louvre Museum",

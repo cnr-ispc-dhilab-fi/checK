@@ -213,15 +213,17 @@ APP.setup = () => {
             if (role != 1 || !data || data.phase == null) return;
 
             var phaseData = phasesObj[data.phase];
-            if (!phaseData) return;
+            if (!phaseData || phaseData === true) return;
 
             var items = [];
 
+            // Condition 1: taskInst text
             var taskInst = phaseData["taskInst"];
             if (taskInst && taskInst.trim().length > 0) {
                 items.push(ATON.UI.elem(`<p>${taskInst}</p>`));
             }
 
+            // Condition 2: assets marked as instruction that are loaded
             var phaseAssets = phaseData["assets"] || {};
             Object.keys(phaseAssets).forEach(function (assetKey) {
                 var ref = phaseAssets[assetKey];
@@ -229,15 +231,14 @@ APP.setup = () => {
                 var asset = protocolMultimediaLibraryStorage[assetKey];
                 if (!asset) return;
 
-                if (asset.image && asset.image.url) {
+                if (asset.type === 'image' && asset.image && asset.image.url) {
                     var raw = asset.image.url;
                     var base = window.location.protocol === 'https:'
                         ? window.location.origin
                         : (typeof SERVER_BASE !== 'undefined' && SERVER_BASE ? SERVER_BASE : window.location.origin);
                     var url = /^https?:\/\//i.test(raw) ? raw : base + (raw.charAt(0) === '/' ? '' : '/') + raw;
                     items.push(ATON.UI.elem(`<img class="img-fluid" src="${url}" style="max-height:40vh;object-fit:contain;" />`));
-                }
-                if (asset.content && asset.content.trim().length > 0) {
+                } else if (asset.type === 'text' && asset.content && asset.content.trim().length > 0) {
                     items.push(ATON.UI.elem(`<p>${asset.content}</p>`));
                 }
             });
