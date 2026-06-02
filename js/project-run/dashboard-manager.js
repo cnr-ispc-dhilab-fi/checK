@@ -9,6 +9,12 @@ window.addEventListener('DOMContentLoaded', async function() {
     // Update the storage content (in client-run)
     await updateStorageObjects();
 
+    // If the protocol has no training phase, skip phase 0 so that currentPhase,
+    // the scene loader, and the Photon events sent to subjects all agree on phase 1.
+    if (phasesObj[0] === false && currentPhase === 0) {
+        currentPhase = 1;
+    }
+
     // Update content in the header of the left panel (does not change throughout the phases)
     await updateSessionMetadata();
 
@@ -280,10 +286,11 @@ function addMultimediaTable(isInstruction, phase) {
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
-                            <button 
-                                type="button" 
-                                class="btn" 
-                                onclick="playMedia('${asset.id}')">
+                            <button
+                                type="button"
+                                class="btn"
+                                id="play-media-btn-${asset.id}"
+                                onclick="togglePlayMedia('${asset.id}')">
                                 <i class="bi bi-play-circle"></i>
                             </button>
                         </div>
@@ -387,6 +394,34 @@ function previewAsset(assetId, assetType) {
 }
 
 let isPlayAnimation = false;
+
+let activeMediaAssetId = null;
+
+function togglePlayMedia(assetId) {
+    const btn = document.getElementById('play-media-btn-' + assetId);
+
+    if (activeMediaAssetId === assetId) {
+        stopPlayMedia();
+        if (btn) btn.innerHTML = `<i class="bi bi-play-circle"></i>`;
+        activeMediaAssetId = null;
+    } else {
+        // Reset previous button if a different asset was playing
+        if (activeMediaAssetId) {
+            const prevBtn = document.getElementById('play-media-btn-' + activeMediaAssetId);
+            if (prevBtn) prevBtn.innerHTML = `<i class="bi bi-play-circle"></i>`;
+        }
+        playMedia(assetId);
+        if (btn) btn.innerHTML = `<i class="bi bi-stop-circle"></i>`;
+        activeMediaAssetId = assetId;
+
+        window.addEventListener('mediaPlaybackEnded', function onEnded() {
+            window.removeEventListener('mediaPlaybackEnded', onEnded);
+            const endBtn = document.getElementById('play-media-btn-' + assetId);
+            if (endBtn) endBtn.innerHTML = `<i class="bi bi-play-circle"></i>`;
+            if (activeMediaAssetId === assetId) activeMediaAssetId = null;
+        });
+    }
+}
 
 function toggle3DAnimation() {
     if (!isPlayAnimation) {

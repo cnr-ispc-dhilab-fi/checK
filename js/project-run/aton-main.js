@@ -202,9 +202,16 @@ APP.setup = () => {
         */
 
         // 4A. Play media asset on subject
-        ATON.Photon.on("playMedia", (assetName) => {
+        ATON.Photon.on("play-media", (assetName) => {
             if (role == 1) {
                 window.playMedia(assetName);
+            }
+        });
+
+        // 4B. Stop media asset on subject
+        ATON.Photon.on("stop-play-media", () => {
+            if (role == 1) {
+                window.stopPlayMedia();
             }
         });
 
@@ -375,7 +382,13 @@ function endSessionModal() {
 
 function requestPlayMedia(assetName) {
     if (role == 0) {
-        ATON.Photon.fireEvent("playMedia", assetName);
+        ATON.Photon.fireEvent("play-media", assetName);
+    }
+}
+
+function requestStopPlayMedia() {
+    if (role == 0) {
+        ATON.Photon.fireEvent("stop-play-media", {});
     }
 }
 

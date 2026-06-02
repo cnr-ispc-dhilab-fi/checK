@@ -1,5 +1,5 @@
 /**
- * playMedia.js
+ * play-media.js
  * Self-contained media player for checK experiment scenes.
  *
  * Exposes:  window.playMedia(assetName)   - resolves asset from protocolMultimediaLibraryStorage,
@@ -18,7 +18,7 @@
  *
  * Include AFTER session-manager.js (which defines protocolMultimediaLibraryStorage
  * and SERVER_BASE):
- *   <script src="../js/project-run/playMedia.js"></script>
+ *   <script src="../js/project-run/play-media.js"></script>
  */
 
 (function () {
@@ -127,7 +127,7 @@
         // 2. Test-injection escape hatch
         if (!lib) lib = window._pmLibOverride || null;
         if (!lib) {
-            console.warn('[playMedia] protocolMultimediaLibraryStorage is not available yet.');
+            console.warn('[play-media] protocolMultimediaLibraryStorage is not available yet.');
             return null;
         }
         // Direct key match
@@ -197,10 +197,13 @@
             _audioEl.pause();
             _audioEl.src = '';
         }
+        _audioEl.onended = function () {
+            window.dispatchEvent(new Event('mediaPlaybackEnded'));
+        };
         _audioEl.src = url;
         _audioEl.load();
         _audioEl.play().catch(function (e) {
-            console.warn('[playMedia] audio autoplay blocked:', e);
+            console.warn('[play-media] audio autoplay blocked:', e);
         });
     }
 
@@ -306,7 +309,7 @@
                 mesh.renderOrder = 999;
                 resolve(mesh);
             }, undefined, function (err) {
-                console.warn('[playMedia] image load error:', err);
+                console.warn('[play-media] image load error:', err);
                 resolve(null);
             });
         });
@@ -324,7 +327,7 @@
         vid.muted       = false;
         vid.load();
         vid.play().catch(function (e) {
-            console.warn('[playMedia] video autoplay blocked:', e);
+            console.warn('[play-media] video autoplay blocked:', e);
         });
 
         var tex  = new THREE.VideoTexture(vid);
@@ -565,7 +568,12 @@
         bodyEl.appendChild(body);
 
         if (typeof bootstrap !== 'undefined') {
-            bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            var bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modalEl.addEventListener('hidden.bs.modal', function onHidden() {
+                modalEl.removeEventListener('hidden.bs.modal', onHidden);
+                window.dispatchEvent(new Event('mediaPlaybackEnded'));
+            });
+            bsModal.show();
         }
     }
 
@@ -588,7 +596,7 @@
 
         var asset = _resolveAsset(assetName);
         if (!asset) {
-            console.warn('[playMedia] asset not found: "' + assetName + '"');
+            console.warn('[play-media] asset not found: "' + assetName + '"');
             return;
         }
 
@@ -602,11 +610,24 @@
     /**
      * stopPlayMedia()
      *
-     * Stops any playing audio and removes the active VR panel.
+     * Stops any playing audio, removes the active VR panel, and closes any
+     * open web modal.
      */
     window.stopPlayMedia = function () {
         _stopAudio();
         _removeVRPanel();
+
+        // Close Bootstrap modal if open
+        var modalEl = document.getElementById('pmMediaModal');
+        if (modalEl && typeof bootstrap !== 'undefined') {
+            var bsModal = bootstrap.Modal.getInstance(modalEl);
+            if (bsModal) bsModal.hide();
+        }
+
+        // Close ATON native modal if used
+        if (typeof ATON !== 'undefined' && ATON.UI && typeof ATON.UI.hideModal === 'function') {
+            ATON.UI.hideModal();
+        }
     };
 
 }());

@@ -20,6 +20,13 @@ function playMedia(assetName) {
     }
 }
 
+function stopPlayMedia() {
+    const iframe = document.getElementById('testerATONSceneFrame');
+    if (iframe && typeof iframe.contentWindow?.requestStopPlayMedia === 'function') {
+        iframe.contentWindow.requestStopPlayMedia();
+    }
+}
+
 function requestShowPhaseInstructions(phase) {
     const iframe = document.getElementById('testerATONSceneFrame');
     if (iframe && typeof iframe.contentWindow?.fireShowPhaseInstructions === 'function') {
