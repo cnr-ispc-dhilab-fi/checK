@@ -207,7 +207,7 @@ async function updateContentInStep(currentPhaseIndex, currentStepIndex, currentM
 
     const currentProtocol = await importProjectProtocolConfig();
 
-    let referenceGM = [currentMeasureIndex, currentGroupIndex]
+    let referenceGM = [currentGroupIndex, currentMeasureIndex]
     let currentPhaseProtocol = currentProtocol[referenceGM]["phase"][currentPhaseIndex]; 
 
     switch(currentStepIndex) {

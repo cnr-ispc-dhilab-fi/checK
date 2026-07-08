@@ -69,3 +69,30 @@ function getMeasureFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("m");
 }
+
+// Override ATON.Utils.registerAniMixers to 
+// restore animation mixers for compatibility
+// with future versions of ATON
+function restoreAnimationMixers() {
+
+  ATON.Utils.registerAniMixers = (N, data)=>{
+      let model = data.scene || data.scene[0];
+      let bAnimations = false;
+
+      if (data.animations === undefined) return;
+
+      let mixer = new THREE.AnimationMixer( model );
+      data.animations.forEach((clip)=>{
+          mixer.clipAction( clip ).play();
+          bAnimations = true;
+      });
+
+      if (!bAnimations) return;
+
+      ATON._aniMixers.push(mixer);
+
+      if (N._aniMixers === undefined) N._aniMixers = [];
+      N._aniMixers.push(mixer);
+  };
+
+}

@@ -590,7 +590,7 @@ async function addPhaseToConfig(phaseNo) {
   let projectId = getIdFromURL();
   let groupNo = getGroupFromURL();
   let measureNo = getMeasureFromURL();
-  let referenceGM = [measureNo, groupNo];
+  let referenceGM = [groupNo, measureNo];
 
   let patch = {
     [referenceGM]: {
@@ -612,7 +612,7 @@ async function deletePhaseFromConfig() {
   let projectId = getIdFromURL();
   let groupNo = getGroupFromURL();
   let measureNo = getMeasureFromURL();
-  let referenceGM = `${measureNo},${groupNo}`;
+  let referenceGM = `${groupNo},${measureNo}`;
 
   const storageId = getProjectProtocolConfigStorageId(projectId);
 

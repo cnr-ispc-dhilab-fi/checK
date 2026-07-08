@@ -30,5 +30,21 @@
         },
         "hasAnimation": true,
         "sceneID": "20260519-check-195262"
+    },
+    "A1783172135692": {
+        "id": "A1783172135692",
+        "createdAt": "2026-07-04T13:35:36.093Z",
+        "glb": {
+            "filename": "1783172135729_CC_degr_anim.glb",
+            "originalname": "CC_degr_anim.glb",
+            "url": "/collections/check-user/models/2605180951/1783172135729_CC_degr_anim.glb"
+        },
+        "thumb": {
+            "filename": "1783172136080_A1783172135692_thumb.png",
+            "originalname": "A1783172135692_thumb.png",
+            "url": "/collections/check-user/models/2605180951/thumb/1783172136080_A1783172135692_thumb.png"
+        },
+        "hasAnimation": true,
+        "sceneID": "20260704-check-91e416"
     }
 }

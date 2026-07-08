@@ -3,12 +3,12 @@
     "label": "",
     "createdAt": "2026-05-18T07:51:18.839Z",
     "template": "Task 'n Test",
-    "title": "Corsi-Camminato",
-    "objectives": "A",
-    "audience": "B",
-    "actions": "C",
-    "measureDescription": "D",
+    "title": "VR - Walked Corsi Test",
+    "objectives": "The WalCT evaluates memory storage of a sequence of places in a defined area. This virtual reality version of the test assesses human navigational ability. ",
+    "audience": "The study involves 80 college students, 40 women and 40 men. They were recruited at the Department of Psychology of Bologna University and at the Department of Life, Health and Environmental Science of L’Aquila University, Italy",
+    "actions": "Participants to the experiment are shown a 8-step sequence of lightened tiles. After viewing the sequence, they have to reproduce it navigating the VR space",
+    "measureDescription": "We trace the correct and wrong selections of the participant, as well as the required time to complete the task, and the trajectory the subject followed.",
     "groups": "1",
-    "repeatedMeasures": "1",
-    "updatedAt": "2026-05-18T21:36:35.250Z"
+    "repeatedMeasures": "2",
+    "updatedAt": "2026-07-04T14:16:40.098Z"
 }

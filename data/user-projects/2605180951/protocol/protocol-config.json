@@ -5,7 +5,7 @@
         "phase": {
             "0": true,
             "1": {
-                "name": "Phase 1",
+                "name": "Neutro",
                 "sceneID": "20260519-check-864a0e",
                 "analytics": {
                     "time": true,
@@ -13,8 +13,83 @@
                     "dir": true,
                     "fov": true
                 },
-                "taskDes": "Customised task description",
-                "taskInst": "Customised task instruction",
+                "taskDes": "In this phase, the subject performs the experiment in a neutral environment ",
+                "taskInst": "Look at the sequence of tiles. Try to remember and then reproduce it moving on the tiles with the teleport function. Once you arrive on tile, select it using the trigger on the controller.",
+                "playsAnimation": true,
+                "assets": {}
+            },
+            "2": {
+                "name": "Green",
+                "sceneID": "20260519-check-195262",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "In this phase, the subject performs the experiment in a green environment",
+                "taskInst": "Look at the sequence of tiles. Try to remember and then reproduce it moving on the tiles with the teleport function. Once you arrive on tile, select it using the trigger on the controller.",
+                "playsAnimation": true,
+                "assets": {}
+            },
+            "3": {
+                "name": "Degraded",
+                "sceneID": "20260704-check-91e416",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "In this phase, the subject performs the experiment in a degraded environment",
+                "taskInst": "Look at the sequence of tiles. Try to remember and then reproduce it moving on the tiles with the teleport function. Once you arrive on tile, select it using the trigger on the controller.",
+                "playsAnimation": true,
+                "assets": {}
+            }
+        }
+    },
+    "1,2": {
+        "phase": {
+            "0": true,
+            "1": {
+                "name": "Neutro",
+                "sceneID": "20260519-check-864a0e",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "In this phase, the subject performs the experiment in a neutral environment",
+                "taskInst": "Do you remember the original sequence? Reproduce it moving on the tiles with the teleport function. Once you arrive on tile, select it using the trigger on the controller.",
+                "playsAnimation": false,
+                "assets": {}
+            },
+            "2": {
+                "name": "Green",
+                "sceneID": "20260519-check-195262",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "In this phase, the subject performs the experiment in a green environment",
+                "taskInst": "Do you remember the original sequence? Reproduce it moving on the tiles with the teleport function. Once you arrive on tile, select it using the trigger on the controller.",
+                "playsAnimation": false,
+                "assets": {}
+            },
+            "3": {
+                "name": "Degraded",
+                "sceneID": "20260704-check-91e416",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "In this phase, the subject performs the experiment in a neutral environment",
+                "taskInst": "Do you remember the original sequence? Reproduce it moving on the tiles with the teleport function. Once you arrive on tile, select it using the trigger on the controller.",
                 "playsAnimation": true,
                 "assets": {}
             }

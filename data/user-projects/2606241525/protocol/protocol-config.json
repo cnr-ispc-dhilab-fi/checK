@@ -1,0 +1,23 @@
+{
+    "projectId": "2606241525",
+    "createdAt": "2026-06-24T13:25:26.212Z",
+    "1,1": {
+        "phase": {
+            "0": true,
+            "1": {
+                "name": "Phase 1",
+                "sceneID": "20260624-check-0a0532",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "Lorem ipsum",
+                "taskInst": "Dovrai fare XY",
+                "playsAnimation": true,
+                "assets": {}
+            }
+        }
+    }
+}

@@ -67,9 +67,46 @@
         #idView3D {
             display: none !important;
         }
-    </style>
+
+.code-snippet {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #f4f4f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: monospace;
+  width: fit-content;
+}
+.code-snippet code {
+  color: #333;
+}
+.code-snippet button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  display: flex;
+  padding: 4px;
+  border-radius: 4px;
+}
+.code-snippet button:hover {
+  background: #e4e4e7;
+}
+</style>
     <script>
         const needs3D = false;
+
+        function copyUrl() {
+  const text = document.getElementById('url-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const icon = document.getElementById('copy-icon');
+    const original = icon.innerHTML;
+    icon.innerHTML = '<path d="M20 6L9 17l-5-5"></path>';
+    setTimeout(() => { icon.innerHTML = original; }, 1500);
+  });
+}
     </script>
 
     <!-- Add project ID -->
@@ -217,8 +254,7 @@
 
                 <div class="row mt-2">
                     <div class="d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary" onclick="redirect(true)">Start the
-                            experiment</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#redirectModal">Complete onboarding</button>
                     </div>
                 </div>
 
@@ -227,6 +263,33 @@
         </div>
 
     </div>
+
+    <div class="modal fade" id="redirectModal" tabindex="-1" aria-labelledby="redirectModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Your session can start</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p> Subjects can access the session at:</p>
+                <p class="code-snippet">
+                <code id="url-text">http://localhost:8080/a/checK/welcome/</code>
+                <button onclick="copyUrl()" id="copy-btn" title="Copia URL">
+                    <svg id="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back to the Form</button>
+                <button type="button" class="btn btn-primary" onclick="redirect(true)">Start the Experiment</button>
+            </div>
+            </div>
+        </div>
+        </div>
 
     <!-- Bootstrap bundle (JS + Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -252,6 +315,14 @@
                 selectMeasureEl.insertAdjacentHTML("beforeend", `<option value="${i}">Repeated Measure ${i}</option>`);
             }
         });
+
+        function openModal() {
+            Swal.fire({
+            title: "You are ready to start the experiment",
+            text: "The ",
+            icon: "success"
+            });
+        }
 
         async function redirect(isForward) {
 

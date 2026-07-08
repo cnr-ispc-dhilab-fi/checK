@@ -1,0 +1,23 @@
+{
+    "projectId": "2607061141",
+    "createdAt": "2026-07-06T09:41:19.146Z",
+    "1,1": {
+        "phase": {
+            "0": true,
+            "1": {
+                "name": "Exploration",
+                "sceneID": "20260706-check-085e1a",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "",
+                "taskInst": "",
+                "playsAnimation": false,
+                "assets": {}
+            }
+        }
+    }
+}

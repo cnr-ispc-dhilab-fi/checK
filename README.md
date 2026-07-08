@@ -30,7 +30,7 @@ This repository contains the material of **checK** (Cultural Heritage Experiment
 
 ### Deployment
 
-1. Open terminal in your main ATON instance and run `npm run deploy-pm2`. 
+1. Open terminal in your main ATON instance and run `npm run deploy-pm2` (it may be required to install `multer` and `pm2`). 
 2. Access the main dashboard for testers (curators, psychologist) at https://localhost:8080/a/checK
 3. Access the onboarding page for tested subjects at https://localhost:8080/a/checK/welcome/
 4. Visualise immersive analythics with Merkhet, as indicated in the web-app repository and shown in this [sample link](http://localhost:8080/a/merkhet/?s=check-user%2F20260317-check-5382f1)

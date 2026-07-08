@@ -40,6 +40,24 @@
             "subjectID": "20260521-A1",
             "group": "1",
             "measure": "1"
+        },
+        "32ae8a": {
+            "subjectID": "20260704A",
+            "group": "1",
+            "measure": "1"
+        },
+        "24997b": {
+            "subjectID": "260706A1",
+            "group": "1",
+            "measure": "1"
+        }
+    },
+    "2606241525": {
+        "17c057": {
+            "subjectID": "260624A1",
+            "group": "1",
+            "measure": "1",
+            "path": "session/2606241525-17c057.csv"
         }
     }
 }

@@ -66,6 +66,9 @@
     <script type="text/javascript" src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="/dist/THREE.bundle.js"></script>
     <script type="text/javascript" src="/dist/ATON.min.js"></script>
+
+    <script type="text/javascript" src="../js/client-root.js"></script>
+
     <script>
         // Extract scene ID for URL
         const params = new URLSearchParams(window.location.search);
@@ -79,6 +82,9 @@
             // Realize base ATON and add base UI events
             ATON.realize();
             ATON.UI.addBasicEvents();
+
+            // ATON.Utils.showBVHbounds(5);
+            restoreAnimationMixers();
 
             // Load the scene
             ATON.App.loadScene(s_id, ()=>{ 
