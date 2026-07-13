@@ -1,0 +1,118 @@
+{
+    "projectId": "2607130914",
+    "createdAt": "2026-07-13T07:14:08.190Z",
+    "1,1": {
+        "phase": {
+            "0": true,
+            "1": {
+                "name": "Exploration Green",
+                "sceneID": "20260713-check-e8b4bb",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "Descrizione della task specifica",
+                "taskInst": "Descrizione che compare ai partecipanti",
+                "playsAnimation": true,
+                "assets": {}
+            }
+        }
+    },
+    "2,1": {
+        "phase": {
+            "0": true,
+            "1": {
+                "name": "Νeutro",
+                "sceneID": "20260713-check-589ec4",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "Descrizione t2",
+                "taskInst": "Descrizione",
+                "playsAnimation": true,
+                "assets": {}
+            }
+        }
+    },
+    "3,1": {
+        "phase": {
+            "0": true,
+            "1": {
+                "name": "Degradato",
+                "sceneID": "20260713-check-0770bc",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "",
+                "taskInst": "Descrzione",
+                "playsAnimation": true,
+                "assets": {}
+            }
+        }
+    },
+    "1,2": {
+        "phase": {
+            "0": false,
+            "1": {
+                "name": "Green",
+                "sceneID": "20260713-check-e8b4bb",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "",
+                "taskInst": "",
+                "playsAnimation": true,
+                "assets": {}
+            }
+        }
+    },
+    "2,2": {
+        "phase": {
+            "0": false,
+            "1": {
+                "name": "Neutro",
+                "sceneID": "20260713-check-589ec4",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "",
+                "taskInst": "",
+                "playsAnimation": true,
+                "assets": {}
+            }
+        }
+    },
+    "3,2": {
+        "phase": {
+            "0": false,
+            "1": {
+                "name": "Degradato",
+                "sceneID": "20260713-check-0770bc",
+                "analytics": {
+                    "time": true,
+                    "pos": true,
+                    "dir": true,
+                    "fov": true
+                },
+                "taskDes": "",
+                "taskInst": "",
+                "playsAnimation": true,
+                "assets": {}
+            }
+        }
+    }
+}

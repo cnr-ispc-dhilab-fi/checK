@@ -1,0 +1,50 @@
+{
+    "A1783927538630": {
+        "id": "A1783927538630",
+        "createdAt": "2026-07-13T07:25:39.002Z",
+        "glb": {
+            "filename": "1783927538655_CC_v01_green.glb",
+            "originalname": "CC_v01_green.glb",
+            "url": "/collections/check-user/models/2607130914/1783927538655_CC_v01_green.glb"
+        },
+        "thumb": {
+            "filename": "1783927538993_A1783927538630_thumb.png",
+            "originalname": "A1783927538630_thumb.png",
+            "url": "/collections/check-user/models/2607130914/thumb/1783927538993_A1783927538630_thumb.png"
+        },
+        "hasAnimation": true,
+        "sceneID": "20260713-check-e8b4bb"
+    },
+    "A1783927543780": {
+        "id": "A1783927543780",
+        "createdAt": "2026-07-13T07:25:43.875Z",
+        "glb": {
+            "filename": "1783927543789_CC_neutra_anim.glb",
+            "originalname": "CC_neutra_anim.glb",
+            "url": "/collections/check-user/models/2607130914/1783927543789_CC_neutra_anim.glb"
+        },
+        "thumb": {
+            "filename": "1783927543873_A1783927543780_thumb.png",
+            "originalname": "A1783927543780_thumb.png",
+            "url": "/collections/check-user/models/2607130914/thumb/1783927543873_A1783927543780_thumb.png"
+        },
+        "hasAnimation": true,
+        "sceneID": "20260713-check-589ec4"
+    },
+    "A1783927551798": {
+        "id": "A1783927551798",
+        "createdAt": "2026-07-13T07:25:52.166Z",
+        "glb": {
+            "filename": "1783927551830_CC_degr_anim.glb",
+            "originalname": "CC_degr_anim.glb",
+            "url": "/collections/check-user/models/2607130914/1783927551830_CC_degr_anim.glb"
+        },
+        "thumb": {
+            "filename": "1783927552163_A1783927551798_thumb.png",
+            "originalname": "A1783927551798_thumb.png",
+            "url": "/collections/check-user/models/2607130914/thumb/1783927552163_A1783927551798_thumb.png"
+        },
+        "hasAnimation": true,
+        "sceneID": "20260713-check-0770bc"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "id": "2607130914",
+    "label": "",
+    "createdAt": "2026-07-13T07:14:08.190Z",
+    "template": "Task 'n Test",
+    "title": "Corsi camminato 2026",
+    "objectives": "Descrzione degli obiettivi del progetto",
+    "audience": "Descrizione partecipanti",
+    "actions": "Descrizione del compito (task)",
+    "measureDescription": "Descrizione degli aspetti da misurare (tempo di risposta, ...)",
+    "groups": "3",
+    "repeatedMeasures": "2",
+    "updatedAt": "2026-07-13T07:24:51.388Z"
+}
