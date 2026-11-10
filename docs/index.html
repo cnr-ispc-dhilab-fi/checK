@@ -252,6 +252,13 @@
 
       <div class="col-lg-7">
 
+        <div class="ck-note">
+          <i class="bi bi-exclamation-circle"></i>
+          <div>
+            <strong>Before you start:</strong> make sure <code>npm</code> and <code>pm2</code> are available on your system, and that <code>multer</code> is installed with the rest of the ATON dependencies (<code>npm install</code> in Step 1 pulls it in automatically). checK-flare relies on all three to run and to handle file uploads.
+          </div>
+        </div>
+
         <div class="step-block">
           <div class="step-num">1</div>
           <div class="step-content">
@@ -301,6 +308,16 @@
               <code>git clone https://github.com/phoenixbf/merkhet-app</code>
               <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
             </div>
+            <div class="ck-note mt-3 mb-0">
+              <i class="bi bi-gear"></i>
+              <div>
+                <strong>Merkhet config file:</strong> edit <code>wapps/merkhet/config.json</code> and point <code>capturehub</code> to your Interlumo/Kapto endpoint, e.g.
+                <div class="code-block mt-2 mb-0">
+                  <code>{ "capturehub": "https://interlumo.ispc.cnr.it/kapto/" }</code>
+                  <button class="copy-btn" title="Copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -322,6 +339,25 @@
 
         <div class="step-block">
           <div class="step-num">5</div>
+          <div class="step-content">
+            <h6>Download the default collections &amp; scenes</h6>
+            <p>The default sample projects need pre-built 3D collections and scenes to work. Download them here:</p>
+            <p>
+              <a href="https://drive.google.com/drive/folders/1TfC4E2a5ctqti-J9rJU8CkfEcRmWiLp_?usp=sharing" target="_blank" rel="noopener" class="btn-primary-ck">
+                <i class="bi bi-cloud-arrow-down"></i> Download collections &amp; scenes
+              </a>
+            </p>
+            <div class="ck-note mb-0">
+              <i class="bi bi-folder2-open"></i>
+              <div>
+                Unzip the archive starting with <code>c-</code> into <code>data/collections/</code>, and the one starting with <code>s-</code> into <code>data/scenes/</code> — keeping only the folder contained inside each decompressed archive (discard the zip and any extra wrapping folder).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-num">6</div>
           <div class="step-content">
             <h6>Start the server</h6>
             <p>Launch ATON with PM2 for persistent deployment, or use <code>npm start</code> for local testing.</p>

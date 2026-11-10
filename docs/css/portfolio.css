@@ -288,6 +288,37 @@ section:nth-child(even) { background-color: var(--ck-cream); }
 }
 
 /* ---------- Installation ---------- */
+.ck-note {
+  display: flex;
+  gap: .65rem;
+  align-items: flex-start;
+  background: var(--ck-cream);
+  border-left: 3px solid var(--ck-secondary);
+  border-radius: var(--ck-radius-sm);
+  padding: .85rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: .88rem;
+  color: var(--ck-dark);
+  line-height: 1.65;
+}
+
+.ck-note i {
+  color: var(--ck-secondary);
+  font-size: 1rem;
+  margin-top: .15rem;
+  flex-shrink: 0;
+}
+
+.ck-note code {
+  background: rgba(255,255,255,.6);
+  padding: .1rem .35rem;
+  border-radius: .25rem;
+  font-size: .82rem;
+}
+
+.ck-note strong { color: var(--ck-primary-dark); }
+
+
 .step-num {
   width: 32px;
   height: 32px;
