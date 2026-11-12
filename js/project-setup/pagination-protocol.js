@@ -393,7 +393,8 @@ async function realizeATONSceneConfig(projectId, envId, envPath) {
         status: "complete",
         environment: { lightprobes: { auto: false } },
         scenegraph: {
-            nodes: { main: { urls: [`http://localhost:8080${envPath}`] } },
+            // Collection-relative URL: ATON resolves it against the current origin
+            nodes: { main: { urls: [envPath.replace(/^\/?collections\//, "")] } },
             edges: { ".": ["main"] }
         }
     };
@@ -514,7 +515,8 @@ async function initialiseATONScene(path) {
     E.scenegraph = {};
     E.scenegraph.nodes = {};
     E.scenegraph.nodes["main"] = {};
-    E.scenegraph.nodes["main"].urls = [`http://localhost:8080${path}`];
+    // Collection-relative URL: ATON resolves it against the current origin
+    E.scenegraph.nodes["main"].urls = [path.replace(/^\/?collections\//, "")];
     E.scenegraph.edges = { ".": ["main"] };
 
     E.environment = {};

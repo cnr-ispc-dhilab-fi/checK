@@ -107,6 +107,11 @@
     setTimeout(() => { icon.innerHTML = original; }, 1500);
   });
 }
+
+        // Participant URL built from the current origin (e.g. https://192.168.x.x:8083)
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('url-text').innerText = window.location.origin + "/a/checK/welcome/";
+        });
     </script>
 
     <!-- Add project ID -->

@@ -12,10 +12,60 @@ let aton_actions = {};
 
 let APP = ATON.App.realize();
 
+/**
+ * Async VR headset browser detection.
+ * Requires both navigator.xr immersive-vr support AND a headset UA/platform signal,
+ * to avoid false positives on desktop Chrome which also exposes WebXR.
+ */
+APP.isVRHeadsetBrowser = async () => {
+    const ua = navigator.userAgent || "";
+    const platform = navigator.platform || "";
+
+    let supportsImmersiveVR = false;
+    if ("xr" in navigator && navigator.xr?.isSessionSupported) {
+        try {
+            supportsImmersiveVR = await navigator.xr.isSessionSupported("immersive-vr");
+        } catch (e) {
+            supportsImmersiveVR = false;
+        }
+    }
+
+    const isQuestUA =
+        /OculusBrowser/i.test(ua) ||
+        /Meta Quest/i.test(ua)    ||
+        /Quest/i.test(ua)         ||
+        /Oculus/i.test(ua);
+
+    const isAndroidLike = /Android/i.test(ua) || /Linux arm/i.test(platform);
+
+    return supportsImmersiveVR && (isQuestUA || isAndroidLike);
+};
+
+/**
+ * Footer with "Go to VR" button for subject modals.
+ * Returns undefined when not on a VR headset, so showModal renders no footer.
+ */
+APP.getGoToVRFooter = async () => {
+    if (!(await APP.isVRHeadsetBrowser())) return undefined;
+
+    return ATON.UI.createButton({
+        text: "Go to VR",
+        icon: "vr",
+        variant: "primary",
+        size: "large",
+        classes: "w-100",
+        onpress: () => {
+            ATON.XR.toggle("immersive-vr"); // must run inside the click gesture
+            ATON.UI.hideModal();
+        }
+    });
+};
+
 APP.setup = () => {
     // Realize base ATON and add base UI events
     ATON.realize();
     ATON.UI.addBasicEvents();
+    setupVRSelectionTrigger();
 
     // Load the scene
     ATON.App.loadScene(s_id, async () => {
@@ -50,7 +100,9 @@ APP.setup = () => {
             await updateStorageObjects();
             if (parseInt(params.get("phase") || "0") === 0) {
                 const hasIntro = phasesObj[0] !== false;
+                const vrFooter = await APP.getGoToVRFooter();
                 ATON.UI.showModal({
+                    footer: vrFooter,
                     header: "Welcome!",
                     body: ATON.UI.createContainer({
                         items: hasIntro ? [
@@ -134,12 +186,14 @@ APP.setup = () => {
             }
         });
 
-        ATON.Photon.on("showIntroModal", (boolParams) => {
+        ATON.Photon.on("showIntroModal", async (boolParams) => {
             if (role != 1) return;
 
             if (currentPhase == 0) {
+                const vrFooter = await APP.getGoToVRFooter();
                 if (boolParams.hasIntro) {
                 ATON.UI.showModal({
+                    footer: vrFooter,
                     header: "Welcome!",
 
                     body: ATON.UI.createContainer({
@@ -151,6 +205,7 @@ APP.setup = () => {
                 });
                 } else {
                     ATON.UI.showModal({
+                        footer: vrFooter,
                         header: "Welcome!",
 
                         body: ATON.UI.createContainer({
@@ -327,13 +382,29 @@ function modalStopNavigation() {
     });
 }
 
-// [!] Associate to VR controller trigger [!]
+// Subject selection: send the input to the tester and stop navigation
+function subjectSelection() {
+    triggerModal();
+    modalStopNavigation();
+}
+
+// Desktop: Enter key
 document.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-        triggerModal();
-        modalStopNavigation()
-    }
+    if (e.key === 'Enter') subjectSelection();
 });
+
+// VR: LEFT controller trigger (the right trigger is used by ATON for teleport).
+// "XRselectStart" fires once per press, with the hand as argument.
+// Must be registered after ATON.realize() (EventHub init resets handlers): called in APP.setup
+function setupVRSelectionTrigger() {
+    ATON.on("XRselectStart", (hand) => {
+        if (role != 1) return;
+        if (!ATON.XR._bPresenting) return;
+        if (hand !== ATON.XR.HAND_L) return;
+
+        subjectSelection();
+    });
+}
 
 
 function triggerModal() {    // Fire modal (use ancillary function to ensure correct position)
